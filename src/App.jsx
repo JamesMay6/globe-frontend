@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
+import { Viewer, createWorldTerrain } from 'cesium';
 
 function App() {
   useEffect(() => {
-    // Dynamically load Cesium since it is not a real ESM
-    import('cesium/Build/Cesium/Cesium').then((Cesium) => {
-      const viewer = new Cesium.Viewer('cesiumContainer', {
-        terrainProvider: Cesium.createWorldTerrain(),
-        baseLayerPicker: false,
-      });
+    const viewer = new Viewer('cesiumContainer', {
+      terrainProvider: createWorldTerrain(),
+      baseLayerPicker: false,
     });
   }, []);
 
