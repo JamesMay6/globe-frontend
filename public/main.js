@@ -1,6 +1,8 @@
 
 import { Viewer, ScreenSpaceEventHandler, ScreenSpaceEventType, Color, Rectangle, Entity } from "cesium";
 
+const BACKEND_URL = "https://globe-backend-r15v.onrender.com"; // <-- Your actual backend
+
 const viewer = new Cesium.Viewer("cesiumContainer", {
   terrainProvider: Cesium.createWorldTerrain(),
   baseLayerPicker: false,
@@ -40,7 +42,8 @@ handler.setInputAction((click) => {
   if (!deletedCells.has(id)) {
     deletedCells.add(id);
     drawDeletedCell(snapToGrid(lat), snapToGrid(lon));
-    fetch("https://globe-backend-r15v.onrender.com/delete", {
+    
+    fetch(`${BACKEND_URL}/delete`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lat: snapToGrid(lat), lon: snapToGrid(lon) }),
@@ -58,7 +61,7 @@ async function loadDeletedCellsInView() {
   const minLon = Cesium.Math.toDegrees(rectangle.west);
   const maxLon = Cesium.Math.toDegrees(rectangle.east);
 
-  const url = `https://globe-backend-r15v.onrender.com/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`;
+  const url = (`${BACKEND_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`);
   const response = await fetch(url);
   const cells = await response.json();
 
