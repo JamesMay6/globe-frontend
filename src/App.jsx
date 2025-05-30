@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
-import Cesium from 'cesium'; // ✅ This gives you the full UMD object
+
+// ✅ Force use of the UMD bundle
+import Cesium from 'cesium/Build/Cesium/Cesium.js';
 
 function App() {
   useEffect(() => {
