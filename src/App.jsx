@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
+import { Viewer, createWorldTerrain } from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
-
-// ✅ Force use of the UMD bundle
-import Cesium from 'cesium/Build/Cesium/Cesium.js';
 
 function App() {
   useEffect(() => {
-    const viewer = new Cesium.Viewer('cesiumContainer', {
-      terrainProvider: Cesium.createWorldTerrain(),
+    const viewer = new Viewer('cesiumContainer', {
+      terrainProvider: createWorldTerrain(),
       baseLayerPicker: false,
     });
+
+    return () => {
+      if (!viewer.isDestroyed()) viewer.destroy();
+    };
   }, []);
 
   return <div id="cesiumContainer" style={{ width: '100vw', height: '100vh' }} />;
