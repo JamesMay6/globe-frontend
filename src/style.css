@@ -5,3 +5,8 @@ html, body, #cesiumContainer {
   height: 100%;
   overflow: hidden;
 }
+
+/* Hide Cesium credits and baseLayerPicker */
+.cesium-widget-credits {
+  display: none !important;
+}
