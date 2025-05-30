@@ -1,12 +1,5 @@
 import { useEffect } from "react";
-import {
-  Viewer,
-  CesiumTerrainProvider,
-  Ion,
-  IonResource,
-  UrlTemplateImageryProvider,
-  Cartesian3,
-} from "cesium";
+import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
 function App() {
@@ -30,11 +23,6 @@ function App() {
             contextOptions: { requestWebgl2: true },
           });
         };
-    
-
-    viewer.camera.setView({
-      destination: Cartesian3.fromDegrees(-74.0, 40.7, 10000),
-    });
 
     return () => {
       if (!viewer.isDestroyed()) viewer.destroy();
