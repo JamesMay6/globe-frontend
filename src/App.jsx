@@ -6,26 +6,31 @@ function App() {
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
 
-    const viewer = async () => {
-          const terrainProvider = await Cesium.createWorldTerrainAsync();
-          const viewer = new Cesium.Viewer(container, {
-            terrainProvider,
-            imageryProvider: new Cesium.OpenStreetMapImageryProvider({
-              url: "https://a.tile.openstreetmap.org/",
-            }),
-            animation: false,
-            timeline: false,
-            homeButton: false,
-            sceneModePicker: false,
-            navigationHelpButton: false,
-            requestRenderMode: true,
-            maximumRenderTimeChange: 0,
-            contextOptions: { requestWebgl2: true },
-          });
-        };
+    let viewer;
+
+    (async () => {
+      const terrainProvider = await Cesium.createWorldTerrainAsync();
+
+      viewer = new Cesium.Viewer("cesiumContainer", {
+        terrainProvider,
+        imageryProvider: new Cesium.OpenStreetMapImageryProvider({
+          url: "https://a.tile.openstreetmap.org/",
+        }),
+        animation: false,
+        timeline: false,
+        homeButton: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        requestRenderMode: true,
+        maximumRenderTimeChange: 0,
+        contextOptions: { requestWebgl2: true },
+      });
+
+      viewer.scene.globe.show = true;
+    })();
 
     return () => {
-      if (!viewer.isDestroyed()) viewer.destroy();
+      if (viewer && !viewer.isDestroyed()) viewer.destroy();
     };
   }, []);
 
