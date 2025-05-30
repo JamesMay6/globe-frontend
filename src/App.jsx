@@ -4,7 +4,7 @@ import {
   CesiumTerrainProvider,
   Ion,
   IonResource,
-  createWorldImagery,
+  UrlTemplateImageryProvider,
   Cartesian3,
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
@@ -17,7 +17,10 @@ function App() {
       terrainProvider: new CesiumTerrainProvider({
         url: IonResource.fromAssetId(1),
       }),
-      imageryProvider: createWorldImagery(),
+      imageryProvider: new UrlTemplateImageryProvider({
+        url: "https://assets.agi.com/stk-terrain/world/stk-terrain-4tiles/{z}/{x}/{y}.png",
+        maximumLevel: 13,
+      }),
       geocoder: true,
       baseLayerPicker: false,
       timeline: false,
