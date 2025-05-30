@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
+import Cesium from 'cesium'; // ✅ This gives you the full UMD object
 
 function App() {
   useEffect(() => {
-    import('cesium').then((Cesium) => {
-      // Cesium here is the global UMD Cesium object
-      const viewer = new Cesium.Viewer('cesiumContainer', {
-        terrainProvider: Cesium.createWorldTerrain(),
-        baseLayerPicker: false,
-      });
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain(),
+      baseLayerPicker: false,
     });
   }, []);
 
