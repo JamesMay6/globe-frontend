@@ -1,5 +1,12 @@
 import { useEffect } from "react";
-import { Viewer, CesiumTerrainProvider, Ion, IonResource } from "cesium";
+import {
+  Viewer,
+  CesiumTerrainProvider,
+  Ion,
+  IonResource,
+  createWorldImagery,
+  Cartesian3,
+} from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
 function App() {
@@ -10,7 +17,8 @@ function App() {
       terrainProvider: new CesiumTerrainProvider({
         url: IonResource.fromAssetId(1),
       }),
-      geocoder: true,          // enable built-in search box
+      imageryProvider: createWorldImagery(),
+      geocoder: true,
       baseLayerPicker: false,
       timeline: false,
       animation: false,
@@ -23,8 +31,9 @@ function App() {
       selectionIndicator: false,
     });
 
-    // Ensure globe and imagery are visible
-    viewer.scene.globe.show = true;
+    viewer.camera.setView({
+      destination: Cartesian3.fromDegrees(-74.0, 40.7, 10000),
+    });
 
     return () => {
       if (!viewer.isDestroyed()) viewer.destroy();
