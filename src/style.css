@@ -10,3 +10,6 @@ html, body, #cesiumContainer {
 .cesium-widget-credits {
   display: none !important;
 }
+.cesium-baseLayerPicker-selected {
+  visibility: hidden;
+}

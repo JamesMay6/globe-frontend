@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
+const API_URL = import.meta.env.APP_API_URL
+
 function App() {
   const viewerRef = useRef(null);
 
@@ -38,7 +40,7 @@ function App() {
     const maxLon = Cesium.Math.toDegrees(rect.east);
 
     const response = await fetch(
-      `http://localhost:3000/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
+      `${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
     );
     const cells = await response.json();
 
@@ -56,7 +58,7 @@ function App() {
     const lon = roundCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
     // Post to backend
-    await fetch("http://localhost:3000/delete", {
+    await fetch(`${API_URL}/delete`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lat, lon }),
