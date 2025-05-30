@@ -12,18 +12,20 @@ function App() {
 
   // Create rectangle geometry for a grid cell
   const drawDeletedCell = (viewer, lat, lon) => {
-    const cellWidth = 0.001;
-    const rect = Cesium.Rectangle.fromDegrees(
-      lon,
-      lat,
-      lon + cellWidth,
-      lat + cellWidth
-    );
+  const cellWidth = 0.001;
+  const padding = 0.00005; // slight overlap (~5 meters)
+
+  const rect = Cesium.Rectangle.fromDegrees(
+    lon - padding,
+    lat - padding,
+    lon + cellWidth + padding,
+    lat + cellWidth + padding
+  );
 
     viewer.entities.add({
       rectangle: {
         coordinates: rect,
-        material: Cesium.Color.BLACK.withAlpha(0.6),
+        material: Cesium.Color.BLACK.withAlpha(1.0),
         classificationType: Cesium.ClassificationType.BOTH,
       },
     });
