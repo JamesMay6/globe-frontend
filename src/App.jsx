@@ -8,7 +8,7 @@ function App() {
   const viewerRef = useRef(null);
 
   // Round lat/lon to 3 decimal places
-  const roundCoord = (value) => Math.round(value * 1000) / 1000;
+  const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
   // Create rectangle geometry for a grid cell
   const drawDeletedCell = (viewer, lat, lon) => {
@@ -56,8 +56,8 @@ function App() {
     if (!cartesian) return;
 
     const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    const lat = roundCoord(Cesium.Math.toDegrees(cartographic.latitude));
-    const lon = roundCoord(Cesium.Math.toDegrees(cartographic.longitude));
+    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
+    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
     // Post to backend
     await fetch(`${API_URL}/delete`, {
