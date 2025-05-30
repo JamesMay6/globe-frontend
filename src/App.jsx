@@ -4,7 +4,7 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 
 function App() {
   useEffect(() => {
-    Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
+    Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
 
     const viewer = async () => {
           const terrainProvider = await Cesium.createWorldTerrainAsync();
