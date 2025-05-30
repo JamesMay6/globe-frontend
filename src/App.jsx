@@ -12,7 +12,7 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 
 function App() {
   useEffect(() => {
-    Ion.defaultAccessToken = "YOUR_CESIUM_ION_ACCESS_TOKEN";
+    Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
 
     const viewer = new Viewer("cesiumContainer", {
       terrainProvider: new CesiumTerrainProvider({
