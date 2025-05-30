@@ -68,6 +68,9 @@ function App() {
 
     // Draw cell immediately
     drawDeletedCell(viewer, lat, lon);
+
+    // Force a render so the rectangle appears right away
+    viewer.scene.requestRender();
   };
 
   useEffect(() => {
