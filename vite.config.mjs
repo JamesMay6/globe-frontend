@@ -1,26 +1,17 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
-import path from 'node:path';
+import { useEffect } from 'react';
+import 'cesium/Build/Cesium/Widgets/widgets.css';
 
-export default defineConfig({
-  plugins: [
-    react(),
-    viteStaticCopy({
-      targets: [
-        { src: 'node_modules/cesium/Build/Cesium/Assets', dest: 'Cesium' },
-        { src: 'node_modules/cesium/Build/Cesium/Widgets', dest: 'Cesium' },
-        { src: 'node_modules/cesium/Build/Cesium/ThirdParty', dest: 'Cesium' },
-        { src: 'node_modules/cesium/Build/Cesium/Workers', dest: 'Cesium' }
-      ]
-    })
-  ],
-  resolve: {
-    alias: {
-      cesium: path.resolve('node_modules/cesium')
-    }
-  },
-  define: {
-    CESIUM_BASE_URL: JSON.stringify('/Cesium')
-  }
-});
+function App() {
+  useEffect(() => {
+    import('cesium').then((Cesium) => {
+      const viewer = new Cesium.Viewer('cesiumContainer', {
+        terrainProvider: Cesium.createWorldTerrain(),
+        baseLayerPicker: false,
+      });
+    });
+  }, []);
+
+  return <div id="cesiumContainer" style={{ width: '100vw', height: '100vh' }} />;
+}
+
+export default App;
