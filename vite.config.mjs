@@ -1,17 +1,13 @@
-import { useEffect } from 'react';
-import 'cesium/Build/Cesium/Widgets/widgets.css';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import cesium from 'vite-plugin-cesium';
 
-function App() {
-  useEffect(() => {
-    import('cesium').then((Cesium) => {
-      const viewer = new Cesium.Viewer('cesiumContainer', {
-        terrainProvider: Cesium.createWorldTerrain(),
-        baseLayerPicker: false,
-      });
-    });
-  }, []);
-
-  return <div id="cesiumContainer" style={{ width: '100vw', height: '100vh' }} />;
-}
-
-export default App;
+export default defineConfig({
+  plugins: [
+    react(),
+    cesium()
+  ],
+  define: {
+    CESIUM_BASE_URL: JSON.stringify('/Cesium')
+  }
+});

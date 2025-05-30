@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
-import { Viewer, createWorldTerrain } from 'cesium';
 
 function App() {
   useEffect(() => {
-    const viewer = new Viewer('cesiumContainer', {
-      terrainProvider: createWorldTerrain(),
-      baseLayerPicker: false,
+    import('cesium').then((Cesium) => {
+      const viewer = new Cesium.Viewer('cesiumContainer', {
+        terrainProvider: Cesium.createWorldTerrain(),
+        baseLayerPicker: false,
+      });
     });
   }, []);
 
