@@ -148,6 +148,23 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
+      // 👇 Reliable placeholder update for geocoder input
+    const trySetGeocoderPlaceholder = () => {
+      const input = document.querySelector('.cesium-geocoder-input input');
+      if (input) {
+        input.placeholder = 'Search...';
+        return true;
+      }
+      return false;
+    };
+
+    const interval = setInterval(() => {
+      if (trySetGeocoderPlaceholder()) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+
       viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
       viewer.trackedEntity = undefined;
 
@@ -157,11 +174,6 @@ function showMessage(text, duration = 2000) {
         controller.inertiaZoom = 0.9;        // Smooth momentum
       }
 
-      viewer.geocoder.viewModel.searchText = '';
-      const input = document.querySelector('.cesium-geocoder-input input');
-      if (input) {
-        input.placeholder = 'Search...'; // Your custom text
-      }
       viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
