@@ -69,7 +69,7 @@ html, body, #cesiumContainer {
   z-index: 1000;
   width: 200px;                /* same width as stats */
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   max-height: 40px;
   overflow: hidden;
   transition: max-height 0.4s ease;
