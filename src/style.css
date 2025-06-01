@@ -28,7 +28,7 @@ html, body, #cesiumContainer {
   border-radius: 8px;
   padding: 10px;
   font-family: sans-serif;
-  max-width: 250px;
+  width: 200px;
 }
 
 #statsMenu button {
@@ -60,7 +60,7 @@ html, body, #cesiumContainer {
   flex-direction: column;
   gap: 6px;
   z-index: 1000;
-  max-width: 250px; /* same max width as stats box */
+  width: 200px; /* same max width as stats box */
   font-family: sans-serif;
   font-size: 14px;
 }
