@@ -108,7 +108,7 @@ html, body, #cesiumContainer {
 }
 
 #leaderboardMenu.shifted {
-  top: 14px; /* or whatever the height + margin of your stats menu is */
+  top: 140px; /* or whatever the height + margin of your stats menu is */
 }
 #leaderboardMenu button {
   background: #444;
@@ -129,7 +129,7 @@ html, body, #cesiumContainer {
 }
 
 .leaderboardContent ol {
-  padding: 0px 45x;
+  padding: 4px 0px;
   margin: 0;
 }
 
