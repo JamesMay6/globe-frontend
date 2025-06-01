@@ -148,21 +148,14 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
-      // 👇 Reliable placeholder update for geocoder input
-    const trySetGeocoderPlaceholder = () => {
-      const input = document.querySelector('.cesium-geocoder-input input');
-      if (input) {
-        input.placeholder = 'Search...';
-        return true;
-      }
-      return false;
-    };
-
-    const interval = setInterval(() => {
-      if (trySetGeocoderPlaceholder()) {
-        clearInterval(interval);
-      }
-    }, 100);
+    // Wait for Cesium to attach geocoder DOM
+      const waitForGeocoderInput = setInterval(() => {
+        const input = document.querySelector('.cesium-geocoder-input input');
+        if (input) {
+          input.setAttribute("placeholder", "Search anywhere...");
+          clearInterval(waitForGeocoderInput);
+        }
+      }, 100);
 
 
       viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -170,7 +163,7 @@ function showMessage(text, duration = 2000) {
 
       if (isMobile) {
         const controller = viewer.scene.screenSpaceCameraController;
-        controller.zoomFactor = 17.0;        // Faster zoom-in/out
+        controller.zoomFactor = 18.0;        // Faster zoom-in/out
         controller.inertiaZoom = 0.9;        // Smooth momentum
       }
 
