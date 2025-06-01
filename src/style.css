@@ -38,7 +38,7 @@ html, body, #cesiumContainer {
   padding: 5px 5px;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   width: 100%;
 }
 
@@ -46,62 +46,64 @@ html, body, #cesiumContainer {
   font-size: 14px;
   line-height: 1.6;
 }
-
 .authBox {
-  position: absolute;
-  top: 55px;
-  right: 10px; /* space from right edge so it doesn't overlap search icon */
-  background: #222; /* same dark background as stats */
+  position: fixed;
+  bottom: 20px;        /* distance from bottom */
+  left: 50%;           /* center horizontally */
+  transform: translateX(-50%);
+  background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px;
+  padding: 5px 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   gap: 6px;
   z-index: 1000;
-  width: 200px; /* same max width as stats box */
+  width: 250px;        /* wider to give more space */
   font-family: sans-serif;
   font-size: 14px;
+  max-height: 40px;    /* collapsed height for toggle button */
+  overflow: hidden;
+  transition: max-height 0.4s ease;
 }
 
-.authBox input {
-  padding: 8px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  outline: none;
-  background: #444;
-  color: white;
+/* Expanded state */
+.authBox.expanded {
+  max-height: 400px;   /* enough height to show all content */
+  padding: 10px 10px;
 }
 
-.authBox input::placeholder {
-  color: #ccc;
-}
-
-.authBox button {
+/* The toggle button */
+.authBox > button:first-child {
+  width: 100%;
+  margin-bottom: 3px;
   background: #1457a9;
   color: white;
   border: none;
-  padding: 6px 10px;
+  padding: 8px 10px;
   cursor: pointer;
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
-.authBox button:hover {
+.authBox > button:first-child:hover {
   background: #555;
 }
 
-.authBox > button:first-child {
-  width: 100%;
-  margin-bottom: 3px;
+/* Inputs & other buttons visible only when expanded */
+.authBox > *:not(:first-child) {
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-.authBox > *:not(:first-child) {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
+/* Hide inputs and buttons when collapsed */
+.authBox:not(.expanded) > *:not(:first-child) {
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
 }
+
 
 #leaderboardMenu {
   position: absolute;
