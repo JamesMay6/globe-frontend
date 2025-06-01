@@ -1,26 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const viewerRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
 
-  // Round lat/lon to 3 decimal places
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
-  // Create rectangle geometry for a grid cell
   const drawDeletedCell = (viewer, lat, lon) => {
-  const cellWidth = 0.001;
-  const padding = 0.00005; // slight overlap (~5 meters)
+    const cellWidth = 0.001;
+    const padding = 0.00005;
 
-  const rect = Cesium.Rectangle.fromDegrees(
-    lon - padding,
-    lat - padding,
-    lon + cellWidth + padding,
-    lat + cellWidth + padding
-  );
+    const rect = Cesium.Rectangle.fromDegrees(
+      lon - padding,
+      lat - padding,
+      lon + cellWidth + padding,
+      lat + cellWidth + padding
+    );
 
     viewer.entities.add({
       rectangle: {
@@ -31,7 +31,6 @@ function App() {
     });
   };
 
-  // Load deleted cells within current view
   const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
     if (!rect) return;
@@ -49,7 +48,16 @@ function App() {
     cells.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
   };
 
-  // Convert click to lat/lon
+  const fetchTotals = async () => {
+    try {
+      const res = await fetch(`${API_URL}/total-deletions`);
+      const data = await res.json();
+      setTotals(data);
+    } catch (e) {
+      console.error("Error fetching totals:", e);
+    }
+  };
+
   const handleClick = async (viewer, movement) => {
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
@@ -59,18 +67,16 @@ function App() {
     const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
     const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-    // Post to backend
     await fetch(`${API_URL}/delete`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lat, lon }),
     });
 
-    // Draw cell immediately
     drawDeletedCell(viewer, lat, lon);
-
-    // Force a render so the rectangle appears right away
     viewer.scene.requestRender();
+
+    fetchTotals(); // Update after each click
   };
 
   useEffect(() => {
@@ -94,13 +100,12 @@ function App() {
       viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
+      fetchTotals();
 
-      // Refresh deleted cells on camera move end
       viewer.camera.moveEnd.addEventListener(() => {
         fetchDeletedCells(viewer);
       });
 
-      // Click handler
       const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((movement) => {
         handleClick(viewer, movement);
@@ -114,7 +119,26 @@ function App() {
     };
   }, []);
 
-  return <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />;
+  return (
+    <>
+      <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
+
+      <div id="statsMenu">
+        <button onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? "Hide Stats ▲" : "Show Stats ▼"}
+        </button>
+
+        {menuOpen && (
+          <div className="statsContent">
+            <div><strong>Total Deleted:</strong> {totals.total.toLocaleString()}</div>
+            <div><strong>Expected Total:</strong> {totals.expected_total.toLocaleString()}</div>
+            <div><strong>% Destroyed:</strong> {totals.percentage?.toFixed(6)}%</div>
+          </div>
+        )}
+      </div>
+
+    </>
+  );
 }
 
 export default App;
