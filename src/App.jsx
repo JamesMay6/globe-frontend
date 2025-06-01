@@ -6,31 +6,29 @@ import { createClient } from "@supabase/supabase-js";
 const API_URL = import.meta.env.VITE_API_URL;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function App() {
   const viewerRef = useRef(null);
+  const [user, setUser] = useState(null);
+  const [authMode, setAuthMode] = useState("login"); // or "register"
+  const [form, setForm] = useState({ username: "", password: "" });
   const [menuOpen, setMenuOpen] = useState(false);
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
-  const [user, setUser] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [authMode, setAuthMode] = useState("login"); // or "register"
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
+
+  const fakeEmail = (username) => `${username}@delete.theearth`;
 
   const drawDeletedCell = (viewer, lat, lon) => {
     const cellWidth = 0.001;
     const padding = 0.00005;
-
     const rect = Cesium.Rectangle.fromDegrees(
       lon - padding,
       lat - padding,
       lon + cellWidth + padding,
       lat + cellWidth + padding
     );
-
     viewer.entities.add({
       rectangle: {
         coordinates: rect,
@@ -53,7 +51,6 @@ function App() {
       `${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
     );
     const cells = await response.json();
-
     cells.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
   };
 
@@ -68,17 +65,7 @@ function App() {
   };
 
   const handleClick = async (viewer, movement) => {
-    if (!user) {
-      alert("You must be logged in to delete a cell.");
-      return;
-    }
-
-    const session = await supabase.auth.getSession();
-    const token = session.data?.session?.access_token;
-    if (!token) {
-      alert("Authentication token missing.");
-      return;
-    }
+    if (!user) return;
 
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
@@ -92,7 +79,7 @@ function App() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${user.access_token}`,
       },
       body: JSON.stringify({ lat, lon }),
     });
@@ -104,13 +91,6 @@ function App() {
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
-
-    const loadUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user || null);
-    };
-
-    loadUser();
 
     (async () => {
       const terrainProvider = await Cesium.createWorldTerrainAsync();
@@ -147,41 +127,90 @@ function App() {
         viewerRef.current.destroy();
       }
     };
-  }, []);
+  }, [user]);
 
   const handleAuth = async () => {
-    if (authMode === "login") {
-      const { error, data } = await supabase.auth.signInWithPassword({
+    const email = fakeEmail(form.username);
+    if (authMode === "register") {
+      const { data, error } = await supabase.auth.signUp({
         email,
-        password,
+        password: form.password,
       });
-      if (error) {
-        alert("Login failed: " + error.message);
-      } else {
-        setUser(data.user);
-      }
+      if (error) return alert(error.message);
+      setUser(data.session);
     } else {
-      const { error, data } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password: form.password,
       });
-      if (error) {
-        alert("Registration failed: " + error.message);
-      } else {
-        alert("Registration successful! Please check your email.");
-        setUser(data.user);
-      }
+      if (error) return alert("Login failed: " + error.message);
+      setUser(data.session);
     }
+
+    // After successful signup
+    const user = signUpResponse.data.user;
+
+    if (user) {
+      // Create profile with username and user ID
+      const res = await fetch(`${API_URL}/create-profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${signUpResponse.data.session.access_token}`,
+        },
+        body: JSON.stringify({ id: user.id, username }),
+      });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    alert("Error creating profile: " + errText);
+    return;
+  }
+
+  alert("Registration successful!");
+}
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
   };
+  
 
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
+
+      {!user && (
+        <div className="authBox">
+          <h2>{authMode === "login" ? "Login" : "Register"}</h2>
+          <input
+            type="text"
+            placeholder="Username"
+            value={form.username}
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          <button onClick={handleAuth}>
+            {authMode === "login" ? "Log In" : "Register"}
+          </button>
+          <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
+            Switch to {authMode === "login" ? "Register" : "Login"}
+          </button>
+        </div>
+      )}
+
+      {user && (
+        <div className="authBox">
+          <div>Welcome, {form.username}</div>
+          <button onClick={handleLogout}>Log Out</button>
+        </div>
+      )}
 
       <div id="statsMenu">
         <button onClick={() => setMenuOpen(!menuOpen)}>
@@ -193,57 +222,6 @@ function App() {
             <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
             <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
             <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
-          </div>
-        )}
-      </div>
-
-      <div id="authBox">
-        {user ? (
-          <div>
-            <div>Logged in as: <strong>{user.email}</strong></div>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        ) : (
-          <div className="authForm">
-            <h3>{authMode === "login" ? "Login" : "Register"}</h3>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button onClick={handleAuth}>
-              {authMode === "login" ? "Login" : "Register"}
-            </button>
-            <p style={{ marginTop: "5px", fontSize: "0.9em" }}>
-              {authMode === "login" ? (
-                <>
-                  No account?{" "}
-                  <span
-                    onClick={() => setAuthMode("register")}
-                    style={{ cursor: "pointer", color: "blue" }}
-                  >
-                    Register here
-                  </span>
-                </>
-              ) : (
-                <>
-                  Have an account?{" "}
-                  <span
-                    onClick={() => setAuthMode("login")}
-                    style={{ cursor: "pointer", color: "blue" }}
-                  >
-                    Login here
-                  </span>
-                </>
-              )}
-            </p>
           </div>
         )}
       </div>
