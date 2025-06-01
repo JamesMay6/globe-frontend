@@ -276,10 +276,10 @@ function App() {
         {leaderboardOpen && (
           <div className="leaderboardContent">
             <ol>
-              {topUsers.map(({ username, clicks_total }, index) => (
+              {topUsers.map(({ username, clicks_used }, index) => (
                 <li key={username} className={`rank-${index + 1}`}>
                   <span className="username">{username}</span>
-                  <span className="score">{clicks_total.toLocaleString()}</span>
+                  <span className="score">{clicks_used.toLocaleString()}</span>
                 </li>
               ))}
             </ol>
