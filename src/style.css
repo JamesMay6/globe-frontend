@@ -107,7 +107,7 @@ html, body, #cesiumContainer {
   position: absolute;
   left: 10px;
   top: 70px; /* default */
-  max-width: 250px;
+  width: 200px;
   background: #222;
   color: white;
   border-radius: 8px;
@@ -136,6 +136,7 @@ html, body, #cesiumContainer {
   line-height: 1.6;
   max-height: 350px;
   overflow-y: auto;
+  margin-top:5px;
 }
 
 .leaderboardContent ol {
