@@ -46,7 +46,7 @@ html, body, #cesiumContainer {
 
 .authBox {
   position: absolute;
-  top: 30px;
+  top: 45px;
   right: 10px; /* space from right edge so it doesn't overlap search icon */
   background: #222; /* same dark background as stats */
   color: white;
