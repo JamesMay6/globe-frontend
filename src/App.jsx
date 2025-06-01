@@ -65,8 +65,10 @@ function App() {
   };
 
   const handleClick = async (viewer, movement) => {
-    if (!user) return;
-
+  if (!user) {
+    alert("You need to log in to delete cells.");
+    return;
+  }
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
     if (!cartesian) return;
