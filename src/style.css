@@ -95,7 +95,7 @@ html, body, #cesiumContainer {
 
 #leaderboardMenu {
   position: absolute;
-  top: 80px; /* below your stats menu */
+  top: 150px; /* below your stats menu */
   left: 10px;
   z-index: 20;
   background: #222;
@@ -126,7 +126,7 @@ html, body, #cesiumContainer {
 }
 
 .leaderboardContent ol {
-  padding-left: 20px;
+  padding-left: 5px;
   margin: 0;
 }
 
