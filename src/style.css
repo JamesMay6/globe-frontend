@@ -58,7 +58,7 @@ html, body, #cesiumContainer {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   z-index: 1000;
   max-width: 250px; /* same max width as stats box */
   font-family: sans-serif;
@@ -80,7 +80,7 @@ html, body, #cesiumContainer {
 }
 
 .authBox button {
-  background: #444;
+  background: #1457a9;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -95,7 +95,7 @@ html, body, #cesiumContainer {
 
 .authBox > button:first-child {
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 3px;
 }
 
 .authBox > *:not(:first-child) {
