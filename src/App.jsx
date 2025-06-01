@@ -130,9 +130,9 @@ function App() {
 
         {menuOpen && (
           <div className="statsContent">
-            <div><strong>Total Deleted:</strong> {totals.total.toLocaleString()}</div>
-            <div><strong>Expected Total:</strong> {totals.expected_total.toLocaleString()}</div>
-            <div><strong>% Destroyed:</strong> {totals.percentage?.toFixed(6)}%</div>
+            <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
+            <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
+            <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
           </div>
         )}
       </div>
