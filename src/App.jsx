@@ -280,9 +280,9 @@ function showMessage(text, duration = 2000) {
 
     {user && (
       <div className="authBox loggedIn">
-        <div>Hi {form.username}</div>
-        <button onClick={handleLogout}>Log Out</button>
-      </div>
+      <span>Hi {form.username}</span>
+      <button onClick={handleLogout}>Log Out</button>
+    </div>
     )}
 
       <div id="statsMenu">

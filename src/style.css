@@ -122,6 +122,11 @@ html, body, #cesiumContainer {
   gap: 10px;
 }
 
+.authBox.loggedIn > button {
+  width: auto;      /* prevent full width */
+  padding: 5px 10px;
+}
+
 #leaderboardMenu {
   position: absolute;
   left: 10px;
