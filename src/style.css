@@ -93,6 +93,16 @@ html, body, #cesiumContainer {
   background: #555;
 }
 
+.authBox > button:first-child {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.authBox > *:not(:first-child) {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
 #leaderboardMenu {
   position: absolute;
   left: 10px;
