@@ -122,6 +122,12 @@ html, body, #cesiumContainer {
   gap: 10px;
 }
 
+.authBox.loggedIn > * {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
 .authBox.loggedIn > button {
   width: auto;      /* prevent full width */
   padding: 5px 10px;
