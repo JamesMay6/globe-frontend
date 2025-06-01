@@ -16,7 +16,7 @@ html, body, #cesiumContainer {
 .cesium-infoBox-title {
     display: none !important;
 }
-.cesium-viewer-geocoderContainer .cesium-geocoder-input {
+.cesium-viewer-geocoderContainer .cesium-geocoder-input .cesium-viewer-geocoderContainer:hover {
   width: 170px;
 }
 
