@@ -226,45 +226,43 @@ function App() {
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
 
-      {/* Show toggle button when not logged in */}
       {!user && (
-        <div className="authBox">
-          <button onClick={() => setAuthOpen(!authOpen)}>
-            {authOpen ? "Hide Login / Register ▲" : "Show Login / Register ▼"}
-          </button>
-          {authOpen && (
-            <>
-              
-              <input
-                type="text"
-                placeholder="Username"
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
-              <button onClick={handleAuth}>
-                {authMode === "login" ? "Log In" : "Register"}
-              </button>
-              <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-                Switch to {authMode === "login" ? "Register" : "Login"}
-              </button>
-            </>
-          )}
-        </div>
-      )}
+      <div className={`authBox ${authOpen ? "expanded" : ""}`}>
+        <button onClick={() => setAuthOpen(!authOpen)}>
+          {authOpen ? "Hide Login/Register" : "Show Login/Register"}
+        </button>
 
-      {/* Show simple greeting & logout if user logged in */}
-      {user && (
-        <div className="authBox">
-          <div>Hi {form.username}</div>
-          <button onClick={handleLogout}>Log Out</button>
-        </div>
-      )}
+        {authOpen && (
+          <>
+            <input
+              type="text"
+              placeholder="Username"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            <button onClick={handleAuth}>
+              {authMode === "login" ? "Log In" : "Register"}
+            </button>
+            <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
+              Switch to {authMode === "login" ? "Register" : "Login"}
+            </button>
+          </>
+        )}
+      </div>
+    )}
+
+    {user && (
+      <div className="authBox" style={{ bottom: "20px", left: "50%", transform: "translateX(-50%)" }}>
+        <div>Hi {form.username}</div>
+        <button onClick={handleLogout}>Log Out</button>
+      </div>
+    )}
 
       <div id="statsMenu">
       <button onClick={() => setStatsOpen(!statsOpen)}>
