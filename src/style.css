@@ -17,7 +17,7 @@ html, body, #cesiumContainer {
     display: none !important;
 }
 .cesium-viewer-geocoderContainer .cesium-geocoder-input .cesium-viewer-geocoderContainer:hover .cesium-geocoder-input-wide .cesium-geocoder-input:focus{
-  width: 170pximportant; /* or whatever width you want */
+  width: 170px !important; /* or whatever width you want */
   max-width: none !important;
 }
 .cesium-viewer-cesiumWidgetContainer svg[width="64"][height="64"] {

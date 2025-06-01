@@ -18,8 +18,13 @@ function App() {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-
+if (isMobile) {
+  const controller = viewer.scene.screenSpaceCameraController;
+  controller.zoomFactor = 15.0;        // Faster zoom-in/out
+  controller.inertiaZoom = 0.9;        // Smooth momentum
+}
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -98,7 +103,7 @@ function showMessage(text, duration = 2000) {
   message.style.color = "#fff";
   message.style.padding = "10px 20px";
   message.style.borderRadius = "8px";
-  message.style.boxShadow = "0 2px 10px rgba(0,0,0,0.5)";
+  message.style.boxShadow = "0 2px 10px rgba(68, 91, 193, 0.5)";
   message.style.zIndex = "9999";
   message.style.fontFamily = "sans-serif";
   message.style.opacity = "1";
@@ -140,7 +145,7 @@ function showMessage(text, duration = 2000) {
     viewer.scene.requestRender();
     fetchTotals();
     
-  showMessage("Cell deleted.");
+  showMessage("Coordinates Deleted!");
   };
 
   useEffect(() => {
