@@ -151,6 +151,12 @@ function showMessage(text, duration = 2000) {
       viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
       viewer.trackedEntity = undefined;
 
+      viewer.geocoder.viewModel.searchText = '';
+      const input = document.querySelector('.cesium-geocoder-input input');
+      if (input) {
+        input.placeholder = 'Search location'; // Your custom text
+      }
+
       if (isMobile) {
         const controller = viewer.scene.screenSpaceCameraController;
         controller.zoomFactor = 17.0;        // Faster zoom-in/out
