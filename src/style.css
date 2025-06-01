@@ -6,12 +6,15 @@ html, body, #cesiumContainer {
   overflow: hidden;
 }
 
-/* Hide Cesium credits and baseLayerPicker */
+/* Hide Cesium Specifics */
 .cesium-widget-credits {
   display: none !important;
 }
 .cesium-baseLayerPicker-selected {
   visibility: hidden;
+}
+.cesium-infoBox-title {
+    display: none !important;
 }
 
 /* Collapsible stats menu */
