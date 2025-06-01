@@ -17,7 +17,7 @@ function App() {
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
-  const [statsOpen, setStatsOpen] = React.useState(false);
+  const [statsOpen, setStatsOpen] = useState(false);
 
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
