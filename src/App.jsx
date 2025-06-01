@@ -17,6 +17,8 @@ function App() {
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [statsOpen, setStatsOpen] = React.useState(false);
+
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -255,12 +257,11 @@ function App() {
       )}
 
       <div id="statsMenu">
-        <button onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? "Hide Stats ▲" : "Show Stats ▼"}
-        </button>
-
-        {menuOpen && (
-          <div className="statsContent">
+      <button onClick={() => setStatsOpen(!statsOpen)}>
+        {statsOpen ? "Hide Stats" : "Show Stats"}
+      </button>
+      {statsOpen && (
+            <div className="statsContent">
             <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
             <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
             <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
@@ -268,7 +269,7 @@ function App() {
         )}
       </div>
 
-      <div id="leaderboardMenu">
+      <div id="leaderboardMenu" className={statsOpen ? "shifted" : ""}>
         <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
           {leaderboardOpen ? "Hide Leaderboard ▲" : "Show Leaderboard ▼"}
         </button>
