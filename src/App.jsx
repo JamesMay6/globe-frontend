@@ -154,11 +154,15 @@ function showMessage(text, duration = 2000) {
         controller.inertiaZoom = 0.9;        // Smooth momentum
       }
 
-      viewer.geocoder.viewModel.searchText = '';
-      const input = document.querySelector('.cesium-geocoder-input input');
-      if (input) {
-        input.placeholder = 'Search location'; // Your custom text
-      }
+      // Wait until Cesium inserts the geocoder DOM
+      setTimeout(() => {
+        const input = document.querySelector('.cesium-geocoder-input input');
+        if (input) {
+          input.placeholder = "Search";
+        } else {
+          console.warn("Geocoder input not found");
+        }
+      }, 500);  // Delay to allow Cesium to finish rendering
 
       viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
       viewer.trackedEntity = undefined;
