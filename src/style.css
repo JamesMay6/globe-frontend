@@ -16,6 +16,9 @@ html, body, #cesiumContainer {
 .cesium-infoBox-title {
     display: none !important;
 }
+.cesium-viewer-geocoderContainer .cesium-geocoder-input {
+  width: 170px;
+}
 
 /* Collapsible stats menu */
 #statsMenu {
@@ -48,42 +51,42 @@ html, body, #cesiumContainer {
 }
 .authBox {
   position: fixed;
-  bottom: 20px;        /* distance from bottom */
-  left: 50%;           /* center horizontally */
+  bottom: 20px;
+  left: 50%;
   transform: translateX(-50%);
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  padding: 10px;               /* match stats padding */
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
   gap: 6px;
   z-index: 1000;
-  width: 250px;        /* wider to give more space */
+  width: 200px;                /* same width as stats */
   font-family: sans-serif;
   font-size: 14px;
-  max-height: 40px;    /* collapsed height for toggle button */
+  max-height: 40px;
   overflow: hidden;
   transition: max-height 0.4s ease;
 }
 
 /* Expanded state */
 .authBox.expanded {
-  max-height: 400px;   /* enough height to show all content */
-  padding: 10px 10px;
+  max-height: 400px;
+  padding: 10px;               /* keep consistent padding */
 }
 
-/* The toggle button */
+/* Toggle button matches #statsMenu button style */
 .authBox > button:first-child {
-  width: 100%;
-  margin-bottom: 3px;
-  background: #1457a9;
+  background: #444;
   color: white;
   border: none;
-  padding: 8px 10px;
-  cursor: pointer;
+  padding: 5px 5px;
   border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  width: 100%;
   transition: background 0.2s ease;
 }
 
@@ -97,12 +100,13 @@ html, body, #cesiumContainer {
   transition: opacity 0.3s ease;
 }
 
-/* Hide inputs and buttons when collapsed */
+/* Hide inputs/buttons when collapsed */
 .authBox:not(.expanded) > *:not(:first-child) {
   opacity: 0;
   pointer-events: none;
   user-select: none;
 }
+
 
 
 #leaderboardMenu {
