@@ -230,11 +230,11 @@ function App() {
       {!user && (
         <div className="authBox">
           <button onClick={() => setAuthOpen(!authOpen)}>
-            {authOpen ? "Hide Login/Register" : "Show Login/Register"}
+            {authOpen ? "Hide Login / Register ▼" : "Show Login / Register ▲"}
           </button>
           {authOpen && (
             <>
-              <h2>{authMode === "login" ? "Login" : "Register"}</h2>
+              
               <input
                 type="text"
                 placeholder="Username"
