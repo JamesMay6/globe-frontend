@@ -54,7 +54,7 @@ html, body, #cesiumContainer {
   background: #222; /* same dark background as stats */
   color: white;
   border-radius: 8px;
-  padding: 12px;
+  padding: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -114,7 +114,7 @@ html, body, #cesiumContainer {
   padding: 5px 5px;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   width: 100%;
 }
 
@@ -126,7 +126,6 @@ html, body, #cesiumContainer {
 }
 
 .leaderboardContent ol {
-  padding-left: 5px;
   margin: 0;
 }
 
