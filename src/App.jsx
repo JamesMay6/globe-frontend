@@ -86,6 +86,32 @@ function App() {
   }
 }, [leaderboardOpen]);
 
+
+function showMessage(text, duration = 2000) {
+  const message = document.createElement("div");
+  message.textContent = text;
+  message.style.position = "fixed";
+  message.style.bottom = "100px";
+  message.style.left = "50%";
+  message.style.transform = "translateX(-50%)";
+  message.style.background = "#222";
+  message.style.color = "#fff";
+  message.style.padding = "10px 20px";
+  message.style.borderRadius = "8px";
+  message.style.boxShadow = "0 2px 10px rgba(0,0,0,0.5)";
+  message.style.zIndex = "9999";
+  message.style.fontFamily = "sans-serif";
+  message.style.opacity = "1";
+  message.style.transition = "opacity 0.5s ease";
+
+  document.body.appendChild(message);
+
+  setTimeout(() => {
+    message.style.opacity = "0";
+    setTimeout(() => message.remove(), 500);
+  }, duration);
+}
+
 //HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
   if (!user) {
@@ -94,6 +120,7 @@ function App() {
   }
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+    viewer.trackedEntity = undefined;
     if (!cartesian) return;
 
     const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
@@ -112,6 +139,8 @@ function App() {
     drawDeletedCell(viewer, lat, lon);
     viewer.scene.requestRender();
     fetchTotals();
+    
+  showMessage("Cell deleted.");
   };
 
   useEffect(() => {
