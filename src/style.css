@@ -95,8 +95,8 @@ html, body, #cesiumContainer {
 
 #leaderboardMenu {
   position: absolute;
-  right: 10px;
-  top: 10px; /* default */
+  left: 10px;
+  top: 50px; /* default */
   width: 250px;
   background: #222;
   color: white;
