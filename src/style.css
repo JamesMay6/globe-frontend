@@ -16,12 +16,14 @@ html, body, #cesiumContainer {
 .cesium-infoBox-title {
     display: none !important;
 }
-.cesium-viewer-geocoderContainer .cesium-geocoder-input .cesium-viewer-geocoderContainer:hover .cesium-geocoder-input-wide .cesium-geocoder-input:focus{
-  width: 170px !important; /* or whatever width you want */
+.cesium-viewer-geocoderContainer .cesium-geocoder-input {
+  width: 170px !important;
   max-width: none !important;
 }
-.cesium-viewer-cesiumWidgetContainer svg[width="64"][height="64"] {
-  display: none !important;
+
+.cesium-viewer-geocoderContainer .cesium-geocoder-input:focus {
+  width: 170px !important;
+  max-width: none !important;
 }
 
 /* Collapsible stats menu */
