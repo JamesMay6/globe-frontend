@@ -162,7 +162,7 @@ function showMessage(text, duration = 2000) {
         } else {
           console.warn("Geocoder input not found");
         }
-      }, 500);  // Delay to allow Cesium to finish rendering
+      }, 5000);  // Delay to allow Cesium to finish rendering
 
       viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
       viewer.trackedEntity = undefined;
