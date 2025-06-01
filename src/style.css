@@ -16,7 +16,7 @@ html, body, #cesiumContainer {
 .cesium-infoBox-title {
     display: none !important;
 }
-.cesium-viewer-geocoderContainer .cesium-geocoder-input .cesium-viewer-geocoderContainer:hover {
+.cesium-viewer-geocoderContainer .cesium-geocoder-input .cesium-viewer-geocoderContainer:hover .cesium-geocoder-input-wide .cesium-geocoder-input:focus{
   width: 170px;
 }
 
@@ -57,7 +57,7 @@ html, body, #cesiumContainer {
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 10px;               /* match stats padding */
+  padding: 5px;               /* match stats padding */
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
