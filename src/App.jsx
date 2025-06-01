@@ -148,6 +148,9 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
+      viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+      viewer.trackedEntity = undefined;
+
       if (isMobile) {
         const controller = viewer.scene.screenSpaceCameraController;
         controller.zoomFactor = 17.0;        // Faster zoom-in/out
