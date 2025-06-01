@@ -129,7 +129,7 @@ html, body, #cesiumContainer {
 }
 
 .leaderboardContent ol {
-  padding-left:1px;
+  padding: 2px 4px;
   margin: 0;
 }
 

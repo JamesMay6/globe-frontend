@@ -258,7 +258,7 @@ function App() {
 
       <div id="statsMenu">
       <button onClick={() => setStatsOpen(!statsOpen)}>
-        {statsOpen ? "Hide Stats" : "Show Stats"}
+        {statsOpen ? "Hide Stats ▲" : "Show Stats ▲"}
       </button>
       {statsOpen && (
             <div className="statsContent">
