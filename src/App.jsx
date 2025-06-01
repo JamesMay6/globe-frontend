@@ -257,17 +257,26 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
   
-const authBox = document.querySelector(".authBox");
-const inputs = authBox.querySelectorAll("input");
+useEffect(() => {
+  const authBox = document.querySelector(".authBox");
+  if (!authBox) return;
 
-inputs.forEach(input => {
-  input.addEventListener("focus", () => {
-    authBox.style.bottom = "200px"; // raise it above keyboard
+  const inputs = authBox.querySelectorAll("input");
+
+  inputs.forEach(input => {
+    const handleFocus = () => authBox.style.bottom = "200px";
+    const handleBlur = () => authBox.style.bottom = "20px";
+
+    input.addEventListener("focus", handleFocus);
+    input.addEventListener("blur", handleBlur);
+
+    // Cleanup
+    return () => {
+      input.removeEventListener("focus", handleFocus);
+      input.removeEventListener("blur", handleBlur);
+    };
   });
-  input.addEventListener("blur", () => {
-    authBox.style.bottom = "20px"; // return to normal
-  });
-});
+}, []);
 
   return (
     <>
