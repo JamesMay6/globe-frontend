@@ -95,18 +95,21 @@ html, body, #cesiumContainer {
 
 #leaderboardMenu {
   position: absolute;
-  top: 150px; /* below your stats menu */
-  left: 10px;
-  z-index: 20;
+  right: 10px;
+  top: 10px; /* default */
+  width: 250px;
   background: #222;
   color: white;
   border-radius: 8px;
   padding: 10px;
   font-family: sans-serif;
-  max-width: 250px;
-  user-select: none;
+  transition: top 0.3s ease;
+  z-index: 10;
 }
 
+#leaderboardMenu.shifted {
+  top: 150px; /* or whatever the height + margin of your stats menu is */
+}
 #leaderboardMenu button {
   background: #444;
   color: white;
