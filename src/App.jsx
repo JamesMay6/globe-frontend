@@ -89,19 +89,7 @@ function App() {
 function showMessage(text, duration = 2000) {
   const message = document.createElement("div");
   message.textContent = text;
-  message.style.position = "fixed";
-  message.style.bottom = "100px";
-  message.style.left = "50%";
-  message.style.transform = "translateX(-50%)";
-  message.style.background = "#222";
-  message.style.color = "#fff";
-  message.style.padding = "10px 20px";
-  message.style.borderRadius = "8px";
-  message.style.boxShadow = "0 2px 10px rgba(68, 91, 193, 0.5)";
-  message.style.zIndex = "9999";
-  message.style.fontFamily = "sans-serif";
-  message.style.opacity = "1";
-  message.style.transition = "opacity 0.5s ease";
+  message.className = "toastMessage";
 
   document.body.appendChild(message);
 
@@ -162,7 +150,7 @@ function showMessage(text, duration = 2000) {
 
       if (isMobile) {
         const controller = viewer.scene.screenSpaceCameraController;
-        controller.zoomFactor = 15.0;        // Faster zoom-in/out
+        controller.zoomFactor = 17.0;        // Faster zoom-in/out
         controller.inertiaZoom = 0.9;        // Smooth momentum
       }
       viewerRef.current = viewer;
