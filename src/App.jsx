@@ -1,13 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+import { createClient } from "@supabase/supabase-js";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function App() {
   const viewerRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
+  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authMode, setAuthMode] = useState("login"); // or "register"
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -59,6 +68,18 @@ function App() {
   };
 
   const handleClick = async (viewer, movement) => {
+    if (!user) {
+      alert("You must be logged in to delete a cell.");
+      return;
+    }
+
+    const session = await supabase.auth.getSession();
+    const token = session.data?.session?.access_token;
+    if (!token) {
+      alert("Authentication token missing.");
+      return;
+    }
+
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
     if (!cartesian) return;
@@ -69,18 +90,27 @@ function App() {
 
     await fetch(`${API_URL}/delete`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
       body: JSON.stringify({ lat, lon }),
     });
 
     drawDeletedCell(viewer, lat, lon);
     viewer.scene.requestRender();
-
-    fetchTotals(); // Update after each click
+    fetchTotals();
   };
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
+
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+
+    loadUser();
 
     (async () => {
       const terrainProvider = await Cesium.createWorldTerrainAsync();
@@ -119,6 +149,36 @@ function App() {
     };
   }, []);
 
+  const handleAuth = async () => {
+    if (authMode === "login") {
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        alert("Login failed: " + error.message);
+      } else {
+        setUser(data.user);
+      }
+    } else {
+      const { error, data } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) {
+        alert("Registration failed: " + error.message);
+      } else {
+        alert("Registration successful! Please check your email.");
+        setUser(data.user);
+      }
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
@@ -137,6 +197,56 @@ function App() {
         )}
       </div>
 
+      <div id="authBox">
+        {user ? (
+          <div>
+            <div>Logged in as: <strong>{user.email}</strong></div>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        ) : (
+          <div className="authForm">
+            <h3>{authMode === "login" ? "Login" : "Register"}</h3>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={handleAuth}>
+              {authMode === "login" ? "Login" : "Register"}
+            </button>
+            <p style={{ marginTop: "5px", fontSize: "0.9em" }}>
+              {authMode === "login" ? (
+                <>
+                  No account?{" "}
+                  <span
+                    onClick={() => setAuthMode("register")}
+                    style={{ cursor: "pointer", color: "blue" }}
+                  >
+                    Register here
+                  </span>
+                </>
+              ) : (
+                <>
+                  Have an account?{" "}
+                  <span
+                    onClick={() => setAuthMode("login")}
+                    style={{ cursor: "pointer", color: "blue" }}
+                  >
+                    Login here
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+        )}
+      </div>
     </>
   );
 }
