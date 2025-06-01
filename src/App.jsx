@@ -148,25 +148,14 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
+      viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+      viewer.trackedEntity = undefined;
+
       if (isMobile) {
         const controller = viewer.scene.screenSpaceCameraController;
         controller.zoomFactor = 17.0;        // Faster zoom-in/out
         controller.inertiaZoom = 0.9;        // Smooth momentum
       }
-
-      // Wait until Cesium inserts the geocoder DOM
-      setTimeout(() => {
-        const input = document.querySelector('.cesium-geocoder-input input');
-        if (input) {
-          input.placeholder = "Search";
-        } else {
-          console.warn("Geocoder input not found");
-        }
-      }, 5000);  // Delay to allow Cesium to finish rendering
-
-      viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-      viewer.trackedEntity = undefined;
-
       viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
@@ -255,6 +244,18 @@ function showMessage(text, duration = 2000) {
     await supabase.auth.signOut();
     setUser(null);
   };
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    const input = document.querySelector('.cesium-geocoder-input input');
+    if (input) {
+      input.placeholder = "Search";
+      clearInterval(interval);
+    }
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
   
 const authBox = document.querySelector(".authBox");
 const inputs = authBox.querySelectorAll("input");
