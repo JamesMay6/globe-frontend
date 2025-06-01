@@ -20,12 +20,6 @@ function App() {
   const [authOpen, setAuthOpen] = useState(false);
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-if (isMobile) {
-  const controller = viewer.scene.screenSpaceCameraController;
-  controller.zoomFactor = 15.0;        // Faster zoom-in/out
-  controller.inertiaZoom = 0.9;        // Smooth momentum
-}
-
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
   const fakeEmail = (username) => `${username}@delete.theearth`;
@@ -166,6 +160,11 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
+      if (isMobile) {
+        const controller = viewer.scene.screenSpaceCameraController;
+        controller.zoomFactor = 15.0;        // Faster zoom-in/out
+        controller.inertiaZoom = 0.9;        // Smooth momentum
+      }
       viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
@@ -292,7 +291,7 @@ function showMessage(text, duration = 2000) {
     )}
 
     {user && (
-      <div className="authBox" style={{ bottom: "20px", left: "50%", transform: "translateX(-50%)" }}>
+      <div className="authBox loggedIn">
         <div>Hi {form.username}</div>
         <button onClick={handleLogout}>Log Out</button>
       </div>

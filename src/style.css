@@ -53,6 +53,7 @@ html, body, #cesiumContainer {
   font-size: 14px;
   line-height: 1.6;
 }
+
 .authBox {
   position: fixed;
   bottom: 20px;
@@ -111,7 +112,13 @@ html, body, #cesiumContainer {
   user-select: none;
 }
 
-
+.authBox.loggedIn {
+  max-height: none;   /* Allow full height */
+  overflow: visible;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
 
 #leaderboardMenu {
   position: absolute;
