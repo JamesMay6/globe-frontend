@@ -130,46 +130,65 @@ function App() {
   }, [user]);
 
   const handleAuth = async () => {
-    const email = fakeEmail(form.username);
+  const email = fakeEmail(form.username);
+
+  try {
     if (authMode === "register") {
+      // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
         password: form.password,
       });
-      if (error) return alert(error.message);
-      setUser(data.session);
-    } else {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password: form.password,
-      });
-      if (error) return alert("Login failed: " + error.message);
-      setUser(data.session);
-    }
+      if (error) {
+        alert(`Registration failed: ${error.message}`);
+        return;
+      }
+      if (!data.session || !data.user) {
+        alert("Registration succeeded but no session or user returned.");
+        return;
+      }
 
-    // After successful signup
-    const user = signUpResponse.data.user;
+      setUser(data.session);
 
-    if (user) {
-      // Create profile with username and user ID
+      // Call your API to create profile
       const res = await fetch(`${API_URL}/create-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${signUpResponse.data.session.access_token}`,
+          Authorization: `Bearer ${data.session.access_token}`,
         },
-        body: JSON.stringify({ id: user.id, username }),
+        body: JSON.stringify({ id: data.user.id, username: form.username }),
       });
 
-  if (!res.ok) {
-    const errText = await res.text();
-    alert("Error creating profile: " + errText);
-    return;
-  }
+      if (!res.ok) {
+        const errText = await res.text();
+        alert("Error creating profile: " + errText);
+        return;
+      }
 
-  alert("Registration successful!");
-}
-  };
+      alert("Registration successful!");
+    } else {
+      // Login flow
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password: form.password,
+      });
+      if (error) {
+        alert(`Login failed: ${error.message}`);
+        return;
+      }
+      if (!data.session) {
+        alert("Login succeeded but no session returned.");
+        return;
+      }
+
+      setUser(data.session);
+    }
+  } catch (err) {
+    console.error("Authentication error:", err);
+    alert("An unexpected error occurred.");
+  }
+};
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
