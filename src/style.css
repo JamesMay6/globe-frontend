@@ -35,7 +35,7 @@ html, body, #cesiumContainer {
   padding: 5px 5px;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
 }
 
@@ -46,8 +46,8 @@ html, body, #cesiumContainer {
 
 .authBox {
   position: absolute;
-  top: 10px;
-  right: 80px; /* space from right edge so it doesn't overlap search icon */
+  top: 30px;
+  right: 10px; /* space from right edge so it doesn't overlap search icon */
   background: #222; /* same dark background as stats */
   color: white;
   border-radius: 8px;
