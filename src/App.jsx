@@ -156,6 +156,12 @@ function showMessage(text, duration = 2000) {
         controller.zoomFactor = 17.0;        // Faster zoom-in/out
         controller.inertiaZoom = 0.9;        // Smooth momentum
       }
+
+      viewer.geocoder.viewModel.searchText = '';
+      const input = document.querySelector('.cesium-geocoder-input input');
+      if (input) {
+        input.placeholder = 'Search...'; // Your custom text
+      }
       viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
@@ -245,18 +251,6 @@ function showMessage(text, duration = 2000) {
     setUser(null);
   };
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    const input = document.querySelector('.cesium-geocoder-input input');
-    if (input) {
-      input.placeholder = "Search";
-      clearInterval(interval);
-    }
-  }, 1000);
-
-  return () => clearInterval(interval);
-}, []);
-  
 useEffect(() => {
   const authBox = document.querySelector(".authBox");
   if (!authBox) return;
