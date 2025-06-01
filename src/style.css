@@ -49,7 +49,7 @@ html, body, #cesiumContainer {
 
 .authBox {
   position: absolute;
-  top: 45px;
+  top: 55px;
   right: 10px; /* space from right edge so it doesn't overlap search icon */
   background: #222; /* same dark background as stats */
   color: white;
@@ -91,4 +91,80 @@ html, body, #cesiumContainer {
 
 .authBox button:hover {
   background: #555;
+}
+
+#leaderboardMenu {
+  position: absolute;
+  top: 80px; /* below your stats menu */
+  left: 10px;
+  z-index: 20;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: sans-serif;
+  max-width: 250px;
+  user-select: none;
+}
+
+#leaderboardMenu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.leaderboardContent {
+  font-size: 14px;
+  line-height: 1.6;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.leaderboardContent ol {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.leaderboardContent li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+/* Highlight top 3 with medals */
+.rank-1 {
+  background: linear-gradient(90deg, #ffd700, #bfa700);
+  font-weight: bold;
+  color: #333;
+}
+
+.rank-2 {
+  background: linear-gradient(90deg, #c0c0c0, #8f8f8f);
+  font-weight: bold;
+  color: #222;
+}
+
+.rank-3 {
+  background: linear-gradient(90deg, #cd7f32, #8b572a);
+  font-weight: bold;
+  color: #fff;
+}
+
+.username {
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.score {
+  margin-left: 10px;
+  font-variant-numeric: tabular-nums;
 }

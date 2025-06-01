@@ -15,6 +15,8 @@ function App() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [menuOpen, setMenuOpen] = useState(false);
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
+  const [topUsers, setTopUsers] = useState([]);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -64,6 +66,24 @@ function App() {
     }
   };
 
+  //TOP USERS
+  const fetchTopUsers = async () => {
+  try {
+    const res = await fetch(`${API_URL}/top-users`);
+    const data = await res.json();
+    setTopUsers(data);
+  } catch (e) {
+    console.error("Error fetching top users:", e);
+  }
+  };
+
+  useEffect(() => {
+  if (leaderboardOpen) {
+    fetchTopUsers();
+  }
+}, [leaderboardOpen]);
+
+//HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
   if (!user) {
     alert("You need to log in to delete cells.");
@@ -131,6 +151,7 @@ function App() {
     };
   }, [user]);
 
+  //AUTHORISATION USERS
   const handleAuth = async () => {
   const email = fakeEmail(form.username);
 
@@ -243,6 +264,25 @@ function App() {
             <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
             <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
             <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
+          </div>
+        )}
+      </div>
+
+      <div id="leaderboardMenu">
+        <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
+          {leaderboardOpen ? "Hide Leaderboard ▲" : "Show Leaderboard ▼"}
+        </button>
+
+        {leaderboardOpen && (
+          <div className="leaderboardContent">
+            <ol>
+              {topUsers.map(({ username, clicks_total }, index) => (
+                <li key={username} className={`rank-${index + 1}`}>
+                  <span className="username">{username}</span>
+                  <span className="score">{clicks_total.toLocaleString()}</span>
+                </li>
+              ))}
+            </ol>
           </div>
         )}
       </div>
