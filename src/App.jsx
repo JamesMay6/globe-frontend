@@ -284,7 +284,7 @@ function showMessage(text, duration = 2000) {
     {user && (
       <div className="authBox loggedIn">
       <span>Hi {form.username}</span>
-      <button onClick={handleLogout}>Log Out</button>
+      <button class="logout" onClick={handleLogout}>Log Out</button>
     </div>
     )}
 

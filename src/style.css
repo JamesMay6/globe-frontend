@@ -133,6 +133,10 @@ html, body, #cesiumContainer {
   padding: 5px 10px;
 }
 
+.authBox.loggedIn > button.logout {
+  margin-left: auto;
+}
+
 #leaderboardMenu {
   position: absolute;
   left: 10px;
