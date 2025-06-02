@@ -62,6 +62,7 @@ html, body, #cesiumContainer {
   width: 16px !important;           /* Shrink the icon */
   height: 16px !important;
   fill: white !important;
+  display: none;
 }
 
 .cesium-geocoder-searchButton:hover {

@@ -152,7 +152,7 @@ function showMessage(text, duration = 2000) {
       const waitForGeocoderInput = setInterval(() => {
         const input = document.querySelector('.cesium-geocoder-input input');
         if (input) {
-          input.setAttribute("placeholder", "Search anywhere...");
+          input.setAttribute("placeholder", "Search...");
           clearInterval(waitForGeocoderInput);
         }
       }, 100);
@@ -284,7 +284,7 @@ useEffect(() => {
       {!user && (
       <div className={`authBox ${authOpen ? "expanded" : ""}`}>
         <button onClick={() => setAuthOpen(!authOpen)}>
-          {authOpen ? "Hide Login / Register ▼" : "Show Login / Register  ▲"}
+          {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
         </button>
 
         {authOpen && (
@@ -321,7 +321,7 @@ useEffect(() => {
 
       <div id="statsMenu">
       <button onClick={() => setStatsOpen(!statsOpen)}>
-        {statsOpen ? "Hide Stats ▲" : "Show Stats ▼"}
+        {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
       </button>
       {statsOpen && (
             <div className="statsContent">
@@ -334,7 +334,7 @@ useEffect(() => {
 
       <div id="leaderboardMenu" className={statsOpen ? "shifted" : ""}>
         <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
-          {leaderboardOpen ? "Hide Leaderboard ▲" : "Show Leaderboard ▼"}
+          {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
         </button>
 
         {leaderboardOpen && (
