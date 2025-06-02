@@ -170,8 +170,8 @@ function forceRenderOnce(viewer, drawFn) {
         sceneModePicker: false,
         navigationHelpButton: false,
         geocoder: true,
-        requestRenderMode: true,
-        maximumRenderTimeChange: 0,
+        requestRenderMode: false,
+        //maximumRenderTimeChange: 0,
       });
 
       viewer.trackedEntity = undefined;
