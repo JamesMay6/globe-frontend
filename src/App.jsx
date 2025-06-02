@@ -86,10 +86,10 @@ function App() {
 }, [leaderboardOpen]);
 
 
-function showMessage(text, duration = 2000) {
+function showMessage(text, type = "success", duration = 2000) {
   const message = document.createElement("div");
   message.textContent = text;
-  message.className = "toastMessage";
+  message.className = `toastMessage ${type}`; // ← dynamic class for styling
 
   document.body.appendChild(message);
 
