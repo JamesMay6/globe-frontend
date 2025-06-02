@@ -148,20 +148,6 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
-    // Observer to wait for geocoder input to be added
-    const observer = new MutationObserver(() => {
-      const input = document.querySelector('.cesium-geocoder-input input');
-      if (input) {
-        input.setAttribute("placeholder", "Search...");
-        observer.disconnect(); // Stop once updated
-      }
-    });
-
-    const geocoderContainer = document.querySelector('.cesium-geocoder-input');
-    if (geocoderContainer) {
-      observer.observe(geocoderContainer, { childList: true, subtree: true });
-    }
-
       viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
       viewer.trackedEntity = undefined;
 
@@ -172,6 +158,15 @@ function showMessage(text, duration = 2000) {
       }
 
       viewerRef.current = viewer;
+
+      // Wait for Cesium to attach geocoder DOM
+      const waitForGeocoderInput = setInterval(() => {
+        const input = document.querySelector('.cesium-geocoder-input input');
+        if (input) {
+          input.setAttribute("placeholder", "Search...");
+          clearInterval(waitForGeocoderInput);
+        }
+      }, 100);
 
       await fetchDeletedCells(viewer);
       fetchTotals();
