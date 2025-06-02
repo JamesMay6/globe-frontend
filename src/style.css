@@ -312,13 +312,13 @@ button.cesium-infoBox-close {
   bottom: 10px; /* adjust as needed */
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.5px;
+  font-size: 2px;
   z-index: 1000;
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
   max-width: 90vw;
   white-space: nowrap;
+  display:none;
 }
 
 .terms-link-container a {
