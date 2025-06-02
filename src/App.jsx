@@ -115,6 +115,10 @@ function showMessage(text, type = "success", duration = 2000) {
   const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
   const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
+  // ✅ Optimistically render the black cell immediately
+  drawDeletedCell(viewer, lat, lon);
+  viewer.scene.requestRender(); // Force visual update right away
+
   try {
     const res = await fetch(`${API_URL}/delete`, {
       method: "POST",
@@ -129,16 +133,13 @@ function showMessage(text, type = "success", duration = 2000) {
 
     if (data.alreadyDeleted) {
       showMessage("These coordinates have already been deleted.", "error");
-      return;
+    } else {
+      fetchTotals(); // Only refresh stats if new deletion
+      showMessage("Coordinates Deleted!", "success");
     }
-
-    drawDeletedCell(viewer, lat, lon);
-    viewer.scene.requestRender();
-    fetchTotals();
-    showMessage("Coordinates Deleted!");
   } catch (error) {
     console.error("Delete request failed:", error);
-    showMessage("Error deleting coordinates.");
+    showMessage("Error deleting coordinates.", "error");
   }
 };
 
