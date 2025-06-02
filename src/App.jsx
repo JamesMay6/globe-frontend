@@ -279,6 +279,7 @@ function showMessage(text, type = "success", duration = 1000) {
       }
 
       setUser(data.session);
+      fetchUserClicks();
     }
   } catch (err) {
     console.error("Authentication error:", err);
@@ -291,31 +292,30 @@ function showMessage(text, type = "success", duration = 1000) {
     setUser(null);
   };
 
-  const handleBuyClicks = async () => {
-  try {
-    const res = await fetch(`${API_URL}/buy-clicks`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.access_token}`,
-      },
-    });
+  const handleBuyClicks = async (clickAmount) => {
+    try {
+      const res = await fetch(`${API_URL}/buy-clicks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.access_token}`,
+        },
+        body: JSON.stringify({ amount: clickAmount }),
+      });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      showMessage(`Purchase failed: ${errorText}`, "error");
-      return;
+      if (!res.ok) {
+        const errorText = await res.text();
+        showMessage(`Purchase failed: ${errorText}`, "error");
+        return;
+      }
+
+      showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
+      fetchUserClicks();
+    } catch (e) {
+      console.error("Buy clicks failed:", e);
+      showMessage("Buy clicks failed", "error");
     }
-
-    showMessage("Purchased 100 clicks!");
-    fetchUserClicks();
-
-    // Optionally, refresh user state here if you store clicks_total in state
-  } catch (e) {
-    console.error("Buy clicks failed:", e);
-    showMessage("Buy clicks failed", "error");
-  }
-};
+  };
 
 useEffect(() => {
   const authBox = document.querySelector(".authBox");
@@ -382,7 +382,7 @@ useEffect(() => {
 
       <div id="buyMenu">
         <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
-          {buyMenuOpen ? "Show User Menu ▼" : "Hide User Menu ▲"}
+          {buyMenuOpen ? "Hide User Menu ▲" : "Show User Menu ▼"}
         </button>
 
         {buyMenuOpen && (
@@ -390,7 +390,14 @@ useEffect(() => {
             <div className="clicksAvailable">
               <strong>Available Clicks:</strong> {clicksTotal}
             </div>
-            <button onClick={handleBuyClicks}>Buy 100 (£1)</button>
+
+            {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
+              ({ clicks, price }) => (
+                <button key={clicks} onClick={() => handleBuyClicks(clicks)}>
+                  Buy {clicks.toLocaleString()} (£{price})
+                </button>
+              )
+            )}
           </div>
         )}
       </div>
