@@ -99,6 +99,18 @@ function showMessage(text, type = "success", duration = 2000) {
   }, duration);
 }
 
+function forceRenderOnce(viewer, drawFn) {
+  const originalMode = viewer.scene.requestRenderMode;
+  viewer.scene.requestRenderMode = false;
+
+  drawFn();
+
+  viewer.scene.requestRender();
+  viewer.scene.render();
+
+  viewer.scene.requestRenderMode = originalMode;
+}
+
 //HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
   if (!user) {
@@ -131,13 +143,12 @@ function showMessage(text, type = "success", duration = 2000) {
       showMessage("These coordinates have already been deleted.", "error");
       return;
     }
-
-    viewer.scene.requestRenderMode = false;
-    drawDeletedCell(viewer, lat, lon);
-    viewer.scene.requestRender();
-    viewer.scene.render();
-    viewer.scene.requestRenderMode = true;
     
+    forceRenderOnce(viewer, () => {
+      drawDeletedCell(viewer, lat, lon);
+    });
+    
+    //viewer.scene.requestRender();
     fetchTotals();
     showMessage("Coordinates Deleted!");
   } catch (error) {
