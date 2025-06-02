@@ -68,9 +68,6 @@ button.cesium-infoBox-close {
 
 /* Auth Box – Top Left Dropdown */
 .authBox {
-  position: fixed;
-  top: 10px;
-  left: 10px;
   background: #222;
   color: white;
   border-radius: 8px;
