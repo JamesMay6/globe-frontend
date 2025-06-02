@@ -284,7 +284,7 @@ function showMessage(text, type = "success", duration = 1000) {
 
       setUser(data.session);
     }
-    fetchUserClicks();
+  
   } catch (err) {
     console.error("Authentication error:", err);
     alert("An unexpected error occurred.");
@@ -320,6 +320,11 @@ function showMessage(text, type = "success", duration = 1000) {
       showMessage("Buy clicks failed", "error");
     }
   };
+useEffect(() => {
+  if (user) {
+    fetchUserClicks();
+  }
+}, [user]);
 
 useEffect(() => {
   const authBox = document.querySelector(".authBox");
