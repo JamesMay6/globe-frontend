@@ -41,20 +41,30 @@ html, body, #cesiumContainer {
 .cesium-geocoder-input input::placeholder {
   color: #bbb !important;
 }
-
 .cesium-geocoder-searchButton {
     display: none;
 }
-
 .cesium-geocoder-searchButton svg {
   display: none;
 }
-
 .cesium-geocoder-searchButton:hover {
   background: #555 !important;
 }
-
-
+.cesium-selection-wrapper-visible {
+  display: none !important;
+}
+.cesium-infoBox-visible {
+  display: none !important;
+}
+button.cesium-infoBox-camera {
+  display: none !important;
+}
+.cesium-svgPath-svg {
+  display: none !important; 
+}
+button.cesium-infoBox-close {
+  display: none !important; 
+}
 
 /* Auth Box – Top Left Dropdown */
 .authBox {
