@@ -96,7 +96,7 @@ html, body, #cesiumContainer {
 /* Expanded state */
 .authBox.expanded {
   max-height: 400px;
-  padding: 10px;
+  padding: 5px;
 }
 
 .authBox > button:first-child {
@@ -158,7 +158,7 @@ html, body, #cesiumContainer {
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 10px;
+  padding: 5px;
   font-family: sans-serif;
   width: 200px;
 }
@@ -188,7 +188,7 @@ html, body, #cesiumContainer {
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 10px;
+  padding: 5px;
   font-family: sans-serif;
   z-index: 10;
 }
@@ -261,7 +261,7 @@ html, body, #cesiumContainer {
   transform: translateX(-50%);
   background: #222;
   color: #fff;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border-radius: 8px;
   z-index: 9999;
   font-family: sans-serif;
