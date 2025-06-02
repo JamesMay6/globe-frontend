@@ -105,16 +105,18 @@ function showMessage(text, duration = 2000) {
     alert("You need to log in to delete cells.");
     return;
   }
-    const ray = viewer.camera.getPickRay(movement.position);
-    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-    viewer.trackedEntity = undefined;
-    if (!cartesian) return;
 
-    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
+  const ray = viewer.camera.getPickRay(movement.position);
+  const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+  viewer.trackedEntity = undefined;
+  if (!cartesian) return;
 
-    await fetch(`${API_URL}/delete`, {
+  const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+  const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
+  const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
+
+  try {
+    const res = await fetch(`${API_URL}/delete`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,12 +125,22 @@ function showMessage(text, duration = 2000) {
       body: JSON.stringify({ lat, lon }),
     });
 
+    const data = await res.json();
+
+    if (data.alreadyDeleted) {
+      showMessage("These coordinates have already been deleted.");
+      return;
+    }
+
     drawDeletedCell(viewer, lat, lon);
     viewer.scene.requestRender();
     fetchTotals();
-    
-  showMessage("Coordinates Deleted!");
-  };
+    showMessage("Coordinates Deleted!");
+  } catch (error) {
+    console.error("Delete request failed:", error);
+    showMessage("Error deleting coordinates.");
+  }
+};
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
