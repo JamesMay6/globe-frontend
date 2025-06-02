@@ -78,6 +78,24 @@ function drawDeletedCell(viewer, lat, lon) {
 
   const fakeEmail = (username) => `${username}@delete.theearth`;
 
+  const drawDeletedCell = (viewer, lat, lon) => {
+    const cellWidth = 0.001;
+    const padding = 0.00005;
+    const rect = Cesium.Rectangle.fromDegrees(
+      lon - padding,
+      lat - padding,
+      lon + cellWidth + padding,
+      lat + cellWidth + padding
+    );
+    viewer.entities.add({
+      rectangle: {
+        coordinates: rect,
+        material: Cesium.Color.BLACK.withAlpha(1.0),
+        classificationType: Cesium.ClassificationType.BOTH,
+      },
+    });
+  };
+
   const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
     if (!rect) return;
@@ -156,12 +174,18 @@ function showMessage(text, type = "success", duration = 1000) {
   const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
   const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-  // ✅ Optimistically draw before awaiting API
   drawDeletedCell(viewer, lat, lon); // draw optimistically
   viewer.scene.requestRender(); // request render only, not .render()
 
   try {
-    const res = await fetch(`${API_URL}/delete`, { /*...*/ });
+    const res = await fetch(`${API_URL}/delete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.access_token}`,
+      },
+      body: JSON.stringify({ lat, lon }),
+    });
     const data = await res.json();
 
     if (data.alreadyDeleted) {
@@ -179,7 +203,6 @@ function showMessage(text, type = "success", duration = 1000) {
     console.error("Delete request failed:", error);
     showMessage("Error deleting coordinates.");
   }
-
 };
 
 
