@@ -125,11 +125,18 @@ function showMessage(text, type = "success", duration = 1000) {
     showMessage("You need to log in to delete cells","error");
     return;
   }
+  const clicksTotalRef = useRef(0);
 
-  if (clicksTotal <= 0) {
+  // Keep the ref updated
+  useEffect(() => {
+    clicksTotalRef.current = clicksTotal;
+  }, [clicksTotal]);
+
+  if (clicksTotalRef.current <= 0) {
     showMessage("You're out of clicks! Buy more to keep deleting", "error");
     return;
   }
+  
   const ray = viewer.camera.getPickRay(movement.position);
   const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
   viewer.trackedEntity = undefined;
