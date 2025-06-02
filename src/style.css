@@ -16,14 +16,51 @@ html, body, #cesiumContainer {
 .cesium-infoBox-title {
   display: none !important;
 }
-.cesium-viewer-geocoderContainer .cesium-geocoder-input {
-  width: 170px !important;
-  max-width: none !important;
+/* Container */
+.cesium-viewer-geocoderContainer {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  font-family: sans-serif;
 }
-.cesium-viewer-geocoderContainer .cesium-geocoder-input:focus {
+
+/* Input Box */
+.cesium-geocoder-input {
+  background: #222 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 6px 10px !important;
+  font-size: 14px !important;
   width: 170px !important;
-  max-width: none !important;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3) !important;
 }
+
+/* Input Placeholder */
+.cesium-geocoder-input input::placeholder {
+  color: #bbb !important;
+}
+
+/* Search Button */
+.cesium-geocoder-searchButton {
+  background: #444 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  margin-left: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3) !important;
+  transition: background 0.2s ease !important;
+}
+
+.cesium-geocoder-searchButton:hover {
+  background: #555 !important;
+}
+
+
 
 /* Auth Box – Top Left Dropdown */
 .authBox {
