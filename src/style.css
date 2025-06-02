@@ -53,7 +53,6 @@ html, body, #cesiumContainer {
   padding: 10px;
 }
 
-/* Toggle button style */
 .authBox > button:first-child {
   background: #444;
   color: white;
@@ -70,7 +69,6 @@ html, body, #cesiumContainer {
   background: #555;
 }
 
-/* Inputs & buttons hidden when collapsed */
 .authBox > *:not(:first-child) {
   opacity: 1;
   transition: opacity 0.3s ease;
@@ -82,7 +80,6 @@ html, body, #cesiumContainer {
   user-select: none;
 }
 
-/* Logged-in state overrides dropdown */
 .authBox.loggedIn {
   max-height: none;
   overflow: visible;
@@ -109,7 +106,7 @@ html, body, #cesiumContainer {
 /* Stats – Bottom Left */
 #statsMenu {
   position: absolute;
-  bottom: 140px;
+  bottom: 10px;
   left: 10px;
   z-index: 10;
   background: #222;
@@ -136,11 +133,11 @@ html, body, #cesiumContainer {
   line-height: 1.6;
 }
 
-/* Leaderboard – Bottom Left */
+/* Leaderboard – Bottom Right */
 #leaderboardMenu {
   position: absolute;
   bottom: 10px;
-  left: 10px;
+  right: 10px;
   width: 200px;
   background: #222;
   color: white;
@@ -180,7 +177,6 @@ html, body, #cesiumContainer {
   margin-bottom: 4px;
 }
 
-/* Medals */
 .rank-1 {
   background: linear-gradient(90deg, #ffd700, #bfa700);
   font-weight: bold;
