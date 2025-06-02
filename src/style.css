@@ -65,6 +65,9 @@ button.cesium-infoBox-camera {
 button.cesium-infoBox-close {
   display: none !important; 
 }
+.cesium-button.cesium-fullscreenButton, .cesium-button.cesium-vrButton{
+  display: none !important;
+}
 
 /* Auth Box – Top Left Dropdown */
 .authBox {
