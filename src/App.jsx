@@ -148,7 +148,9 @@ function showMessage(text, duration = 2000) {
         maximumRenderTimeChange: 0,
       });
 
-      viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+      viewer.scene.screenSpaceCameraController.zoomEventTypes = [
+        Cesium.CameraEventType.WHEEL
+      ];
       viewer.trackedEntity = undefined;
 
       if (isMobile) {
