@@ -147,10 +147,9 @@ function forceRenderOnce(viewer, drawFn) {
     forceRenderOnce(viewer, () => {
       drawDeletedCell(viewer, lat, lon);
     });
-    
+    showMessage("Coordinates Deleted!");
     //viewer.scene.requestRender();
     fetchTotals();
-    showMessage("Coordinates Deleted!");
   } catch (error) {
     console.error("Delete request failed:", error);
     showMessage("Error deleting coordinates.");
