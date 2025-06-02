@@ -128,7 +128,7 @@ function showMessage(text, type = "success", duration = 2000) {
     const data = await res.json();
 
     if (data.alreadyDeleted) {
-      showMessage("These coordinates have already been deleted.");
+      showMessage("These coordinates have already been deleted.", "error");
       return;
     }
 

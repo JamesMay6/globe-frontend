@@ -264,9 +264,9 @@ button.cesium-infoBox-close {
   transition: opacity 0.5s ease;
 }
 .toastMessage.success {
-  background: #28a745; /* green */
+  background: #106a25; /* green */
 }
 
 .toastMessage.error {
-  background: #dc3545; /* red */
+  background: #9a1321; /* red */
 }
