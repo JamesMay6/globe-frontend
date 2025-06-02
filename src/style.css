@@ -14,22 +14,102 @@ html, body, #cesiumContainer {
   visibility: hidden;
 }
 .cesium-infoBox-title {
-    display: none !important;
+  display: none !important;
 }
 .cesium-viewer-geocoderContainer .cesium-geocoder-input {
   width: 170px !important;
   max-width: none !important;
 }
-
 .cesium-viewer-geocoderContainer .cesium-geocoder-input:focus {
   width: 170px !important;
   max-width: none !important;
 }
 
-/* Collapsible stats menu */
+/* Auth Box – Top Left Dropdown */
+.authBox {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1000;
+  width: 200px;
+  font-family: sans-serif;
+  font-size: 16px;
+  max-height: 40px;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+/* Expanded state */
+.authBox.expanded {
+  max-height: 400px;
+  padding: 10px;
+}
+
+/* Toggle button style */
+.authBox > button:first-child {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.authBox > button:first-child:hover {
+  background: #555;
+}
+
+/* Inputs & buttons hidden when collapsed */
+.authBox > *:not(:first-child) {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.authBox:not(.expanded) > *:not(:first-child) {
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Logged-in state overrides dropdown */
+.authBox.loggedIn {
+  max-height: none;
+  overflow: visible;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.authBox.loggedIn > * {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+.authBox.loggedIn > button {
+  width: auto;
+  padding: 5px 10px;
+}
+
+.authBox.loggedIn > button.logout {
+  margin-left: auto;
+}
+
+/* Stats – Bottom Left */
 #statsMenu {
   position: absolute;
-  top: 10px;
+  bottom: 140px;
   left: 10px;
   z-index: 10;
   background: #222;
@@ -44,7 +124,7 @@ html, body, #cesiumContainer {
   background: #444;
   color: white;
   border: none;
-  padding: 5px 5px;
+  padding: 5px;
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 2px;
@@ -56,109 +136,25 @@ html, body, #cesiumContainer {
   line-height: 1.6;
 }
 
-.authBox {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #222;
-  color: white;
-  border-radius: 8px;
-  padding: 5px;               /* match stats padding */
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  z-index: 1000;
-  width: 200px;                /* same width as stats */
-  font-family: sans-serif;
-  font-size: 16px;
-  max-height: 40px;
-  overflow: hidden;
-  transition: max-height 0.4s ease;
-}
-
-/* Expanded state */
-.authBox.expanded {
-  max-height: 400px;
-  padding: 10px;               /* keep consistent padding */
-}
-
-/* Toggle button matches #statsMenu button style */
-.authBox > button:first-child {
-  background: #444;
-  color: white;
-  border: none;
-  padding: 5px 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 2px;
-  width: 100%;
-  transition: background 0.2s ease;
-}
-
-.authBox > button:first-child:hover {
-  background: #555;
-}
-
-/* Inputs & other buttons visible only when expanded */
-.authBox > *:not(:first-child) {
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-/* Hide inputs/buttons when collapsed */
-.authBox:not(.expanded) > *:not(:first-child) {
-  opacity: 0;
-  pointer-events: none;
-  user-select: none;
-}
-
-.authBox.loggedIn {
-  max-height: none;   /* Allow full height */
-  overflow: visible;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-}
-
-.authBox.loggedIn > * {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  user-select: auto !important;
-}
-
-.authBox.loggedIn > button {
-  width: auto;      /* prevent full width */
-  padding: 5px 10px;
-}
-
-.authBox.loggedIn > button.logout {
-  margin-left: auto;
-}
-
+/* Leaderboard – Bottom Left */
 #leaderboardMenu {
   position: absolute;
+  bottom: 10px;
   left: 10px;
-  top: 70px; /* default */
   width: 200px;
   background: #222;
   color: white;
   border-radius: 8px;
   padding: 10px;
   font-family: sans-serif;
-  transition: top 0.3s ease;
   z-index: 10;
 }
 
-#leaderboardMenu.shifted {
-  top: 140px; /* or whatever the height + margin of your stats menu is */
-}
 #leaderboardMenu button {
   background: #444;
   color: white;
   border: none;
-  padding: 5px 5px;
+  padding: 5px;
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 2px;
@@ -168,7 +164,7 @@ html, body, #cesiumContainer {
 .leaderboardContent {
   font-size: 14px;
   line-height: 1.6;
-  margin-top:5px;
+  margin-top: 5px;
 }
 
 .leaderboardContent ol {
@@ -184,7 +180,7 @@ html, body, #cesiumContainer {
   margin-bottom: 4px;
 }
 
-/* Highlight top 3 with medals */
+/* Medals */
 .rank-1 {
   background: linear-gradient(90deg, #ffd700, #bfa700);
   font-weight: bold;
@@ -215,6 +211,7 @@ html, body, #cesiumContainer {
   font-variant-numeric: tabular-nums;
 }
 
+/* Toast */
 .toastMessage {
   position: fixed;
   bottom: 100px;
