@@ -42,18 +42,26 @@ html, body, #cesiumContainer {
   color: #bbb !important;
 }
 
-/* Search Button */
 .cesium-geocoder-searchButton {
   background: #444 !important;
   color: white !important;
   border: none !important;
   border-radius: 4px !important;
   margin-left: 6px !important;
-  padding: 6px 10px !important;
+  padding: 6px 8px !important;
   font-size: 14px !important;
   cursor: pointer !important;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3) !important;
-  transition: background 0.2s ease !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+  height: 32px !important;         /* Match input height */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cesium-geocoder-searchButton svg {
+  width: 16px !important;           /* Shrink the icon */
+  height: 16px !important;
+  fill: white !important;
 }
 
 .cesium-geocoder-searchButton:hover {
