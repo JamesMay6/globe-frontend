@@ -28,6 +28,7 @@ function App() {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
+  //FETCH USER CLICKS
   const fetchUserClicks = async () => {
   if (!user) return;
 
@@ -45,6 +46,16 @@ function App() {
     const data = await res.json();
     setClicksTotal(data.clicks_total);
   };
+
+  //SET CONTAINER HEIGHT
+  function setContainerHeight() {
+  const container = document.getElementById('cesiumContainer');
+  if (!container) return;
+  container.style.height = `${window.innerHeight}px`;
+}
+
+  window.addEventListener('resize', setContainerHeight);
+  window.addEventListener('load', setContainerHeight);
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
