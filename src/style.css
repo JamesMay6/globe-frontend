@@ -270,3 +270,33 @@ button.cesium-infoBox-close {
 .toastMessage.error {
   background: #9a1321; /* red */
 }
+
+#buyMenu {
+  position: absolute;
+  top: 80px;
+  left: 10px;
+  width: 200px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+  font-family: sans-serif;
+  z-index: 10;
+}
+
+#buyMenu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.buyContent {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 5px;
+}

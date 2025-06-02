@@ -19,6 +19,7 @@ function App() {
   const [statsOpen, setStatsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const [buyMenuOpen, setBuyMenuOpen] = useState(false);
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -86,7 +87,7 @@ function App() {
 }, [leaderboardOpen]);
 
 
-function showMessage(text, type = "success", duration = 2000) {
+function showMessage(text, type = "success", duration = 1000) {
   const message = document.createElement("div");
   message.textContent = text;
   message.className = `toastMessage ${type}`; // ← dynamic class for styling
@@ -137,7 +138,7 @@ function showMessage(text, type = "success", duration = 2000) {
       return;
     }
 
-    showMessage("Coordinates Deleted!");
+    showMessage("Coordinates Deleted");
     fetchTotals();
   } catch (error) {
     console.error("Delete request failed:", error);
@@ -270,6 +271,31 @@ function showMessage(text, type = "success", duration = 2000) {
     setUser(null);
   };
 
+  const handleBuyClicks = async () => {
+  try {
+    const res = await fetch(`${API_URL}/buy-clicks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.access_token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      showMessage(`Purchase failed: ${errorText}`, "error");
+      return;
+    }
+
+    showMessage("Purchased 100 clicks!");
+
+    // Optionally, refresh user state here if you store clicks_total in state
+  } catch (e) {
+    console.error("Buy clicks failed:", e);
+    showMessage("Buy clicks failed", "error");
+  }
+};
+
 useEffect(() => {
   const authBox = document.querySelector(".authBox");
   if (!authBox) return;
@@ -290,6 +316,7 @@ useEffect(() => {
     };
   });
 }, []);
+
 
   return (
     <>
@@ -346,7 +373,7 @@ useEffect(() => {
         )}
       </div>
 
-      <div id="leaderboardMenu" className={statsOpen ? "shifted" : ""}>
+      <div id="leaderboardMenu">
         <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
           {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
         </button>
@@ -363,6 +390,20 @@ useEffect(() => {
             </ol>
           </div>
         )}
+
+        {user && (
+          <div id="buyMenu">
+            <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
+              {buyMenuOpen ? "Hide Buy Menu ▼" : "Show Buy Menu ▲"}
+            </button>
+            {buyMenuOpen && (
+              <div className="buyContent">
+                <button onClick={handleBuyClicks}>Buy 100 Clicks (1p)</button>
+              </div>
+            )}
+          </div>
+        )}
+        
       </div>
     </>
   );
