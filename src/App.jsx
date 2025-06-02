@@ -122,10 +122,14 @@ function showMessage(text, type = "success", duration = 1000) {
 //HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
   if (!user) {
-    alert("You need to log in to delete cells.");
+    showMessage("You need to log in to delete cells","error");
     return;
   }
 
+  if (clicksTotal <= 0) {
+    showMessage("You're out of clicks! Buy more to keep deleting", "error");
+    return;
+  }
   const ray = viewer.camera.getPickRay(movement.position);
   const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
   viewer.trackedEntity = undefined;
@@ -279,8 +283,8 @@ function showMessage(text, type = "success", duration = 1000) {
       }
 
       setUser(data.session);
-      fetchUserClicks();
     }
+    fetchUserClicks();
   } catch (err) {
     console.error("Authentication error:", err);
     alert("An unexpected error occurred.");
