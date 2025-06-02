@@ -271,10 +271,17 @@ button.cesium-infoBox-close {
   background: #9a1321; /* red */
 }
 
-#buyMenu {
-  position: absolute;
-  top: 80px;
+.topLeftMenu {
+  position: fixed;
+  top: 10px;
   left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+#buyMenu {
   width: 200px;
   background: #222;
   color: white;

@@ -354,10 +354,23 @@ useEffect(() => {
     )}
 
     {user && (
-      <div className="authBox loggedIn">
-      <span>Hi {form.username}</span>
-      <button class="logout" onClick={handleLogout}>Log Out</button>
-    </div>
+      <div className="topLeftMenu">
+        <div className="authBox loggedIn">
+          <span>Hi {form.username}</span>
+          <button className="logout" onClick={handleLogout}>Log Out</button>
+        </div>
+
+        <div id="buyMenu">
+          <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
+            {buyMenuOpen ? "Hide Buy Menu ▼" : "Show Buy Menu ▲"}
+          </button>
+          {buyMenuOpen && (
+            <div className="buyContent">
+              <button onClick={handleBuyClicks}>Buy 100 Clicks (1p)</button>
+            </div>
+          )}
+        </div>
+      </div>
     )}
 
       <div id="statsMenu">
@@ -388,19 +401,6 @@ useEffect(() => {
                 </li>
               ))}
             </ol>
-          </div>
-        )}
-
-        {user && (
-          <div id="buyMenu">
-            <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
-              {buyMenuOpen ? "Hide Buy Menu ▼" : "Show Buy Menu ▲"}
-            </button>
-            {buyMenuOpen && (
-              <div className="buyContent">
-                <button onClick={handleBuyClicks}>Buy 100 Clicks (1p)</button>
-              </div>
-            )}
           </div>
         )}
         
