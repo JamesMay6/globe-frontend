@@ -21,6 +21,7 @@ function App() {
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [clicksTotal, setClicksTotal] = useState(0);
+  const clicksTotalRef = useRef(0);
 
   const fetchUserClicks = async () => {
   if (!user) return;
@@ -125,7 +126,6 @@ function showMessage(text, type = "success", duration = 1000) {
     showMessage("You need to log in to delete cells","error");
     return;
   }
-  const clicksTotalRef = useRef(0);
 
   // Keep the ref updated
   useEffect(() => {
@@ -136,7 +136,7 @@ function showMessage(text, type = "success", duration = 1000) {
     showMessage("You're out of clicks! Buy more to keep deleting", "error");
     return;
   }
-  
+
   const ray = viewer.camera.getPickRay(movement.position);
   const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
   viewer.trackedEntity = undefined;
