@@ -99,18 +99,6 @@ function showMessage(text, type = "success", duration = 2000) {
   }, duration);
 }
 
-function forceRenderOnce(viewer, drawFn) {
-  const originalMode = viewer.scene.requestRenderMode;
-  viewer.scene.requestRenderMode = false;
-
-  drawFn();
-
-  viewer.scene.requestRender();
-  viewer.scene.render();
-
-  viewer.scene.requestRenderMode = originalMode;
-}
-
 //HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
   if (!user) {
@@ -126,6 +114,11 @@ function forceRenderOnce(viewer, drawFn) {
   const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
   const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
   const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
+
+  // ✅ Optimistically draw before awaiting API
+  drawDeletedCell(viewer, lat, lon);
+  viewer.scene.requestRender();
+  viewer.scene.render(); // Ensure immediate visual feedback
 
   try {
     const res = await fetch(`${API_URL}/delete`, {
@@ -143,18 +136,15 @@ function forceRenderOnce(viewer, drawFn) {
       showMessage("These coordinates have already been deleted.", "error");
       return;
     }
-    
-    forceRenderOnce(viewer, () => {
-      drawDeletedCell(viewer, lat, lon);
-    });
+
     showMessage("Coordinates Deleted!");
-    //viewer.scene.requestRender();
     fetchTotals();
   } catch (error) {
     console.error("Delete request failed:", error);
     showMessage("Error deleting coordinates.");
   }
 };
+
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
@@ -170,8 +160,8 @@ function forceRenderOnce(viewer, drawFn) {
         sceneModePicker: false,
         navigationHelpButton: false,
         geocoder: true,
-        requestRenderMode: false,
-        //maximumRenderTimeChange: 0,
+        requestRenderMode: true,
+        maximumRenderTimeChange: 0,
       });
 
       viewer.trackedEntity = undefined;
