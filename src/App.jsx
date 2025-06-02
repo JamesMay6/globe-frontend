@@ -380,7 +380,7 @@ useEffect(() => {
 
       <div id="buyMenu">
         <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
-          {buyMenuOpen ? "Hide Buy Menu ▼" : "Show Buy Menu ▲"}
+          {buyMenuOpen ? "Show User Menu ▼" : "Hide User Menu ▲"}
         </button>
 
         {buyMenuOpen && (
@@ -388,7 +388,7 @@ useEffect(() => {
             <div className="clicksAvailable">
               <strong>Available Clicks:</strong> {clicksTotal}
             </div>
-            <button onClick={handleBuyClicks}>Buy 100 Clicks (1p)</button>
+            <button onClick={handleBuyClicks}>Buy 100 (£1)</button>
           </div>
         )}
       </div>
