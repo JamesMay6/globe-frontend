@@ -357,7 +357,7 @@ useEffect(() => {
 
   return (
     <>
-      <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
+      <div id="cesiumContainer" />
 
       <div className="topLeftMenu">
   {!user ? (
