@@ -454,6 +454,16 @@ useEffect(() => {
         )}
         
       </div>
+
+      <div className="terms-link-container">
+        <a
+          href="/terms.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ts & Cs
+        </a>
+      </div>
     </>
   );
 }
