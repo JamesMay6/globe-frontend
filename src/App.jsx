@@ -20,6 +20,25 @@ function App() {
   const [authOpen, setAuthOpen] = useState(false);
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
+  const [clicksTotal, setClicksTotal] = useState(0);
+
+  const fetchUserClicks = async () => {
+  if (!user) return;
+
+  const res = await fetch(`${API_URL}/profile`, {
+    headers: {
+      Authorization: `Bearer ${user.access_token}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.error("Failed to fetch clicks_total");
+    return;
+  }
+
+    const data = await res.json();
+    setClicksTotal(data.clicks_total);
+  };
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -363,8 +382,12 @@ useEffect(() => {
         <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
           {buyMenuOpen ? "Hide Buy Menu ▼" : "Show Buy Menu ▲"}
         </button>
+
         {buyMenuOpen && (
           <div className="buyContent">
+            <div className="clicksAvailable">
+              <strong>Available Clicks:</strong> {clicksTotal}
+            </div>
             <button onClick={handleBuyClicks}>Buy 100 Clicks (1p)</button>
           </div>
         )}
