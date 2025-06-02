@@ -25,31 +25,22 @@ function App() {
   const fakeEmail = (username) => `${username}@delete.theearth`;
 
   const drawDeletedCell = (viewer, lat, lon) => {
-  const cellWidth = 0.001;
-  const padding = 0.00005;
-
-  viewer.entities.add({
-  rectangle: {
-    coordinates: Cesium.Rectangle.fromDegrees(
+    const cellWidth = 0.001;
+    const padding = 0.00005;
+    const rect = Cesium.Rectangle.fromDegrees(
       lon - padding,
       lat - padding,
       lon + cellWidth + padding,
       lat + cellWidth + padding
-    ),
-    material: Cesium.Color.BLACK.withAlpha(1.0),
-    classificationType: Cesium.ClassificationType.BOTH,
-  },
-});
-
-// Trigger internal update
-void viewer.entities.values.length;
-
-// Hard render
-viewer.scene.requestRender();
-viewer.scene.render();
-
-};
-
+    );
+    viewer.entities.add({
+      rectangle: {
+        coordinates: rect,
+        material: Cesium.Color.BLACK.withAlpha(1.0),
+        classificationType: Cesium.ClassificationType.BOTH,
+      },
+    });
+  };
 
   const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
@@ -124,10 +115,6 @@ function showMessage(text, type = "success", duration = 2000) {
   const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
   const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-  // ✅ Optimistically render the black cell immediately
-  drawDeletedCell(viewer, lat, lon);
-  viewer.scene.requestRender(); // Force visual update right away
-
   try {
     const res = await fetch(`${API_URL}/delete`, {
       method: "POST",
@@ -142,13 +129,20 @@ function showMessage(text, type = "success", duration = 2000) {
 
     if (data.alreadyDeleted) {
       showMessage("These coordinates have already been deleted.", "error");
-    } else {
-      fetchTotals(); // Only refresh stats if new deletion
-      showMessage("Coordinates Deleted!", "success");
+      return;
     }
+
+    viewer.scene.requestRenderMode = false;
+    drawDeletedCell(viewer, lat, lon);
+    viewer.scene.requestRender();
+    viewer.scene.render();
+    viewer.scene.requestRenderMode = true;
+    
+    fetchTotals();
+    showMessage("Coordinates Deleted!");
   } catch (error) {
     console.error("Delete request failed:", error);
-    showMessage("Error deleting coordinates.", "error");
+    showMessage("Error deleting coordinates.");
   }
 };
 
