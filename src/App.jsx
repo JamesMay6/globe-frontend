@@ -28,6 +28,33 @@ function App() {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
+const deletedCellsRef = useRef(new Map());
+
+function drawDeletedCell(viewer, lat, lon) {
+  const key = `${lat}_${lon}`;
+  if (deletedCellsRef.current.has(key)) return; // avoid dupes
+
+  const cellWidth = 0.001;
+  const padding = 0.00005;
+  const rect = Cesium.Rectangle.fromDegrees(
+    lon - padding,
+    lat - padding,
+    lon + cellWidth + padding,
+    lat + cellWidth + padding
+  );
+
+  const entity = viewer.entities.add({
+    rectangle: {
+      coordinates: rect,
+      material: Cesium.Color.BLACK.withAlpha(1.0),
+      classificationType: Cesium.ClassificationType.BOTH,
+    },
+  });
+
+  deletedCellsRef.current.set(key, entity);
+  viewer.scene.requestRender();
+}
+
   const fetchUserClicks = async () => {
   if (!user) return;
 
@@ -46,27 +73,10 @@ function App() {
     setClicksTotal(data.clicks_total);
   };
 
+
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
   const fakeEmail = (username) => `${username}@delete.theearth`;
-
-  const drawDeletedCell = (viewer, lat, lon) => {
-    const cellWidth = 0.001;
-    const padding = 0.00005;
-    const rect = Cesium.Rectangle.fromDegrees(
-      lon - padding,
-      lat - padding,
-      lon + cellWidth + padding,
-      lat + cellWidth + padding
-    );
-    viewer.entities.add({
-      rectangle: {
-        coordinates: rect,
-        material: Cesium.Color.BLACK.withAlpha(1.0),
-        classificationType: Cesium.ClassificationType.BOTH,
-      },
-    });
-  };
 
   const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
@@ -147,34 +157,29 @@ function showMessage(text, type = "success", duration = 1000) {
   const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
   // ✅ Optimistically draw before awaiting API
-  drawDeletedCell(viewer, lat, lon);
-  viewer.scene.requestRender();
-  //viewer.scene.render(); // Ensure immediate visual feedback
+  drawDeletedCell(viewer, lat, lon); // draw optimistically
+  viewer.scene.requestRender(); // request render only, not .render()
 
   try {
-    const res = await fetch(`${API_URL}/delete`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.access_token}`,
-      },
-      body: JSON.stringify({ lat, lon }),
-    });
-
+    const res = await fetch(`${API_URL}/delete`, { /*...*/ });
     const data = await res.json();
 
     if (data.alreadyDeleted) {
-      showMessage("These coordinates have already been deleted", "error");
+      showMessage("These coordinates have already been deleted.", "error");
       return;
     }
 
     showMessage("Coordinates deleted");
     fetchTotals();
     fetchUserClicks();
+    
+    // Optional: refresh all deleted cells to sync state
+    fetchDeletedCells(viewer);
   } catch (error) {
     console.error("Delete request failed:", error);
     showMessage("Error deleting coordinates.");
   }
+
 };
 
 
