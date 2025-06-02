@@ -21,7 +21,7 @@ function App() {
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [clicksTotal, setClicksTotal] = useState(0);
-  
+
   const clicksTotalRef = useRef(0);
     // Keep the ref updated
   useEffect(() => {
@@ -149,7 +149,7 @@ function showMessage(text, type = "success", duration = 1000) {
   // ✅ Optimistically draw before awaiting API
   drawDeletedCell(viewer, lat, lon);
   viewer.scene.requestRender();
-  viewer.scene.render(); // Ensure immediate visual feedback
+  //viewer.scene.render(); // Ensure immediate visual feedback
 
   try {
     const res = await fetch(`${API_URL}/delete`, {
@@ -164,11 +164,11 @@ function showMessage(text, type = "success", duration = 1000) {
     const data = await res.json();
 
     if (data.alreadyDeleted) {
-      showMessage("These coordinates have already been deleted.", "error");
+      showMessage("These coordinates have already been deleted", "error");
       return;
     }
 
-    showMessage("Coordinates Deleted");
+    showMessage("Coordinates deleted");
     fetchTotals();
     fetchUserClicks();
   } catch (error) {
