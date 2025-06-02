@@ -159,6 +159,7 @@ function showMessage(text, type = "success", duration = 1000) {
 
     showMessage("Coordinates Deleted");
     fetchTotals();
+    fetchUserClicks();
   } catch (error) {
     console.error("Delete request failed:", error);
     showMessage("Error deleting coordinates.");
@@ -307,6 +308,7 @@ function showMessage(text, type = "success", duration = 1000) {
     }
 
     showMessage("Purchased 100 clicks!");
+    fetchUserClicks();
 
     // Optionally, refresh user state here if you store clicks_total in state
   } catch (e) {
