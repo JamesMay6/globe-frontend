@@ -398,7 +398,7 @@ useEffect(() => {
         <button className="logout" onClick={handleLogout}>Log Out</button>
       </div>
 
-      <div id="buyMenu">
+      <div className="buyMenu">
         <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
           {buyMenuOpen ? "Hide User Menu ▲" : "Show User Menu ▼"}
         </button>
@@ -439,7 +439,7 @@ useEffect(() => {
 </div>
 
 
-      <div id="statsMenu">
+      <div className="statsMenu">
       <button onClick={() => setStatsOpen(!statsOpen)}>
         {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
       </button>
@@ -452,7 +452,7 @@ useEffect(() => {
         )}
       </div>
 
-      <div id="leaderboardMenu">
+      <div className="leaderboardMenu">
         <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
           {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
         </button>
