@@ -199,19 +199,10 @@ function showMessage(text, type = "success", duration = 1000) {
       });
 
       viewer.trackedEntity = undefined;
-
       
       const controller = viewer.scene.screenSpaceCameraController;
       controller.zoomFactor = 18.0;        // Faster zoom-in/out
       controller.inertiaZoom = 0.9;        // Smooth momentum
-
-      viewerRef.current = viewer;
-
-      useEffect(() => {
-        const handleResize = () => viewer.resize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-      }, []);
 
       // Wait for Cesium to attach geocoder DOM
       const waitForGeocoderInput = setInterval(() => {
@@ -221,6 +212,8 @@ function showMessage(text, type = "success", duration = 1000) {
           clearInterval(waitForGeocoderInput);
         }
       }, 100);
+
+      viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
       fetchTotals();
