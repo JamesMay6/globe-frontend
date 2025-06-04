@@ -208,6 +208,23 @@ function showMessage(text, type = "success", duration = 1000) {
 
       viewerRef.current = viewer;
 
+      const keepCenterOnGlobe = () => {
+      const scene = viewer.scene;
+      const camera = viewer.camera;
+      const center = new Cesium.Cartesian2(
+        scene.canvas.clientWidth / 2,
+        scene.canvas.clientHeight / 2
+      );
+      const pickRay = camera.getPickRay(center);
+      const globeCenter = scene.globe.pick(pickRay, scene);
+
+      if (globeCenter) {
+        camera.lookAt(globeCenter, new Cesium.HeadingPitchRange(0, -Cesium.Math.PI_OVER_TWO, 10000000.0));
+      }
+    };
+
+    viewer.camera.moveEnd.addEventListener(keepCenterOnGlobe);
+
       // Wait for Cesium to attach geocoder DOM
       const waitForGeocoderInput = setInterval(() => {
         const input = document.querySelector('.cesium-geocoder-input input');
