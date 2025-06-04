@@ -412,10 +412,11 @@ useEffect(() => {
               Get 5 Free Clicks
             </button>
 
+            {/* Placeholder Buttons for Paid Options */}
             {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
               ({ clicks, price }) => (
-                <button key={clicks} onClick={() => handleBuyClicks(clicks)}>
-                  Buy {clicks.toLocaleString()} (£{price})
+                <button key={clicks} disabled style={{ opacity: 0.6, cursor: "not-allowed" }}>
+                  Buy {clicks.toLocaleString()} (£{price}) – Coming Soon
                 </button>
               )
             )}
