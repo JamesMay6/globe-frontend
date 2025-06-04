@@ -20,9 +20,11 @@ function App() {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  //const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [clicksTotal, setClicksTotal] = useState(0);
+  const [cooldownMessage, setCooldownMessage] = useState(null);
+
 
   const clicksTotalRef = useRef(0);
     // Keep the ref updated
@@ -295,29 +297,36 @@ function showMessage(text, type = "success", duration = 1000) {
   };
 
   const handleBuyClicks = async (clickAmount) => {
-    try {
-      const res = await fetch(`${API_URL}/buy-clicks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.access_token}`,
-        },
-        body: JSON.stringify({ amount: clickAmount }),
-      });
+  try {
+    setCooldownMessage(null);
+    const res = await fetch(`${API_URL}/buy-clicks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.access_token}`,
+      },
+      body: JSON.stringify({ amount: clickAmount }),
+    });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        showMessage(`Purchase failed: ${errorText}`, "error");
-        return;
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 429 && clickAmount === 5) {
+        setCooldownMessage(data.error); // e.g., "You must wait 24 hours..."
+      } else {
+        showMessage(`Purchase failed: ${data.error || "Unknown error"}`, "error");
       }
-
-      showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
-      fetchUserClicks();
-    } catch (e) {
-      console.error("Buy clicks failed:", e);
-      showMessage("Buy clicks failed", "error");
+      return;
     }
-  };
+
+    showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
+    fetchUserClicks();
+  } catch (e) {
+    console.error("Buy clicks failed:", e);
+    showMessage("Buy clicks failed", "error");
+  }
+};
+
 useEffect(() => {
   if (user) {
     fetchUserClicks();
@@ -400,6 +409,9 @@ useEffect(() => {
 
             {/* Free Clicks Button */}
             <button onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
+            {cooldownMessage && (
+              <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
+            )}
 
             {/* Coming Soon Notice */}
             {!isPaymentEnabled && (
