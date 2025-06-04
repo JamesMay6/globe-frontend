@@ -407,6 +407,11 @@ useEffect(() => {
               <strong>Available Clicks:</strong> {clicksTotal}
             </div>
 
+            {/* Free Clicks Button */}
+            <button onClick={() => handleBuyClicks(5)}>
+              Get 5 Free Clicks
+            </button>
+
             {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
               ({ clicks, price }) => (
                 <button key={clicks} onClick={() => handleBuyClicks(clicks)}>
@@ -417,6 +422,7 @@ useEffect(() => {
           </div>
         )}
       </div>
+
     </>
   )}
 </div>
