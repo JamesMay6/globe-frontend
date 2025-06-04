@@ -201,17 +201,8 @@ function showMessage(text, type = "success", duration = 1000) {
       viewer.trackedEntity = undefined;
       
       const controller = viewer.scene.screenSpaceCameraController;
-      controller.zoomFactor = 18.0;        // Faster zoom-in/out
+      controller.zoomFactor = 17.0;        // Faster zoom-in/out
       controller.inertiaZoom = 0.9;        // Smooth momentum
-
-      // Wait for Cesium to attach geocoder DOM
-      const waitForGeocoderInput = setInterval(() => {
-        const input = document.querySelector('.cesium-geocoder-input input');
-        if (input) {
-          input.setAttribute("placeholder", "Search...");
-          clearInterval(waitForGeocoderInput);
-        }
-      }, 100);
 
       viewerRef.current = viewer;
 
