@@ -438,7 +438,6 @@ useEffect(() => {
   )}
 </div>
 
-
       <div className="statsMenu">
       <button onClick={() => setStatsOpen(!statsOpen)}>
         {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}

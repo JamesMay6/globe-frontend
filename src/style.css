@@ -309,10 +309,10 @@ button.cesium-infoBox-close {
 }
 
 /* Default (desktop): fixed width */
-#topMenu,
-#statsMenu,
-#leaderboardMenu,
-#buyMenu {
+.topMenu,
+.statsMenu,
+.leaderboardMenu,
+.buyMenu {
   width: 200px;
 }
 
