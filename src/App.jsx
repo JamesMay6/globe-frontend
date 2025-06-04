@@ -200,11 +200,10 @@ function showMessage(text, type = "success", duration = 1000) {
 
       viewer.trackedEntity = undefined;
 
-      if (isMobile) {
-        const controller = viewer.scene.screenSpaceCameraController;
-        controller.zoomFactor = 18.0;        // Faster zoom-in/out
-        controller.inertiaZoom = 0.9;        // Smooth momentum
-      }
+      
+      const controller = viewer.scene.screenSpaceCameraController;
+      controller.zoomFactor = 18.0;        // Faster zoom-in/out
+      controller.inertiaZoom = 0.9;        // Smooth momentum
 
       viewerRef.current = viewer;
 
