@@ -318,7 +318,8 @@ button.cesium-infoBox-close {
 
 /* Responsive override for smaller screens */
 @media (max-width: 600px) {
-  #topLeftMenu
+  #topLeftMenu,
+  #authBox.loggedIn > *,
   #statsMenu {
     width: 40%;
     left: 3%;
@@ -327,7 +328,7 @@ button.cesium-infoBox-close {
   #buyMenu {
     width: 100%;
   }
-
+  
   #leaderboardMenu {
     width: 40%;
     right: 3% !important;
