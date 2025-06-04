@@ -312,7 +312,7 @@ function showMessage(text, type = "success", duration = 1000) {
 
     if (!res.ok) {
       if (res.status === 429 && clickAmount === 5) {
-        setCooldownMessage(data.error); // e.g., "You must wait 24 hours..."
+        setCooldownMessage(data.error);
       } else {
         showMessage(`Purchase failed: ${data.error || "Unknown error"}`, "error");
       }
@@ -404,6 +404,7 @@ useEffect(() => {
         {buyMenuOpen && (
           <div className="buyContent">
             <div className="clicksAvailable">
+              <p></p>
               <strong>Available Clicks:</strong> {clicksTotal}
             </div>
 
@@ -416,7 +417,7 @@ useEffect(() => {
             {/* Coming Soon Notice */}
             {!isPaymentEnabled && (
               <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-                Paid click packages coming soon!
+                Paid clicks coming soon
               </div>
             )}
 
