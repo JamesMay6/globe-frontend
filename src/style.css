@@ -321,9 +321,9 @@ button.cesium-infoBox-close {
   .topLeftMenu,
   .statsMenu,
   .leaderboardMenu {
-    width: 90%;
-    left: 5%;
-    right: 5%;
+    width: 40%;
+    left: 2%;
+    right: 2%;
     position: absolute;
     box-sizing: border-box;
   }
@@ -335,6 +335,6 @@ button.cesium-infoBox-close {
   }
 
   .leaderboardMenu {
-    right: 5% !important;
+    right: 2% !important;
   }
 }
