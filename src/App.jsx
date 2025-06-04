@@ -362,36 +362,36 @@ useEffect(() => {
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
 
       <div className="topLeftMenu">
-  {!user ? (
-    <div className={`authBox ${authOpen ? "expanded" : ""}`}>
-      <button onClick={() => setAuthOpen(!authOpen)}>
-        {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
-      </button>
+          {!user ? (
+            <div className={`authBox ${authOpen ? "expanded" : ""}`}>
+              <button onClick={() => setAuthOpen(!authOpen)}>
+                {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
+              </button>
 
-      {authOpen && (
-        <>
-          <input
-            type="text"
-            placeholder="Username"
-            value={form.username}
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-          <button onClick={handleAuth}>
-            {authMode === "login" ? "Log In" : "Register"}
-          </button>
-          <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-            Switch to {authMode === "login" ? "Register" : "Login"}
-          </button>
-        </>
-      )}
-    </div>
-  ) : (
+              {authOpen && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    value={form.username}
+                    onChange={(e) => setForm({ ...form, username: e.target.value })}
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  />
+                  <button onClick={handleAuth}>
+                    {authMode === "login" ? "Log In" : "Register"}
+                  </button>
+                  <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
+                    Switch to {authMode === "login" ? "Register" : "Login"}
+                  </button>
+                </>
+              )}
+            </div>
+          ) : (
     <>
       <div className="authBox loggedIn">
         <span>Hi {form.username}</span>
