@@ -130,7 +130,7 @@ function showMessage(text, type = "success", duration = 1000) {
 //HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
   if (!user) {
-    showMessage("You need to log in to delete cells","error");
+    showMessage("You need to log in to delete Earth","error");
     return;
   }
 
@@ -166,16 +166,16 @@ function showMessage(text, type = "success", duration = 1000) {
     const data = await res.json();
 
     if (data.alreadyDeleted) {
-      showMessage("These coordinates have already been deleted", "error");
+      showMessage("Earth is already deleted here", "error");
       return;
     }
 
-    showMessage("Coordinates deleted");
+    showMessage("Earth deleted");
     fetchTotals();
     fetchUserClicks();
   } catch (error) {
     console.error("Delete request failed:", error);
-    showMessage("Error deleting coordinates.");
+    showMessage("Error deleting Earth.");
   }
 };
 
@@ -410,25 +410,23 @@ useEffect(() => {
             </div>
 
             {/* Free Clicks Button */}
-            <button onClick={() => handleBuyClicks(5)}>
-              Get 5 Free Clicks
-            </button>
+            <button onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
 
-            {/* Placeholder Buttons for Paid Options */}
+            {/* Coming Soon Notice */}
+            {!isPaymentEnabled && (
+              <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+                Paid click packages coming soon!
+              </div>
+            )}
+
             {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
               ({ clicks, price }) => (
                 <button
                   key={clicks}
-                  onClick={() => isPaymentEnabled && handleBuyClicks(clicks)}
+                  onClick={() => handleBuyClicks(clicks)}
                   disabled={!isPaymentEnabled}
-                  style={{
-                    opacity: isPaymentEnabled ? 1 : 0.6,
-                    cursor: isPaymentEnabled ? "pointer" : "not-allowed",
-                  }}
-                  title={isPaymentEnabled ? "" : "Payment coming soon"}
                 >
                   Buy {clicks.toLocaleString()} (£{price})
-                  {!isPaymentEnabled && " – Coming Soon"}
                 </button>
               )
             )}
