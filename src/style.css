@@ -1,4 +1,4 @@
-html, body, #cesiumContainer {
+html, body, .cesiumContainer {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -27,7 +27,7 @@ html, body, #cesiumContainer {
 
 /* Input Box */
 .cesium-geocoder-input {
-  background: #222 !important;
+  background: .222 !important;
   color: white !important;
   border: none !important;
   border-radius: 8px !important;
@@ -48,7 +48,7 @@ html, body, #cesiumContainer {
   display: none;
 }
 .cesium-geocoder-searchButton:hover {
-  background: #555 !important;
+  background: .555 !important;
 }
 .cesium-selection-wrapper-visible {
   display: none !important;
@@ -71,7 +71,7 @@ button.cesium-infoBox-close {
 
 /* Auth Box – Top Left Dropdown */
 .authBox {
-  background: #222;
+  background: .222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -95,7 +95,7 @@ button.cesium-infoBox-close {
 }
 
 .authBox > button:first-child {
-  background: #444;
+  background: .444;
   color: white;
   border: none;
   padding: 5px;
@@ -107,7 +107,7 @@ button.cesium-infoBox-close {
 }
 
 .authBox > button:first-child:hover {
-  background: #555;
+  background: .555;
 }
 
 .authBox > *:not(:first-child) {
@@ -145,12 +145,12 @@ button.cesium-infoBox-close {
 }
 
 /* Stats – Bottom Left */
-#statsMenu {
+.statsMenu {
   position: absolute;
   bottom: 10px;
   left: 10px;
   z-index: 10;
-  background: #222;
+  background: .222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -158,8 +158,8 @@ button.cesium-infoBox-close {
   width: 200px;
 }
 
-#statsMenu button {
-  background: #444;
+.statsMenu button {
+  background: .444;
   color: white;
   border: none;
   padding: 5px;
@@ -169,18 +169,18 @@ button.cesium-infoBox-close {
   width: 100%;
 }
 
-#statsMenu .statsContent {
+.statsMenu .statsContent {
   font-size: 14px;
   line-height: 1.6;
 }
 
 /* Leaderboard – Bottom Right */
-#leaderboardMenu {
+.leaderboardMenu {
   position: absolute;
   bottom: 10px;
   right: 10px;
   width: 200px;
-  background: #222;
+  background: .222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -188,8 +188,8 @@ button.cesium-infoBox-close {
   z-index: 10;
 }
 
-#leaderboardMenu button {
-  background: #444;
+.leaderboardMenu button {
+  background: .444;
   color: white;
   border: none;
   padding: 5px;
@@ -254,7 +254,7 @@ button.cesium-infoBox-close {
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: #222;
+  background: .222;
   color: #fff;
   padding: 5px 10px;
   border-radius: 8px;
@@ -281,9 +281,9 @@ button.cesium-infoBox-close {
   z-index: 1000;
 }
 
-#buyMenu {
+.buyMenu {
   width: 200px;
-  background: #222;
+  background: .222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -291,8 +291,8 @@ button.cesium-infoBox-close {
   z-index: 10;
 }
 
-#buyMenu button {
-  background: #444;
+.buyMenu button {
+  background: .444;
   color: white;
   border: none;
   padding: 5px;
