@@ -318,11 +318,14 @@ button.cesium-infoBox-close {
 
 /* Responsive override for smaller screens */
 @media (max-width: 600px) {
-  #topLeftMenu,
-  #statsMenu,
-  #buyMenu {
+  #topLeftMenu
+  #statsMenu {
     width: 40%;
     left: 3%;
+  }
+
+  #buyMenu {
+    width: 100%;
   }
 
   #leaderboardMenu {
