@@ -320,7 +320,6 @@ button.cesium-infoBox-close {
 @media (max-width: 600px) {
   #topMenu,
   #statsMenu,
-  #leaderboardMenu,
   #buyMenu {
     width: 90%;
     left: 5%;
