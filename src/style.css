@@ -321,17 +321,14 @@ button.cesium-infoBox-close {
   #topMenu,
   #statsMenu,
   #buyMenu {
-    width: 90%;
+    width: 20%;
     left: 5%;
-    right: 5%;
   }
 
   #leaderboardMenu {
+    width: 20%;
     right: 5% !important;
   }
 
-  #statsMenu {
-    left: 5% !important;
-  }
 }
 
