@@ -180,7 +180,7 @@ button.cesium-infoBox-close {
   bottom: 10px;
   right: 10px;
   width: 200px;
-  background: .222;
+  background: #222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -328,7 +328,8 @@ button.cesium-infoBox-close {
 
   .authBox,
   .authBox.loggedIn,
-  .buyContent {
+  .buyContent,
+  .buyMenu {
     width: 100%;
   }
 
