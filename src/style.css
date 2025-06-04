@@ -319,11 +319,9 @@ button.cesium-infoBox-close {
 /* Responsive override for smaller screens */
 @media (max-width: 600px) {
   .topLeftMenu,
-  .statsMenu,
-  .leaderboardMenu {
-    width: 40%;
+  .statsMenu {
+    width: 45%;
     left: 2%;
-    right: 2%;
     position: absolute;
     box-sizing: border-box;
   }
@@ -335,6 +333,9 @@ button.cesium-infoBox-close {
   }
 
   .leaderboardMenu {
-    right: 2% !important;
+    width: 45%;
+    right: 2%;
+    position: absolute;
+    box-sizing: border-box;
   }
 }
