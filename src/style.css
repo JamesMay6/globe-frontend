@@ -1,12 +1,4 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.cesiumContainer {
+html, body, .cesiumContainer {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -35,7 +27,7 @@ html, body {
 
 /* Input Box */
 .cesium-geocoder-input {
-  background: .222 !important;
+  background: #222 !important;
   color: white !important;
   border: none !important;
   border-radius: 8px !important;
@@ -79,7 +71,7 @@ button.cesium-infoBox-close {
 
 /* Auth Box – Top Left Dropdown */
 .authBox {
-  background: .222;
+  background: #222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -103,7 +95,7 @@ button.cesium-infoBox-close {
 }
 
 .authBox > button:first-child {
-  background: .444;
+  background: #444;
   color: white;
   border: none;
   padding: 5px;
@@ -115,7 +107,7 @@ button.cesium-infoBox-close {
 }
 
 .authBox > button:first-child:hover {
-  background: .555;
+  background: #555;
 }
 
 .authBox > *:not(:first-child) {
@@ -158,7 +150,7 @@ button.cesium-infoBox-close {
   bottom: 10px;
   left: 10px;
   z-index: 10;
-  background: .222;
+  background: #222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -167,7 +159,7 @@ button.cesium-infoBox-close {
 }
 
 .statsMenu button {
-  background: .444;
+  background: #444;
   color: white;
   border: none;
   padding: 5px;
@@ -197,7 +189,7 @@ button.cesium-infoBox-close {
 }
 
 .leaderboardMenu button {
-  background: .444;
+  background: #444;
   color: white;
   border: none;
   padding: 5px;
@@ -262,7 +254,7 @@ button.cesium-infoBox-close {
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: .222;
+  background: #222;
   color: #fff;
   padding: 5px 10px;
   border-radius: 8px;
@@ -291,7 +283,7 @@ button.cesium-infoBox-close {
 
 .buyMenu {
   width: 200px;
-  background: .222;
+  background: #222;
   color: white;
   border-radius: 8px;
   padding: 5px;
@@ -300,7 +292,7 @@ button.cesium-infoBox-close {
 }
 
 .buyMenu button {
-  background: .444;
+  background: #444;
   color: white;
   border: none;
   padding: 5px;
