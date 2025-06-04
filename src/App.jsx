@@ -7,6 +7,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const isPaymentEnabled = import.meta.env.VITE_PAYMENT_ENABLED === "true";
+
 
 function App() {
   const viewerRef = useRef(null);
@@ -415,8 +417,18 @@ useEffect(() => {
             {/* Placeholder Buttons for Paid Options */}
             {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
               ({ clicks, price }) => (
-                <button key={clicks} disabled style={{ opacity: 0.6, cursor: "not-allowed" }}>
-                  Buy {clicks.toLocaleString()} (£{price}) – Coming Soon
+                <button
+                  key={clicks}
+                  onClick={() => isPaymentEnabled && handleBuyClicks(clicks)}
+                  disabled={!isPaymentEnabled}
+                  style={{
+                    opacity: isPaymentEnabled ? 1 : 0.6,
+                    cursor: isPaymentEnabled ? "pointer" : "not-allowed",
+                  }}
+                  title={isPaymentEnabled ? "" : "Payment coming soon"}
+                >
+                  Buy {clicks.toLocaleString()} (£{price})
+                  {!isPaymentEnabled && " – Coming Soon"}
                 </button>
               )
             )}
