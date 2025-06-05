@@ -24,6 +24,8 @@ function App() {
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [clicksTotal, setClicksTotal] = useState(0);
   const [cooldownMessage, setCooldownMessage] = useState(null);
+  const [username, setUsername] = useState(null);
+
 
 
   const clicksTotalRef = useRef(0);
@@ -37,8 +39,10 @@ function App() {
       return;
     }
     if (data.session) {
-      setUser(data.session);
+      setUser(data.session); // optional if you need it
+      fetchUserClicks(data.session.access_token); // pass token directly
     }
+
   };
 
   getSession();
@@ -58,12 +62,12 @@ function App() {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
-  const fetchUserClicks = async () => {
-  if (!user) return;
+  const fetchUserClicks = async (token = user?.access_token) => {
+  if (!token) return;
 
   const res = await fetch(`${API_URL}/profile`, {
     headers: {
-      Authorization: `Bearer ${user.access_token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -72,9 +76,10 @@ function App() {
     return;
   }
 
-    const data = await res.json();
-    setClicksTotal(data.clicks_total);
-  };
+  const data = await res.json();
+  setUsername(data.username);
+  setClicksTotal(data.clicks_total);
+};
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
 
@@ -184,10 +189,10 @@ function showMessage(text, type = "success", duration = 1000) {
   try {
     const res = await fetch(`${API_URL}/delete`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.access_token}`,
-      },
+        headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user?.access_token}`,
+    },
       body: JSON.stringify({ lat, lon }),
     });
 
@@ -417,7 +422,7 @@ useEffect(() => {
           ) : (
     <>
       <div className="authBox loggedIn">
-        <span>Hi {form.username}</span>
+        <span>Hi {username}</span>
         <button className="logout" onClick={handleLogout}>Log Out</button>
       </div>
 
