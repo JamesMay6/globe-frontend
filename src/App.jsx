@@ -25,6 +25,8 @@ function App() {
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [loadingSession, setLoadingSession] = useState(true);
   const clicksTotalRef = useRef(0);
+  const [superClicks, setSuperClicks] = useState(0);
+
 
   useEffect(() => {
   console.log("User state updated:", user);
@@ -87,6 +89,7 @@ function App() {
   setUsername(data.username);
   localStorage.setItem("username", data.username);
   setClicksTotal(data.clicks_total);
+  setSuperClicks(data.super_clicks);
 };
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
@@ -331,7 +334,7 @@ function App() {
 
       const data = await res.json();
       if (!res.ok) {
-        if (res.status === 429 && clickAmount === 5) {
+        if (res.status === 429 && clickAmount === 200) {
           setCooldownMessage(data.error);
         } else {
           showMessage(`Purchase failed: ${data.error || "Unknown error"}`, "error");
@@ -427,7 +430,7 @@ function App() {
         ) : (
           <>
             <div className="authBox loggedIn">
-              <span>Hi {username}</span>
+              <span>Hi {form.username}</span>
               <button className="logout" onClick={handleLogout}>
                 Log Out
               </button>
@@ -441,6 +444,7 @@ function App() {
                   <div className="clicksAvailable">
                     <p></p>
                     <strong>Available Clicks:</strong> {clicksTotal}
+                    <strong>Available Super Clicks:</strong> {superClicks}
                   </div>
                   <button onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
                   {cooldownMessage && (
