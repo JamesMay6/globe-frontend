@@ -33,14 +33,18 @@ function App() {
 
   useEffect(() => {
   const initSession = async () => {
-    const { data } = await supabase.auth.getSession();
-    if (data?.session) {
-      setUser(data.session.user);
-      await fetchUserProfile(data.session.access_token);
+    setLoadingSession(true); // Set first
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (session) {
+      setUser(session.user);
+      await fetchUserProfile(session.access_token);
     } else {
       setUser(null);
     }
-    setLoadingSession(false);
+    setLoadingSession(false); // Only after fetch completes
   };
 
   const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -148,7 +152,7 @@ function App() {
     }
   }, [leaderboardOpen]);
 
-  function showMessage(text, type = "success", duration = 750) {
+  function showMessage(text, type = "success", duration = 500) {
     const message = document.createElement("div");
     message.textContent = text;
     message.className = `toastMessage ${type}`;
@@ -156,7 +160,7 @@ function App() {
 
     setTimeout(() => {
       message.style.opacity = "0";
-      setTimeout(() => message.remove(), 250);
+      setTimeout(() => message.remove(), 150);
     }, duration);
   }
 
