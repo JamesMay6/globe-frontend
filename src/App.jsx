@@ -379,7 +379,7 @@ function App() {
     const res = await fetch("/api/profile/upgrade-super-click", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
