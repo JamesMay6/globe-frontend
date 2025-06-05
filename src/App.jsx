@@ -23,7 +23,7 @@ function App() {
   const [clicksTotal, setClicksTotal] = useState(0);
   const [cooldownMessage, setCooldownMessage] = useState(null);
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
-
+  const [loadingSession, setLoadingSession] = useState(true);
   const clicksTotalRef = useRef(0);
 
   useEffect(() => {
