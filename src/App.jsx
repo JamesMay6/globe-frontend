@@ -2,16 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { createClient } from "@supabase/supabase-js";
-import {
-  fetchUserProfile,
-  createUserProfile,
-  deleteEarth,
-  buyClicks,
-  upgradeSuperClick,
-  fetchTotals,
-  fetchTopUsers,
-  fetchDeletedCells,
-} from "./services/api";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -184,6 +174,8 @@ function App() {
       showMessage("You're out of clicks! Buy more to keep deleting", "error");
       return;
     }
+
+    showMessage("Deleting Earth..", "warn");
 
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
@@ -374,18 +366,7 @@ function App() {
     });
   }, []);
 
-    async function handleUpgradeClick() {
-    try {
-      const data = await upgradeSuperClick(); 
-      alert("Super click upgraded!");
-      fetchUserProfile(); 
-    } catch (err) {
-      alert(err.message);
-    }
-
-  }
-
-return (
+  return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
       <div className="topLeftMenu">
@@ -455,17 +436,8 @@ return (
                       </button>
                     )
                   )}
-                  {/* Upgrade button inside dropdown */}
-                <button
-                  style={{ marginTop: "1rem", backgroundColor: "#4caf50" }}
-                  onClick={handleUpgradeClick}
-                  disabled={clicksTotal < 10} // example disable if not enough clicks
-                >
-                  Upgrade to Super Click (10 clicks)
-                </button>
                 </div>
               )}
-              
             </div>
           </>
         )}
