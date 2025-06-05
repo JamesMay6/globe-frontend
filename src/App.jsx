@@ -219,10 +219,8 @@ function App() {
   };
 
   useEffect(() => {
-  if (!user) return;
-
   const initCesium = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for DOM to render
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     const container = document.getElementById("cesiumContainer");
     if (!container) {
@@ -247,12 +245,11 @@ function App() {
     });
 
     viewer.trackedEntity = undefined;
+    viewerRef.current = viewer;
 
     const controller = viewer.scene.screenSpaceCameraController;
     controller.zoomFactor = 17.0;
     controller.inertiaZoom = 0.9;
-
-    viewerRef.current = viewer;
 
     await fetchDeletedCells(viewer);
     fetchTotals();
@@ -274,7 +271,8 @@ function App() {
       viewerRef.current.destroy();
     }
   };
-}, [user]);
+}, []);
+
 
 
   const handleAuth = async () => {
