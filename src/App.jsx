@@ -48,14 +48,15 @@ useEffect(() => {
     } else {
       setUser(null);
     }
+    setLoadingSession(false); // ✅ move this here
   });
 
+  // Try to fetch session here *only* if needed as a fallback
   supabase.auth.getSession().then(({ data }) => {
-    console.log("Initial session:", data?.session);
     if (data?.session) {
       setUser(data.session.user);
+      setLoadingSession(false);
     }
-    setLoadingSession(false); // ✅ Done checking
   });
 
   return () => {
@@ -178,6 +179,8 @@ useEffect(() => {
       showMessage("You're out of clicks! Buy more to keep deleting", "error");
       return;
     }
+
+    showMessage("Deleting Earth..");
 
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
