@@ -27,20 +27,23 @@ function App() {
   const clicksTotalRef = useRef(0);
 
   useEffect(() => {
+  console.log("User state updated:", user);
+}, [user]);
+
+  useEffect(() => {
   const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    console.log("Auth change:", event, session);
     if (session) {
       setUser(session.user);
-      fetchUserClicks(session.access_token);
     } else {
       setUser(null);
     }
   });
 
-  // Check once in case the session is already loaded
   supabase.auth.getSession().then(({ data }) => {
+    console.log("Initial session:", data?.session);
     if (data?.session) {
       setUser(data.session.user);
-      fetchUserClicks(data.session.access_token);
     }
   });
 
