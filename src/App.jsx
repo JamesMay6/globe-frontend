@@ -152,7 +152,7 @@ function App() {
     }
   }, [leaderboardOpen]);
 
-  function showMessage(text, type = "success", duration = 500) {
+  function showMessage(text, type = "success", duration = 650) {
     const message = document.createElement("div");
     message.textContent = text;
     message.className = `toastMessage ${type}`;
@@ -165,11 +165,6 @@ function App() {
   }
 
   const handleClick = async (viewer, movement) => {
-      if (loadingSession) {
-        showMessage("Checking login status...", "warn");
-        return;
-      }
-
       if (!user) {
         showMessage("You need to log in to delete Earth", "error");
         return;
