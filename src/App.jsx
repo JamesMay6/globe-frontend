@@ -219,50 +219,63 @@ function App() {
   };
 
   useEffect(() => {
+  if (!user) return;
+
+  const initCesium = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for DOM to render
+
+    const container = document.getElementById("cesiumContainer");
+    if (!container) {
+      console.error("Cesium container not found");
+      return;
+    }
+
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
 
-    (async () => {
-      const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const viewer = new Cesium.Viewer("cesiumContainer", {
-        terrainProvider,
-        animation: false,
-        timeline: false,
-        baseLayerPicker: false,
-        homeButton: false,
-        sceneModePicker: false,
-        navigationHelpButton: false,
-        geocoder: true,
-        requestRenderMode: true,
-        maximumRenderTimeChange: 0,
-      });
+    const terrainProvider = await Cesium.createWorldTerrainAsync();
+    const viewer = new Cesium.Viewer(container, {
+      terrainProvider,
+      animation: false,
+      timeline: false,
+      baseLayerPicker: false,
+      homeButton: false,
+      sceneModePicker: false,
+      navigationHelpButton: false,
+      geocoder: true,
+      requestRenderMode: true,
+      maximumRenderTimeChange: 0,
+    });
 
-      viewer.trackedEntity = undefined;
+    viewer.trackedEntity = undefined;
 
-      const controller = viewer.scene.screenSpaceCameraController;
-      controller.zoomFactor = 17.0;
-      controller.inertiaZoom = 0.9;
+    const controller = viewer.scene.screenSpaceCameraController;
+    controller.zoomFactor = 17.0;
+    controller.inertiaZoom = 0.9;
 
-      viewerRef.current = viewer;
+    viewerRef.current = viewer;
 
-      await fetchDeletedCells(viewer);
-      fetchTotals();
+    await fetchDeletedCells(viewer);
+    fetchTotals();
 
-      viewer.camera.moveEnd.addEventListener(() => {
-        fetchDeletedCells(viewer);
-      });
+    viewer.camera.moveEnd.addEventListener(() => {
+      fetchDeletedCells(viewer);
+    });
 
-      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-      handler.setInputAction((movement) => {
-        handleClick(viewer, movement);
-      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    })();
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+    handler.setInputAction((movement) => {
+      handleClick(viewer, movement);
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+  };
 
-    return () => {
-      if (viewerRef.current && !viewerRef.current.isDestroyed()) {
-        viewerRef.current.destroy();
-      }
-    };
-  }, [user]);
+  initCesium();
+
+  return () => {
+    if (viewerRef.current && !viewerRef.current.isDestroyed()) {
+      viewerRef.current.destroy();
+    }
+  };
+}, [user]);
+
 
   const handleAuth = async () => {
     const email = fakeEmail(form.username);
