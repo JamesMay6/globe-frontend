@@ -136,10 +136,29 @@ function App() {
     cells.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
   };
 
+  const fetchTotals = async () => {
+    try {
+      const res = await fetch(`${API_URL}/total-deletions`);
+      const data = await res.json();
+      setTotals(data);
+    } catch (e) {
+      console.error("Error fetching totals:", e);
+    }
+  };
+
+  const fetchTopUsers = async () => {
+    try {
+      const res = await fetch(`${API_URL}/top-users`);
+      const data = await res.json();
+      setTopUsers(data);
+    } catch (e) {
+      console.error("Error fetching top users:", e);
+    }
+  };
+
   useEffect(() => {
     if (leaderboardOpen) {
-      fetchTopUsers()
-      .then(setTopUsers);
+      fetchTopUsers();
     }
   }, [leaderboardOpen]);
 
@@ -180,7 +199,17 @@ function App() {
     viewer.scene.render();
 
     try {
-      const data = await deleteEarth(lat, lon);
+      const token = (await supabase.auth.getSession()).data?.session?.access_token;
+      const res = await fetch(`${API_URL}/delete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ lat, lon }),
+      });
+
+      const data = await res.json();
 
       if (data.alreadyDeleted) {
         showMessage("Earth is already deleted here", "error");
@@ -397,7 +426,7 @@ return (
             )}
           </div>
         ) : (
-         <>
+          <>
             <div className="authBox loggedIn">
               <span>Hi {username}</span>
               <button className="logout" onClick={handleLogout}>
@@ -434,21 +463,19 @@ return (
                       </button>
                     )
                   )}
-                  {/* Upgrade button inside dropdown */}
-                  <button
-                    style={{ marginTop: "1rem", backgroundColor: "#4caf50" }}
-                    onClick={handleUpgradeClick}
-                    disabled={clicksTotal < 10} // example disable if not enough clicks
-                  >
-                    Upgrade to Super Click (10 clicks)
-                  </button>
                 </div>
               )}
+              {/* Upgrade button inside dropdown */}
+                <button
+                  style={{ marginTop: "1rem", backgroundColor: "#4caf50" }}
+                  onClick={handleUpgradeClick}
+                  disabled={clicksTotal < 10} // example disable if not enough clicks
+                >
+                  Upgrade to Super Click (10 clicks)
+                </button>
             </div>
           </>
-
         )}
-        
       </div>
 
       <div className="statsMenu">
