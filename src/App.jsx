@@ -437,9 +437,10 @@ return (
                 </div>
               )}
             </div>
+            <button onClick={handleUpgradeClick}>Upgrade to Super Click (10 clicks)</button>
           </>
         )}
-        <button onClick={handleUpgradeClick}>Upgrade to Super Click (10 clicks)</button>
+        
       </div>
 
       <div className="statsMenu">
