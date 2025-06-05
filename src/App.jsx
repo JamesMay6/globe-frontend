@@ -366,6 +366,32 @@ function App() {
     });
   }, []);
 
+  const handleUpgradeSuperClick = async () => {
+  try {
+    const token = (await supabase.auth.getSession()).data?.session?.access_token;
+    const res = await fetch(`${API_URL}/profile/upgrade-super-click`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      showMessage(data.error || "Upgrade failed", "error");
+      return;
+    }
+
+    showMessage(data.message || "Upgrade successful!");
+    fetchUserProfile();
+  } catch (err) {
+    console.error("Upgrade error:", err);
+    showMessage("Upgrade failed", "error");
+  }
+};
+
+
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
@@ -436,6 +462,9 @@ function App() {
                       </button>
                     )
                   )}
+                  <button onClick={handleUpgradeSuperClick} className="superClickButton">
+                    Upgrade to Super Click
+                  </button>
                 </div>
               )}
             </div>

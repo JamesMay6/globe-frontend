@@ -312,6 +312,22 @@ button.cesium-infoBox-close {
   margin-top: 5px;
 }
 
+.superClickButton {
+  background-color: #ff5722;
+  color: white;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.superClickButton:hover {
+  background-color: #e64a19;
+}
+
 /* Default (desktop): fixed width */
 .topMenu,
 .statsMenu,
