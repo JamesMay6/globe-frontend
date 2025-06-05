@@ -261,6 +261,8 @@ function App() {
         if (!data.session || !data.user) return alert("No session returned");
 
         setUser(data.session.user);
+        await fetchUserClicks(data.session.access_token);
+
         const res = await fetch(`${API_URL}/create-profile`, {
           method: "POST",
           headers: {
@@ -284,6 +286,8 @@ function App() {
         if (!data.session) return alert("No session returned");
 
         setUser(data.session.user);
+        await fetchUserClicks(data.session.access_token); // ✅ Add this
+
       }
     } catch (err) {
       console.error("Authentication error:", err);
