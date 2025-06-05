@@ -374,24 +374,16 @@ function App() {
     });
   }, []);
 
-  async function handleUpgradeClick() {
-  try {
-    const res = await fetch("/api/profile/upgrade-super-click", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    async function handleUpgradeClick() {
+    try {
+      const data = await upgradeSuperClick(); // <-- await was missing
+      alert("Super click upgraded!");
+      fetchProfile(); // Assuming this is defined and updates the UI
+    } catch (err) {
+      alert(err.message);
+    }
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-
-    alert("Super click upgraded!");
-    fetchProfile(); // Refresh clicksTotal and super_clicks
-  } catch (err) {
-    alert(err.message);
   }
-}
 
 return (
     <>
