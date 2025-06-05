@@ -466,9 +466,12 @@ function App() {
                     )
                   )}
                   <div className="upgradesMenu">
-                  <button onClick={handleUpgradeSuperClick} className="superClickButton">
-                    Upgrade to a Super Click
-                  </button>
+                    <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+                      Upgrade Clicks - Delete More!
+                    </div>
+                      <button onClick={handleUpgradeSuperClick} className="superClickButton">
+                        Upgrade to a Super Click
+                      </button>
                   </div>
                 </div>
               )}
