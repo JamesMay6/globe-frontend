@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { createClient } from "@supabase/supabase-js";
-import drawDeletedCell from './functions/drawCells';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -92,8 +91,24 @@ function App() {
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
   const fakeEmail = (username) => `${username}@delete.theearth`;
-  
-  drawDeletedCell(viewer, lat, lon);
+
+  const drawDeletedCell = (viewer, lat, lon) => {
+    const cellWidth = 0.001;
+    const padding = 0.00005;
+    const rect = Cesium.Rectangle.fromDegrees(
+      lon - padding,
+      lat - padding,
+      lon + cellWidth + padding,
+      lat + cellWidth + padding
+    );
+    viewer.entities.add({
+      rectangle: {
+        coordinates: rect,
+        material: Cesium.Color.BLACK.withAlpha(1.0),
+        classificationType: Cesium.ClassificationType.BOTH,
+      },
+    });
+  };
 
   const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
