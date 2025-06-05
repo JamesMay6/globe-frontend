@@ -34,21 +34,21 @@ function App() {
   useEffect(() => {
   const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
     console.log("Auth change:", event, session);
-    setUser(session?.user ?? null);
-    setLoadingSession(false); // always run
-  });
-
-  // Always check session immediately on mount
-  supabase.auth.getSession().then(({ data, error }) => {
-    if (error) {
-      console.error("Error fetching session:", error);
-    }
-    if (data?.session) {
-      setUser(data.session.user);
+    if (session) {
+      setUser(session.user);
     } else {
       setUser(null);
     }
-    setLoadingSession(false); // <-- ✅ ensure this always runs
+    setLoadingSession(false);
+  });
+
+  supabase.auth.getSession().then(({ data }) => {
+    if (data?.session) {
+      setUser(data.session.user);
+    } else {
+      setUser(null); // 🛠️ this was missing — cover the "not logged in" case
+    }
+    setLoadingSession(false); // ✅ set this *regardless* of session
   });
 
   return () => {
