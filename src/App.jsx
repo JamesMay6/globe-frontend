@@ -30,39 +30,32 @@ function App() {
   console.log("User state updated:", user);
 }, [user]);
 
-useEffect(() => {
-  if (user) {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.access_token) {
-        fetchUserProfile(data.session.access_token);
-      }
-    });
-  }
-}, [user]);
 
   useEffect(() => {
   const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
     console.log("Auth change:", event, session);
-    if (session) {
-      setUser(session.user);
+    setUser(session?.user ?? null);
+    setLoadingSession(false); // always run
+  });
+
+  // Always check session immediately on mount
+  supabase.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error("Error fetching session:", error);
+    }
+    if (data?.session) {
+      setUser(data.session.user);
     } else {
       setUser(null);
     }
-    setLoadingSession(false); // ✅ move this here
-  });
-
-  // Try to fetch session here *only* if needed as a fallback
-  supabase.auth.getSession().then(({ data }) => {
-    if (data?.session) {
-      setUser(data.session.user);
-      setLoadingSession(false);
-    }
+    setLoadingSession(false); // <-- ✅ ensure this always runs
   });
 
   return () => {
     authListener.subscription.unsubscribe();
   };
 }, []);
+
 
   useEffect(() => {
     clicksTotalRef.current = clicksTotal;
@@ -152,7 +145,7 @@ useEffect(() => {
     }
   }, [leaderboardOpen]);
 
-  function showMessage(text, type = "success", duration = 1000) {
+  function showMessage(text, type = "success", duration = 750) {
     const message = document.createElement("div");
     message.textContent = text;
     message.className = `toastMessage ${type}`;
@@ -160,13 +153,13 @@ useEffect(() => {
 
     setTimeout(() => {
       message.style.opacity = "0";
-      setTimeout(() => message.remove(), 500);
+      setTimeout(() => message.remove(), 250);
     }, duration);
   }
 
   const handleClick = async (viewer, movement) => {
       if (loadingSession) {
-        showMessage("Checking login status...", "error");
+        showMessage("Checking login status...", "warn");
         return;
       }
 
@@ -180,7 +173,7 @@ useEffect(() => {
       return;
     }
 
-    showMessage("Deleting Earth..");
+    showMessage("Deleting Earth..", "warn");
 
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
