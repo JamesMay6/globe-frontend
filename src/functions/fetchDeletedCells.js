@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
     if (!rect) return;
