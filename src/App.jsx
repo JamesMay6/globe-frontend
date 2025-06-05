@@ -376,9 +376,9 @@ function App() {
 
     async function handleUpgradeClick() {
     try {
-      const data = await upgradeSuperClick(); // <-- await was missing
+      const data = await upgradeSuperClick(); 
       alert("Super click upgraded!");
-      fetchProfile(); // Assuming this is defined and updates the UI
+      fetchUserProfile(); 
     } catch (err) {
       alert(err.message);
     }
