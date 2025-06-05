@@ -324,6 +324,14 @@ button.cesium-infoBox-close {
   transition: background-color 0.2s ease;
 }
 
+.freeClicksButton {
+  margin-top: 10px;
+}
+
+.upgradesMenu {
+  margin-top: 10px;
+}
+
 .superClickButton:hover {
   background-color: #e64a19;
 }

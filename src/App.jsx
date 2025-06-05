@@ -442,11 +442,10 @@ function App() {
               {buyMenuOpen && (
                 <div className="buyContent">
                   <div className="clicksAvailable">
-                    <p></p>
-                    <strong>Available Clicks:</strong> {clicksTotal}
-                    <strong>Available Super Clicks:</strong> {superClicks}
+                    <div><strong>Available Clicks:</strong> {clicksTotal}</div>
+                    <div><strong>Available Super Clicks:</strong> {superClicks}</div>
                   </div>
-                  <button onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
+                  <button className="freeClicksButton" onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
                   )}
@@ -466,9 +465,11 @@ function App() {
                       </button>
                     )
                   )}
+                  <div className="upgradesMenu">
                   <button onClick={handleUpgradeSuperClick} className="superClickButton">
-                    Upgrade to Super Click
+                    Upgrade to a Super Click
                   </button>
+                  </div>
                 </div>
               )}
             </div>
