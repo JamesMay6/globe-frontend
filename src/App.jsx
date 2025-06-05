@@ -55,6 +55,7 @@ useEffect(() => {
     if (data?.session) {
       setUser(data.session.user);
     }
+    setLoadingSession(false); // ✅ Done checking
   });
 
   return () => {
