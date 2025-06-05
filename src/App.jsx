@@ -2,8 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { createClient } from "@supabase/supabase-js";
-import drawDeletedCell from './functions/drawCells';
-
+import {
+  fetchUserProfile,
+  createUserProfile,
+  deleteEarth,
+  buyClicks,
+  upgradeSuperClick,
+  fetchTotals,
+  fetchTopUsers,
+  fetchDeletedCells,
+} from "./services/api";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -94,6 +102,24 @@ function App() {
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
   const fakeEmail = (username) => `${username}@delete.theearth`;
 
+  const drawDeletedCell = (viewer, lat, lon) => {
+    const cellWidth = 0.001;
+    const padding = 0.00005;
+    const rect = Cesium.Rectangle.fromDegrees(
+      lon - padding,
+      lat - padding,
+      lon + cellWidth + padding,
+      lat + cellWidth + padding
+    );
+    viewer.entities.add({
+      rectangle: {
+        coordinates: rect,
+        material: Cesium.Color.BLACK.withAlpha(1.0),
+        classificationType: Cesium.ClassificationType.BOTH,
+      },
+    });
+  };
+
   const fetchDeletedCells = async (viewer) => {
     const rect = viewer.camera.computeViewRectangle();
     if (!rect) return;
@@ -110,29 +136,10 @@ function App() {
     cells.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
   };
 
-  const fetchTotals = async () => {
-    try {
-      const res = await fetch(`${API_URL}/total-deletions`);
-      const data = await res.json();
-      setTotals(data);
-    } catch (e) {
-      console.error("Error fetching totals:", e);
-    }
-  };
-
-  const fetchTopUsers = async () => {
-    try {
-      const res = await fetch(`${API_URL}/top-users`);
-      const data = await res.json();
-      setTopUsers(data);
-    } catch (e) {
-      console.error("Error fetching top users:", e);
-    }
-  };
-
   useEffect(() => {
     if (leaderboardOpen) {
-      fetchTopUsers();
+      fetchTopUsers()
+      .then(setTopUsers);
     }
   }, [leaderboardOpen]);
 
@@ -173,17 +180,7 @@ function App() {
     viewer.scene.render();
 
     try {
-      const token = (await supabase.auth.getSession()).data?.session?.access_token;
-      const res = await fetch(`${API_URL}/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ lat, lon }),
-      });
-
-      const data = await res.json();
+      const data = await deleteEarth(lat, lon);
 
       if (data.alreadyDeleted) {
         showMessage("Earth is already deleted here", "error");
@@ -348,7 +345,26 @@ function App() {
     });
   }, []);
 
-  return (
+  async function handleUpgradeClick() {
+  try {
+    const res = await fetch("/api/profile/upgrade-super-click", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    alert("Super click upgraded!");
+    fetchProfile(); // Refresh clicksTotal and super_clicks
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
       <div className="topLeftMenu">
@@ -423,6 +439,7 @@ function App() {
             </div>
           </>
         )}
+        <button onClick={handleUpgradeClick}>Upgrade to Super Click (10 clicks)</button>
       </div>
 
       <div className="statsMenu">
