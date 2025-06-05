@@ -3,6 +3,8 @@ import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { createClient } from "@supabase/supabase-js";
 import drawDeletedCell from './functions/drawCells';
+import fetchDeletedCells from './functions/fetchDeletedCells';
+
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -93,22 +95,6 @@ function App() {
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
   const fakeEmail = (username) => `${username}@delete.theearth`;
-
-  const fetchDeletedCells = async (viewer) => {
-    const rect = viewer.camera.computeViewRectangle();
-    if (!rect) return;
-
-    const minLat = Cesium.Math.toDegrees(rect.south);
-    const maxLat = Cesium.Math.toDegrees(rect.north);
-    const minLon = Cesium.Math.toDegrees(rect.west);
-    const maxLon = Cesium.Math.toDegrees(rect.east);
-
-    const response = await fetch(
-      `${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
-    );
-    const cells = await response.json();
-    cells.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
-  };
 
   const fetchTotals = async () => {
     try {
