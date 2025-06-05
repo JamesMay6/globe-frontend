@@ -9,80 +9,76 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const isPaymentEnabled = import.meta.env.VITE_PAYMENT_ENABLED === "true";
 
-
 function App() {
   const viewerRef = useRef(null);
   const [user, setUser] = useState(null);
-  const [authMode, setAuthMode] = useState("login"); // or "register"
+  const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-  //const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [clicksTotal, setClicksTotal] = useState(0);
   const [cooldownMessage, setCooldownMessage] = useState(null);
-  const [username, setUsername] = useState(null);
-
-
+  const [username, setUsername] = useState(localStorage.getItem("username") || null);
 
   const clicksTotalRef = useRef(0);
 
   useEffect(() => {
-  // Restore session on page load
-  const getSession = async () => {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("Failed to get session:", error.message);
-      return;
-    }
-    if (data.session) {
-      setUser(data.session); // optional if you need it
-      fetchUserClicks(data.session.access_token); // pass token directly
-    }
+    const getSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Failed to get session:", error.message);
+        return;
+      }
+      if (data.session) {
+        setUser(data.session.user); // Fix: correctly set user
+        fetchUserClicks(data.session.access_token); // Fix: use token from session
+      }
+    };
 
-  };
+    getSession();
 
-  getSession();
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+      if (session) {
+        fetchUserClicks(session.access_token);
+      }
+    });
 
-  // Optional: subscribe to auth changes (e.g., for multi-tab support)
-  const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-    setUser(session);
-  });
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
-  return () => {
-    authListener.subscription.unsubscribe();
-  };
-}, []);
-
-    // Keep the ref updated
   useEffect(() => {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
-  const fetchUserClicks = async (token = user?.access_token) => {
-  if (!token) return;
+  const fetchUserClicks = async (token = null) => {
+    const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
+    if (!accessToken) return;
 
-  const res = await fetch(`${API_URL}/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    const res = await fetch(`${API_URL}/profile`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  if (!res.ok) {
-    console.error("Failed to fetch clicks_total");
-    return;
-  }
+    if (!res.ok) {
+      console.error("Failed to fetch clicks_total");
+      return;
+    }
 
-  const data = await res.json();
-  setUsername(data.username);
-  setClicksTotal(data.clicks_total);
-};
+    const data = await res.json();
+    setUsername(data.username);
+    localStorage.setItem("username", data.username); // ✅ Persist username
+    setClicksTotal(data.clicks_total);
+  };
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
-
   const fakeEmail = (username) => `${username}@delete.theearth`;
 
   const drawDeletedCell = (viewer, lat, lon) => {
@@ -129,88 +125,84 @@ function App() {
     }
   };
 
-  //TOP USERS
   const fetchTopUsers = async () => {
-  try {
-    const res = await fetch(`${API_URL}/top-users`);
-    const data = await res.json();
-    setTopUsers(data);
-  } catch (e) {
-    console.error("Error fetching top users:", e);
-  }
+    try {
+      const res = await fetch(`${API_URL}/top-users`);
+      const data = await res.json();
+      setTopUsers(data);
+    } catch (e) {
+      console.error("Error fetching top users:", e);
+    }
   };
 
   useEffect(() => {
-  if (leaderboardOpen) {
-    fetchTopUsers();
+    if (leaderboardOpen) {
+      fetchTopUsers();
+    }
+  }, [leaderboardOpen]);
+
+  function showMessage(text, type = "success", duration = 1000) {
+    const message = document.createElement("div");
+    message.textContent = text;
+    message.className = `toastMessage ${type}`;
+    document.body.appendChild(message);
+
+    setTimeout(() => {
+      message.style.opacity = "0";
+      setTimeout(() => message.remove(), 500);
+    }, duration);
   }
-}, [leaderboardOpen]);
 
-
-function showMessage(text, type = "success", duration = 1000) {
-  const message = document.createElement("div");
-  message.textContent = text;
-  message.className = `toastMessage ${type}`; // ← dynamic class for styling
-
-  document.body.appendChild(message);
-
-  setTimeout(() => {
-    message.style.opacity = "0";
-    setTimeout(() => message.remove(), 500);
-  }, duration);
-}
-
-//HANDLE CLICK ON GLOBE
   const handleClick = async (viewer, movement) => {
-  if (!user) {
-    showMessage("You need to log in to delete Earth","error");
-    return;
-  }
-
-  if (clicksTotalRef.current <= 0) {
-    showMessage("You're out of clicks! Buy more to keep deleting", "error");
-    return;
-  }
-
-  const ray = viewer.camera.getPickRay(movement.position);
-  const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-  viewer.trackedEntity = undefined;
-  if (!cartesian) return;
-
-  const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-  const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-  const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-
-  // ✅ Optimistically draw before awaiting API
-  drawDeletedCell(viewer, lat, lon);
-  viewer.scene.requestRender();
-  viewer.scene.render(); // Ensure immediate visual feedback
-
-  try {
-    const res = await fetch(`${API_URL}/delete`, {
-      method: "POST",
-        headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${user?.access_token}`,
-    },
-      body: JSON.stringify({ lat, lon }),
-    });
-
-    const data = await res.json();
-
-    if (data.alreadyDeleted) {
-      showMessage("Earth is already deleted here", "error");
+    if (!user) {
+      showMessage("You need to log in to delete Earth", "error");
       return;
     }
 
-    showMessage("Earth deleted");
-    fetchTotals();
-    fetchUserClicks();
-  } catch (error) {
-    console.error("Delete request failed:", error);
-    showMessage("Error deleting Earth.");
-  }
-};
+    if (clicksTotalRef.current <= 0) {
+      showMessage("You're out of clicks! Buy more to keep deleting", "error");
+      return;
+    }
+
+    const ray = viewer.camera.getPickRay(movement.position);
+    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+    viewer.trackedEntity = undefined;
+    if (!cartesian) return;
+
+    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
+    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
+
+    drawDeletedCell(viewer, lat, lon);
+    viewer.scene.requestRender();
+    viewer.scene.render();
+
+    try {
+      const token = (await supabase.auth.getSession()).data?.session?.access_token;
+      const res = await fetch(`${API_URL}/delete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ lat, lon }),
+      });
+
+      const data = await res.json();
+
+      if (data.alreadyDeleted) {
+        showMessage("Earth is already deleted here", "error");
+        return;
+      }
+
+      showMessage("Earth deleted");
+      fetchTotals();
+      fetchUserClicks();
+    } catch (error) {
+      console.error("Delete request failed:", error);
+      showMessage("Error deleting Earth.");
+    }
+  };
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
@@ -231,10 +223,10 @@ function showMessage(text, type = "success", duration = 1000) {
       });
 
       viewer.trackedEntity = undefined;
-      
+
       const controller = viewer.scene.screenSpaceCameraController;
-      controller.zoomFactor = 17.0;        // Faster zoom-in/out
-      controller.inertiaZoom = 0.9;        // Smooth momentum
+      controller.zoomFactor = 17.0;
+      controller.inertiaZoom = 0.9;
 
       viewerRef.current = viewer;
 
@@ -258,224 +250,194 @@ function showMessage(text, type = "success", duration = 1000) {
     };
   }, [user]);
 
-  //AUTHORISATION USERS
   const handleAuth = async () => {
-  const email = fakeEmail(form.username);
+    const email = fakeEmail(form.username);
+    try {
+      if (authMode === "register") {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password: form.password,
+        });
+        if (error) return alert(`Registration failed: ${error.message}`);
+        if (!data.session || !data.user) return alert("No session returned");
 
-  try {
-    if (authMode === "register") {
-      // Sign up the user
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password: form.password,
-      });
-      if (error) {
-        alert(`Registration failed: ${error.message}`);
-        return;
+        setUser(data.session.user);
+        const res = await fetch(`${API_URL}/create-profile`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data.session.access_token}`,
+          },
+          body: JSON.stringify({ id: data.user.id, username: form.username }),
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          alert("Error creating profile: " + errText);
+          return;
+        }
+        alert("Registration successful!");
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password: form.password,
+        });
+        if (error) return alert(`Login failed: ${error.message}`);
+        if (!data.session) return alert("No session returned");
+
+        setUser(data.session.user);
       }
-      if (!data.session || !data.user) {
-        alert("Registration succeeded but no session or user returned.");
-        return;
-      }
-
-      setUser(data.session);
-
-      // Call your API to create profile
-      const res = await fetch(`${API_URL}/create-profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${data.session.access_token}`,
-        },
-        body: JSON.stringify({ id: data.user.id, username: form.username }),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        alert("Error creating profile: " + errText);
-        return;
-      }
-
-      alert("Registration successful!");
-    } else {
-      // Login flow
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password: form.password,
-      });
-      if (error) {
-        alert(`Login failed: ${error.message}`);
-        return;
-      }
-      if (!data.session) {
-        alert("Login succeeded but no session returned.");
-        return;
-      }
-
-      setUser(data.session);
+    } catch (err) {
+      console.error("Authentication error:", err);
+      alert("An unexpected error occurred.");
     }
-  
-  } catch (err) {
-    console.error("Authentication error:", err);
-    alert("An unexpected error occurred.");
-  }
-};
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setUsername(null);
+    localStorage.removeItem("username");
   };
 
   const handleBuyClicks = async (clickAmount) => {
-  try {
-    setCooldownMessage(null);
-    const res = await fetch(`${API_URL}/buy-clicks`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.access_token}`,
-      },
-      body: JSON.stringify({ amount: clickAmount }),
-    });
+    try {
+      setCooldownMessage(null);
+      const token = (await supabase.auth.getSession()).data?.session?.access_token;
+      const res = await fetch(`${API_URL}/buy-clicks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount: clickAmount }),
+      });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      if (res.status === 429 && clickAmount === 5) {
-        setCooldownMessage(data.error);
-      } else {
-        showMessage(`Purchase failed: ${data.error || "Unknown error"}`, "error");
+      const data = await res.json();
+      if (!res.ok) {
+        if (res.status === 429 && clickAmount === 5) {
+          setCooldownMessage(data.error);
+        } else {
+          showMessage(`Purchase failed: ${data.error || "Unknown error"}`, "error");
+        }
+        return;
       }
-      return;
+
+      showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
+      fetchUserClicks();
+    } catch (e) {
+      console.error("Buy clicks failed:", e);
+      showMessage("Buy clicks failed", "error");
     }
+  };
 
-    showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
-    fetchUserClicks();
-  } catch (e) {
-    console.error("Buy clicks failed:", e);
-    showMessage("Buy clicks failed", "error");
-  }
-};
+  useEffect(() => {
+    if (user) {
+      fetchUserClicks();
+    }
+  }, [user]);
 
-useEffect(() => {
-  if (user) {
-    fetchUserClicks();
-  }
-}, [user]);
+  useEffect(() => {
+    const authBox = document.querySelector(".authBox");
+    if (!authBox) return;
 
-useEffect(() => {
-  const authBox = document.querySelector(".authBox");
-  if (!authBox) return;
+    const inputs = authBox.querySelectorAll("input");
+    inputs.forEach((input) => {
+      const handleFocus = () => (authBox.style.bottom = "200px");
+      const handleBlur = () => (authBox.style.bottom = "20px");
 
-  const inputs = authBox.querySelectorAll("input");
+      input.addEventListener("focus", handleFocus);
+      input.addEventListener("blur", handleBlur);
 
-  inputs.forEach(input => {
-    const handleFocus = () => authBox.style.bottom = "200px";
-    const handleBlur = () => authBox.style.bottom = "20px";
-
-    input.addEventListener("focus", handleFocus);
-    input.addEventListener("blur", handleBlur);
-
-    // Cleanup
-    return () => {
-      input.removeEventListener("focus", handleFocus);
-      input.removeEventListener("blur", handleBlur);
-    };
-  });
-}, []);
-
+      return () => {
+        input.removeEventListener("focus", handleFocus);
+        input.removeEventListener("blur", handleBlur);
+      };
+    });
+  }, []);
 
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
-
       <div className="topLeftMenu">
-          {!user ? (
-            <div className={`authBox ${authOpen ? "expanded" : ""}`}>
-              <button onClick={() => setAuthOpen(!authOpen)}>
-                {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
-              </button>
-
-              {authOpen && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    value={form.username}
-                    onChange={(e) => setForm({ ...form, username: e.target.value })}
-                  />
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  />
-                  <button onClick={handleAuth}>
-                    {authMode === "login" ? "Log In" : "Register"}
-                  </button>
-                  <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-                    Switch to {authMode === "login" ? "Register" : "Login"}
-                  </button>
-                </>
-              )}
-            </div>
-          ) : (
-    <>
-      <div className="authBox loggedIn">
-        <span>Hi {username}</span>
-        <button className="logout" onClick={handleLogout}>Log Out</button>
-      </div>
-
-      <div className="buyMenu">
-        <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
-          {buyMenuOpen ? "Hide User Menu ▲" : "Show User Menu ▼"}
-        </button>
-
-        {buyMenuOpen && (
-          <div className="buyContent">
-            <div className="clicksAvailable">
-              <p></p>
-              <strong>Available Clicks:</strong> {clicksTotal}
-            </div>
-
-            {/* Free Clicks Button */}
-            <button onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
-            {cooldownMessage && (
-              <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
-            )}
-
-            {/* Coming Soon Notice */}
-            {!isPaymentEnabled && (
-              <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-                Paid clicks coming soon
-              </div>
-            )}
-
-            {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
-              ({ clicks, price }) => (
-                <button
-                  key={clicks}
-                  onClick={() => handleBuyClicks(clicks)}
-                  disabled={!isPaymentEnabled}
-                >
-                  Buy {clicks.toLocaleString()} (£{price})
+        {!user ? (
+          <div className={`authBox ${authOpen ? "expanded" : ""}`}>
+            <button onClick={() => setAuthOpen(!authOpen)}>
+              {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
+            </button>
+            {authOpen && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={form.username}
+                  onChange={(e) => setForm({ ...form, username: e.target.value })}
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                />
+                <button onClick={handleAuth}>
+                  {authMode === "login" ? "Log In" : "Register"}
                 </button>
-              )
+                <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
+                  Switch to {authMode === "login" ? "Register" : "Login"}
+                </button>
+              </>
             )}
           </div>
+        ) : (
+          <>
+            <div className="authBox loggedIn">
+              <span>Hi {username}</span>
+              <button className="logout" onClick={handleLogout}>
+                Log Out
+              </button>
+            </div>
+            <div className="buyMenu">
+              <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
+                {buyMenuOpen ? "Hide User Menu ▲" : "Show User Menu ▼"}
+              </button>
+              {buyMenuOpen && (
+                <div className="buyContent">
+                  <div className="clicksAvailable">
+                    <p></p>
+                    <strong>Available Clicks:</strong> {clicksTotal}
+                  </div>
+                  <button onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
+                  {cooldownMessage && (
+                    <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
+                  )}
+                  {!isPaymentEnabled && (
+                    <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+                      Paid clicks coming soon
+                    </div>
+                  )}
+                  {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
+                    ({ clicks, price }) => (
+                      <button
+                        key={clicks}
+                        onClick={() => handleBuyClicks(clicks)}
+                        disabled={!isPaymentEnabled}
+                      >
+                        Buy {clicks.toLocaleString()} (£{price})
+                      </button>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 
-    </>
-  )}
-</div>
-
       <div className="statsMenu">
-      <button onClick={() => setStatsOpen(!statsOpen)}>
-        {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
-      </button>
-      {statsOpen && (
-            <div className="statsContent">
+        <button onClick={() => setStatsOpen(!statsOpen)}>
+          {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
+        </button>
+        {statsOpen && (
+          <div className="statsContent">
             <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
             <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
             <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
@@ -487,7 +449,6 @@ useEffect(() => {
         <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
           {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
         </button>
-
         {leaderboardOpen && (
           <div className="leaderboardContent">
             <ol>
@@ -500,7 +461,6 @@ useEffect(() => {
             </ol>
           </div>
         )}
-        
       </div>
     </>
   );
