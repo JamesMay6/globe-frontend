@@ -397,7 +397,7 @@ return (
             )}
           </div>
         ) : (
-          <>
+         <>
             <div className="authBox loggedIn">
               <span>Hi {username}</span>
               <button className="logout" onClick={handleLogout}>
@@ -434,11 +434,19 @@ return (
                       </button>
                     )
                   )}
+                  {/* Upgrade button inside dropdown */}
+                  <button
+                    style={{ marginTop: "1rem", backgroundColor: "#4caf50" }}
+                    onClick={handleUpgradeClick}
+                    disabled={clicksTotal < 10} // example disable if not enough clicks
+                  >
+                    Upgrade to Super Click (10 clicks)
+                  </button>
                 </div>
               )}
             </div>
-            <button onClick={handleUpgradeClick}>Upgrade to Super Click (10 clicks)</button>
           </>
+
         )}
         
       </div>
