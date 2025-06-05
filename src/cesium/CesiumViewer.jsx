@@ -19,4 +19,6 @@ const CesiumViewer = ({ user }) => {
   return <Viewer full ref={viewerRef} />;
 };
 
-export default CesiumViewer;
+export default function CesiumViewer(props) {
+  return <div>...</div>;
+}
