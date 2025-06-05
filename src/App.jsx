@@ -164,11 +164,16 @@ useEffect(() => {
   }
 
   const handleClick = async (viewer, movement) => {
-    if (!user) {
-      showMessage("You need to log in to delete Earth", "error");
-      return;
-    }
+      if (loadingSession) {
+        showMessage("Checking login status...", "error");
+        return;
+      }
 
+      if (!user) {
+        showMessage("You need to log in to delete Earth", "error");
+        return;
+    }
+    
     if (clicksTotalRef.current <= 0) {
       showMessage("You're out of clicks! Buy more to keep deleting", "error");
       return;
