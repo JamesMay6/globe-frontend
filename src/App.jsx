@@ -27,56 +27,52 @@ function App() {
   const clicksTotalRef = useRef(0);
 
   useEffect(() => {
-    const getSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Failed to get session:", error.message);
-        return;
-      }
-      if (data.session) {
-        setUser(data.session.user); // Fix: correctly set user
-        fetchUserClicks(data.session.access_token); // Fix: use token from session
-      }
-    };
+  const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      setUser(session.user);
+      fetchUserClicks(session.access_token);
+    } else {
+      setUser(null);
+    }
+  });
 
-    getSession();
+  // Check once in case the session is already loaded
+  supabase.auth.getSession().then(({ data }) => {
+    if (data?.session) {
+      setUser(data.session.user);
+      fetchUserClicks(data.session.access_token);
+    }
+  });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      if (session) {
-        fetchUserClicks(session.access_token);
-      }
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
+  return () => {
+    authListener.subscription.unsubscribe();
+  };
+}, []);
 
   useEffect(() => {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
-  const fetchUserClicks = async (token = null) => {
-    const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
-    if (!accessToken) return;
+  const fetchUserClicks = async (token) => {
+  const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
+  if (!accessToken) return;
 
-    const res = await fetch(`${API_URL}/profile`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const res = await fetch(`${API_URL}/profile`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    if (!res.ok) {
-      console.error("Failed to fetch clicks_total");
-      return;
-    }
+  if (!res.ok) {
+    console.error("Failed to fetch clicks_total");
+    return;
+  }
 
-    const data = await res.json();
-    setUsername(data.username);
-    localStorage.setItem("username", data.username); // ✅ Persist username
-    setClicksTotal(data.clicks_total);
-  };
+  const data = await res.json();
+  setUsername(data.username);
+  localStorage.setItem("username", data.username);
+  setClicksTotal(data.clicks_total);
+};
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
   const fakeEmail = (username) => `${username}@delete.theearth`;
