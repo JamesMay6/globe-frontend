@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
@@ -28,62 +27,63 @@ function App() {
   const clicksTotalRef = useRef(0);
 
   useEffect(() => {
-    console.log("User state updated:", user);
-  }, [user]);
+  console.log("User state updated:", user);
+}, [user]);
+
 
   useEffect(() => {
-    const initSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session) {
-        setUser(data.session.user);
-        await fetchUserProfile(data.session.access_token);
-      } else {
-        setUser(null);
-      }
-      setLoadingSession(false);
-    };
+  const initSession = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session) {
+      setUser(data.session.user);
+      await fetchUserProfile(data.session.access_token);
+    } else {
+      setUser(null);
+    }
+    setLoadingSession(false);
+  };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth change:", event, session);
-      if (session) {
-        setUser(session.user);
-        await fetchUserProfile(session.access_token);
-      } else {
-        setUser(null);
-      }
-    });
+  const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log("Auth change:", event, session);
+    if (session) {
+      setUser(session.user);
+      await fetchUserProfile(session.access_token);
+    } else {
+      setUser(null);
+    }
+  });
 
-    initSession();
+  initSession();
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
+  return () => {
+    authListener.subscription.unsubscribe();
+  };
+}, []);
 
   useEffect(() => {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
   const fetchUserProfile = async (token) => {
-    const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
-    if (!accessToken) return;
+  const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
+  if (!accessToken) return;
 
-    const res = await fetch(`${API_URL}/profile`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const res = await fetch(`${API_URL}/profile`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    if (!res.ok) {
-      console.error("Failed to fetch clicks_total");
-      return;
-    }
+  if (!res.ok) {
+    console.error("Failed to fetch clicks_total");
+    return;
+  }
 
-    const data = await res.json();
-    setUsername(data.username);
-    localStorage.setItem("username", data.username);
-    setClicksTotal(data.clicks_total);
-  };
+  const data = await res.json();
+  setUsername(data.username);
+  localStorage.setItem("username", data.username);
+  setClicksTotal(data.clicks_total);
+};
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
   const fakeEmail = (username) => `${username}@delete.theearth`;
@@ -161,16 +161,16 @@ function App() {
   }
 
   const handleClick = async (viewer, movement) => {
-    if (loadingSession) {
-      showMessage("Checking login status...", "warn");
-      return;
-    }
+      if (loadingSession) {
+        showMessage("Checking login status...", "warn");
+        return;
+      }
 
-    if (!user) {
-      showMessage("You need to log in to delete Earth", "error");
-      return;
+      if (!user) {
+        showMessage("You need to log in to delete Earth", "error");
+        return;
     }
-
+    
     if (clicksTotalRef.current <= 0) {
       showMessage("You're out of clicks! Buy more to keep deleting", "error");
       return;
@@ -219,61 +219,50 @@ function App() {
   };
 
   useEffect(() => {
-  const initCesium = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    const container = document.getElementById("cesiumContainer");
-    if (!container) {
-      console.error("Cesium container not found");
-      return;
-    }
-
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
 
-    const terrainProvider = await Cesium.createWorldTerrainAsync();
-    const viewer = new Cesium.Viewer(container, {
-      terrainProvider,
-      animation: false,
-      timeline: false,
-      baseLayerPicker: false,
-      homeButton: false,
-      sceneModePicker: false,
-      navigationHelpButton: false,
-      geocoder: true,
-      requestRenderMode: true,
-      maximumRenderTimeChange: 0,
-    });
+    (async () => {
+      const terrainProvider = await Cesium.createWorldTerrainAsync();
+      const viewer = new Cesium.Viewer("cesiumContainer", {
+        terrainProvider,
+        animation: false,
+        timeline: false,
+        baseLayerPicker: false,
+        homeButton: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        geocoder: true,
+        requestRenderMode: true,
+        maximumRenderTimeChange: 0,
+      });
 
-    viewer.trackedEntity = undefined;
-    viewerRef.current = viewer;
+      viewer.trackedEntity = undefined;
 
-    const controller = viewer.scene.screenSpaceCameraController;
-    controller.zoomFactor = 17.0;
-    controller.inertiaZoom = 0.9;
+      const controller = viewer.scene.screenSpaceCameraController;
+      controller.zoomFactor = 17.0;
+      controller.inertiaZoom = 0.9;
 
-    await fetchDeletedCells(viewer);
-    fetchTotals();
+      viewerRef.current = viewer;
 
-    viewer.camera.moveEnd.addEventListener(() => {
-      fetchDeletedCells(viewer);
-    });
+      await fetchDeletedCells(viewer);
+      fetchTotals();
 
-    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    handler.setInputAction((movement) => {
-      handleClick(viewer, movement);
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-  };
+      viewer.camera.moveEnd.addEventListener(() => {
+        fetchDeletedCells(viewer);
+      });
 
-  initCesium();
+      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+      handler.setInputAction((movement) => {
+        handleClick(viewer, movement);
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    })();
 
-  return () => {
-    if (viewerRef.current && !viewerRef.current.isDestroyed()) {
-      viewerRef.current.destroy();
-    }
-  };
-}, []);
-
-
+    return () => {
+      if (viewerRef.current && !viewerRef.current.isDestroyed()) {
+        viewerRef.current.destroy();
+      }
+    };
+  }, [user]);
 
   const handleAuth = async () => {
     const email = fakeEmail(form.username);
@@ -312,7 +301,8 @@ function App() {
         if (!data.session) return alert("No session returned");
 
         setUser(data.session.user);
-        await fetchUserProfile(data.session.access_token);
+        await fetchUserProfile(data.session.access_token); // ✅ Add this
+
       }
     } catch (err) {
       console.error("Authentication error:", err);
@@ -377,10 +367,6 @@ function App() {
     });
   }, []);
 
-  if (loadingSession) {
-    return <div>Loading session...</div>; // or a spinner
-  }
-
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
@@ -388,7 +374,7 @@ function App() {
         {!user ? (
           <div className={`authBox ${authOpen ? "expanded" : ""}`}>
             <button onClick={() => setAuthOpen(!authOpen)}>
-              {authOpen ? "Hide Login / Register ▲" : "Show Login / Register ▼"}
+              {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
             </button>
             {authOpen && (
               <>
