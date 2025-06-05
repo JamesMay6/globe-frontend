@@ -463,9 +463,7 @@ return (
                       </button>
                     )
                   )}
-                </div>
-              )}
-              {/* Upgrade button inside dropdown */}
+                  {/* Upgrade button inside dropdown */}
                 <button
                   style={{ marginTop: "1rem", backgroundColor: "#4caf50" }}
                   onClick={handleUpgradeClick}
@@ -473,6 +471,9 @@ return (
                 >
                   Upgrade to Super Click (10 clicks)
                 </button>
+                </div>
+              )}
+              
             </div>
           </>
         )}
