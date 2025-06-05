@@ -34,7 +34,7 @@ useEffect(() => {
   if (user) {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.access_token) {
-        fetchUserClicks(data.session.access_token);
+        fetchUserProfile(data.session.access_token);
       }
     });
   }
@@ -66,7 +66,7 @@ useEffect(() => {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
-  const fetchUserClicks = async (token) => {
+  const fetchUserProfile = async (token) => {
   const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
   if (!accessToken) return;
 
@@ -206,7 +206,7 @@ useEffect(() => {
 
       showMessage("Earth deleted");
       fetchTotals();
-      fetchUserClicks();
+      fetchUserProfile();
     } catch (error) {
       console.error("Delete request failed:", error);
       showMessage("Error deleting Earth.");
@@ -271,7 +271,7 @@ useEffect(() => {
         if (!data.session || !data.user) return alert("No session returned");
 
         setUser(data.session.user);
-        await fetchUserClicks(data.session.access_token);
+        await fetchUserProfile(data.session.access_token);
 
         const res = await fetch(`${API_URL}/create-profile`, {
           method: "POST",
@@ -296,7 +296,7 @@ useEffect(() => {
         if (!data.session) return alert("No session returned");
 
         setUser(data.session.user);
-        await fetchUserClicks(data.session.access_token); // ✅ Add this
+        await fetchUserProfile(data.session.access_token); // ✅ Add this
 
       }
     } catch (err) {
@@ -336,18 +336,12 @@ useEffect(() => {
       }
 
       showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
-      fetchUserClicks();
+      fetchUserProfile();
     } catch (e) {
       console.error("Buy clicks failed:", e);
       showMessage("Buy clicks failed", "error");
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      fetchUserClicks();
-    }
-  }, [user]);
 
   useEffect(() => {
     const authBox = document.querySelector(".authBox");
