@@ -27,6 +27,32 @@ function App() {
 
 
   const clicksTotalRef = useRef(0);
+
+  useEffect(() => {
+  // Restore session on page load
+  const getSession = async () => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error("Failed to get session:", error.message);
+      return;
+    }
+    if (data.session) {
+      setUser(data.session);
+    }
+  };
+
+  getSession();
+
+  // Optional: subscribe to auth changes (e.g., for multi-tab support)
+  const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session);
+  });
+
+  return () => {
+    authListener.subscription.unsubscribe();
+  };
+}, []);
+
     // Keep the ref updated
   useEffect(() => {
     clicksTotalRef.current = clicksTotal;
@@ -180,7 +206,6 @@ function showMessage(text, type = "success", duration = 1000) {
     showMessage("Error deleting Earth.");
   }
 };
-
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
