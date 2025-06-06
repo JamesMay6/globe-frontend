@@ -266,7 +266,6 @@ export default function App() {
         data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
       }
 
-      fetchTotals();
       fetchUserProfile();
       showMessage(isSuper ? "Earth deleted with Super Click" : "Earth deleted!");
     } catch (err) {
@@ -303,7 +302,6 @@ export default function App() {
       controller.inertiaZoom = 0.9;
 
       await fetchDeletedCells(viewer);
-      fetchTotals();
 
       viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
 
@@ -483,7 +481,7 @@ export default function App() {
       </div>
 
       <div className="statsMenu">
-        <button onClick={() => setStatsOpen(!statsOpen)}>
+        <button onClick={() => {setStatsOpen(!statsOpen);fetchTotals();}}>
           {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
         </button>
         {statsOpen && (
