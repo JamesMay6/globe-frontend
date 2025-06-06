@@ -622,6 +622,7 @@ function App() {
   }, [uiState.authOpen]);
 
   // ========== RENDER ==========
+  /*
   if (loadingSession) {
     return (
       <div className="loading-screen">
@@ -638,6 +639,7 @@ function App() {
       </div>
     );
   }
+    */
 
   return (
     <>      
