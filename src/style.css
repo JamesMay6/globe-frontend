@@ -69,6 +69,27 @@ button.cesium-infoBox-close {
   display: none !important;
 }
 
+/* Zoom Out Button */
+.zoom-out-button {
+  position: absolute;
+  top: 55px; /* Slightly below geocoder (adjust as needed) */
+  right: 5px;
+  z-index: 10;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  font-family: sans-serif;
+  transition: background 0.2s ease;
+}
+
+.zoom-out-button:hover {
+  background: #333;
+}
 /* Auth Box – Top Left Dropdown */
 .authBox {
   background: #222;

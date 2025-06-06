@@ -191,6 +191,8 @@ export default function App() {
     if (!isSuper && clicksRef.current <= 0) return showMessage("You're out of clicks!", "error");
     if (isSuper && superClicksRef.current <= 0) return showMessage("You're out of super clicks!", "error");
 
+    showMessage(isSuper ? "Super Click deleting Earth" : "Deleting Earth");
+
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
     if (!cartesian) return;
@@ -219,7 +221,7 @@ export default function App() {
 
       fetchTotals();
       fetchUserProfile();
-      showMessage(isSuper ? "Super Earth deleted!" : "Earth deleted!");
+      showMessage(isSuper ? "Earth deleted with Super Click" : "Earth deleted!");
     } catch (err) {
       console.error(err);
       showMessage("Error deleting Earth", "error");
@@ -320,9 +322,17 @@ export default function App() {
 
   // ==================== RENDER ====================
 
+  function zoomOut() {
+  viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 20000000.0)
+  });
+}
+
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
+      <button class="zoom-out-button" onclick={zoomOut()}>Show Full Earth</button>
+
       <div className="topLeftMenu">
         {!user ? (
           <div className={`authBox ${authOpen ? "expanded" : ""}`}>
