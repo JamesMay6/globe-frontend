@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
-import { fetchUserProfile, handleAuth, handleLogout, setupAuthListener } from "../src/auth/auth";
+import { fetchUserProfile, handleAuth, handleLogout} from "./auth";
 
 import {
   API_URL,
@@ -64,6 +64,31 @@ export default function App() {
       else requestAnimationFrame(check);
     };
     check();
+  }, []);
+
+//INIT SESSION
+  useEffect(() => {
+    const initSession = async () => {
+      setLoadingSession(true);
+      const { data: { session } } = await SUPABASE.auth.getSession();
+      if (session) {
+        setUser(session.user);
+        await fetchUserProfile(session.access_token);
+      }
+      setLoadingSession(false);
+    };
+
+    const { data: authListener } = SUPABASE.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        setUser(session.user);
+        await fetchUserProfile(session.access_token);
+      } else {
+        setUser(null);
+      }
+    });
+
+    initSession();
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
   // ==================== DATA ====================
