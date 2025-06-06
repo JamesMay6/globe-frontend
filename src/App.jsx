@@ -26,6 +26,7 @@ export default function App() {
   // ---------- State ----------
   const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState("login");
+  const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [form, setForm] = useState({ username: "", password: "" });
   const [clicksTotal, setClicksTotal] = useState(0);
   const [superClicksTotal, setSuperClicksTotal] = useState(0);
