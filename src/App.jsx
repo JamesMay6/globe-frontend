@@ -26,6 +26,8 @@ function App() {
   const [loadingSession, setLoadingSession] = useState(true);
   const clicksTotalRef = useRef(0);
   const [superClicks, setSuperClicks] = useState(0);
+  const [superClickEnabled, setSuperClickEnabled] = useState(false);
+
 
 
   useEffect(() => {
@@ -168,57 +170,65 @@ function App() {
   }
 
   const handleClick = async (viewer, movement) => {
-      if (!user) {
-        showMessage("You need to log in to delete Earth", "error");
-        return;
-    }
-    
-    if (clicksTotalRef.current <= 0) {
-      showMessage("You're out of clicks! Buy more to keep deleting", "error");
+  if (!user) {
+    showMessage("You need to log in to delete Earth", "error");
+    return;
+  }
+
+  if (!superClickEnabled && clicksTotalRef.current <= 0) {
+    showMessage("You're out of clicks! Buy more to keep deleting", "error");
+    return;
+  }
+
+  showMessage(superClickEnabled ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
+
+  const ray = viewer.camera.getPickRay(movement.position);
+  const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+  viewer.trackedEntity = undefined;
+  if (!cartesian) return;
+
+  const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+  const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
+  const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
+
+  drawDeletedCell(viewer, lat, lon);
+  viewer.scene.requestRender();
+  viewer.scene.render();
+
+  try {
+    const token = (await supabase.auth.getSession()).data?.session?.access_token;
+    const res = await fetch(`${API_URL}/delete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ lat, lon, superClick: superClickEnabled }),
+    });
+
+    const data = await res.json();
+
+    if (data.alreadyDeleted) {
+      showMessage("Earth is already deleted here", "error");
       return;
     }
 
-    showMessage("Deleting Earth..", "warn");
-
-    const ray = viewer.camera.getPickRay(movement.position);
-    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-    viewer.trackedEntity = undefined;
-    if (!cartesian) return;
-
-    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-
-    drawDeletedCell(viewer, lat, lon);
-    viewer.scene.requestRender();
-    viewer.scene.render();
-
-    try {
-      const token = (await supabase.auth.getSession()).data?.session?.access_token;
-      const res = await fetch(`${API_URL}/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ lat, lon }),
+    // Optionally draw nearby cells in superClick mode
+    if (superClickEnabled && Array.isArray(data.coordinates)) {
+      data.coordinates.forEach(({ lat, lon }) => {
+        drawDeletedCell(viewer, lat, lon);
       });
-
-      const data = await res.json();
-
-      if (data.alreadyDeleted) {
-        showMessage("Earth is already deleted here", "error");
-        return;
-      }
-
-      showMessage("Earth deleted");
-      fetchTotals();
-      fetchUserProfile();
-    } catch (error) {
-      console.error("Delete request failed:", error);
-      showMessage("Error deleting Earth.");
     }
-  };
+
+    showMessage(superClickEnabled ? "Super Earth deleted!" : "Earth deleted");
+    fetchTotals();
+    fetchUserProfile();
+  } catch (error) {
+    console.error("Delete request failed:", error);
+    showMessage("Error deleting Earth.");
+  }
+};
+
 
   useEffect(() => {
     Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
@@ -445,6 +455,16 @@ function App() {
                     <div><strong>Available Clicks:</strong> {clicksTotal}</div>
                     <div><strong>Available Super Clicks:</strong> {superClicks}</div>
                   </div>
+                  <div className="superClickToggle" style={{ marginTop: "1rem" }}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={superClickEnabled}
+                        onChange={() => setSuperClickEnabled(!superClickEnabled)}
+                      />
+                      Enable Super Click
+                    </label>
+                  </div>
                   <button className="freeClicksButton" onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
@@ -472,6 +492,7 @@ function App() {
                       <button onClick={handleUpgradeSuperClick} className="superClickButton">
                         Upgrade to a Super Click
                       </button>
+                      <p className="info-text">Use 200 clicks which are worth 500 when you use a super click!</p>
                   </div>
                 </div>
               )}

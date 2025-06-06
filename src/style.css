@@ -312,6 +312,14 @@ button.cesium-infoBox-close {
   margin-top: 5px;
 }
 
+.freeClicksButton {
+  margin-top: 10px;
+}
+
+.upgradesMenu {
+  margin-top: 10px;
+}
+
 .superClickButton {
   background-color: #ff5722;
   color: white;
@@ -324,18 +332,14 @@ button.cesium-infoBox-close {
   transition: background-color 0.2s ease;
 }
 
-.freeClicksButton {
-  margin-top: 10px;
-}
-
-.upgradesMenu {
-  margin-top: 10px;
-}
-
 .superClickButton:hover {
   background-color: #e64a19;
 }
 
+.info-text {
+  font-size:10px;
+  color: #bbb;
+}
 /* Default (desktop): fixed width */
 .topMenu,
 .statsMenu,
