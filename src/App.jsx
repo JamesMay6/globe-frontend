@@ -25,7 +25,8 @@ function App() {
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [loadingSession, setLoadingSession] = useState(true);
   const clicksTotalRef = useRef(0);
-  const [superClicks, setSuperClicks] = useState(0);
+  const [superClicksTotal, setSuperClicksTotal] = useState(0);
+  const superClicksTotalRef = useRef(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const superClickEnabledRef = useRef(false);
 
@@ -75,6 +76,10 @@ useEffect(() => {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
 
+  useEffect(() => {
+    superClicksTotalRef.current = superClicksTotal;
+  }, [superClicksTotal]);
+
   const fetchUserProfile = async (token) => {
   const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
   if (!accessToken) return;
@@ -94,7 +99,7 @@ useEffect(() => {
   setUsername(data.username);
   localStorage.setItem("username", data.username);
   setClicksTotal(data.clicks_total);
-  setSuperClicks(data.super_clicks);
+  setSuperClicksTotal(data.super_clicks);
 };
 
   const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
@@ -184,6 +189,12 @@ useEffect(() => {
     showMessage("You're out of clicks! Buy more to keep deleting", "error");
     return;
   }
+
+  if (isSuper && superClicksTotalRef.current <= 0) {
+    showMessage("You're out of super clicks. Upgrade your clicks!", "error");
+    return;
+  }
+
 
   showMessage(isSuper ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
 
@@ -458,7 +469,7 @@ useEffect(() => {
                 <div className="buyContent">
                   <div className="clicksAvailable">
                     <div><strong>Available Clicks:</strong> {clicksTotal}</div>
-                    <div><strong>Available Super Clicks:</strong> {superClicks}</div>
+                    <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
                   </div>
                   <div className="superClickToggle" style={{ marginTop: "1rem" }}>
                     <label>
