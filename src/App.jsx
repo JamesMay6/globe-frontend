@@ -1,7 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
-import "./config"
+import {
+  API_URL,
+  CESIUM_TOKEN,
+  isPaymentEnabled,
+  MIN_ZOOM_LEVEL,
+  ZOOM_FACTOR,
+  INERTIA_ZOOM,
+  ZOOM_OUT_LEVEL,
+  BUY_CLICKS_PACKAGE_ONE,
+  BUY_CLICKS_PACKAGE_TWO,
+  BUY_CLICKS_PACKAGE_THREE,
+  BUY_CLICKS_PACKAGE_ONE_COST,
+  BUY_CLICKS_PACKAGE_TWO_COST,
+  BUY_CLICKS_PACKAGE_THREE_COST,
+  FREE_CLICKS,
+  SUPABASE
+} from './config/config';
+
 // ==================== APP ====================
 export default function App() {
   // ---------- State ----------
@@ -51,7 +68,7 @@ export default function App() {
   const fakeEmail = (username) => `${username}@delete.theearth`;
 
   const fetchUserProfile = async (token) => {
-    const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
+    const accessToken = token || (await SUPABASE.auth.getSession()).data?.session?.access_token;
     if (!accessToken) return;
 
     const res = await fetch(`${API_URL}/profile`, {
@@ -70,7 +87,7 @@ export default function App() {
     const email = fakeEmail(form.username);
     try {
       if (authMode === "register") {
-        const { data, error } = await supabase.auth.signUp({ email, password: form.password });
+        const { data, error } = await SUPABASE.auth.signUp({ email, password: form.password });
         if (error || !data.session) return alert(error?.message || "No session returned");
         setUser(data.session.user);
         await fetchUserProfile(data.session.access_token);
@@ -84,7 +101,7 @@ export default function App() {
         });
         alert("Registration successful!");
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password: form.password });
+        const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
         if (error || !data.session) return alert(error?.message || "No session returned");
         setUser(data.session.user);
         await fetchUserProfile(data.session.access_token);
@@ -96,7 +113,7 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await SUPABASE.auth.signOut();
     setUser(null);
     setUsername(null);
     localStorage.removeItem("username");
@@ -105,7 +122,7 @@ export default function App() {
   useEffect(() => {
     const initSession = async () => {
       setLoadingSession(true);
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await SUPABASE.auth.getSession();
       if (session) {
         setUser(session.user);
         await fetchUserProfile(session.access_token);
@@ -113,7 +130,7 @@ export default function App() {
       setLoadingSession(false);
     };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: authListener } = SUPABASE.auth.onAuthStateChange(async (event, session) => {
       if (session) {
         setUser(session.user);
         await fetchUserProfile(session.access_token);
@@ -250,7 +267,7 @@ export default function App() {
     drawDeletedCell(viewer, lat, lon);
 
     try {
-      const token = (await supabase.auth.getSession()).data?.session?.access_token;
+      const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
       const res = await fetch(`${API_URL}/delete`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -322,7 +339,7 @@ export default function App() {
 
   const handleBuyClicks = async (amount) => {
     try {
-      const token = (await supabase.auth.getSession()).data?.session?.access_token;
+      const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
       const res = await fetch(`${API_URL}/buy-clicks`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -346,7 +363,7 @@ export default function App() {
 
   const handleUpgradeSuperClick = async () => {
     try {
-      const token = (await supabase.auth.getSession()).data?.session?.access_token;
+      const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
       const res = await fetch(`${API_URL}/profile/upgrade-super-click`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
