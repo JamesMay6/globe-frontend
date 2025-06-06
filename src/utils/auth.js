@@ -56,3 +56,28 @@ import { useState } from "react";
     setUsername(null);
     localStorage.removeItem("username");
   };
+
+  //INIT SESSION
+    useEffect(() => {
+      const initSession = async () => {
+        setLoadingSession(true);
+        const { data: { session } } = await SUPABASE.auth.getSession();
+        if (session) {
+          setUser(session.user);
+          await fetchUserProfile(session.access_token);
+        }
+        setLoadingSession(false);
+      };
+  
+      const { data: authListener } = SUPABASE.auth.onAuthStateChange(async (event, session) => {
+        if (session) {
+          setUser(session.user);
+          await fetchUserProfile(session.access_token);
+        } else {
+          setUser(null);
+        }
+      });
+  
+      initSession();
+      return () => authListener.subscription.unsubscribe();
+    }, []);
