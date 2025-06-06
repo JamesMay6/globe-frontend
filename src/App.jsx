@@ -169,7 +169,7 @@ function App() {
     }, duration);
   }
 
-  const handleClick = async (viewer, movement) => {
+  const handleClick = useCallback(async (viewer, movement) => {
   if (!user) {
     showMessage("You need to log in to delete Earth", "error");
     return;
@@ -227,7 +227,7 @@ function App() {
     console.error("Delete request failed:", error);
     showMessage("Error deleting Earth.");
   }
-};
+}, [user, superClickEnabled, clicksTotal]); 
 
 
   useEffect(() => {
@@ -472,7 +472,7 @@ function App() {
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
                   )}
-                  
+
                   {!isPaymentEnabled && (
                     <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
                       Paid clicks coming soon
