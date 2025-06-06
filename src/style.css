@@ -73,7 +73,7 @@ button.cesium-infoBox-close {
 .zoom-out-button {
   position: absolute;
   top: 55px; /* Slightly below geocoder (adjust as needed) */
-  right: 5px;
+  right: 10px;
   z-index: 10;
   background: #222;
   color: white;
