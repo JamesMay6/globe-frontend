@@ -171,6 +171,7 @@ export default function App() {
         classificationType: Cesium.ClassificationType.BOTH,
       },
     });
+    viewer.scene.requestRender();
   };
 
   // ==================== DRAW LOADED CELLS ====================
@@ -249,8 +250,6 @@ export default function App() {
     const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
     drawDeletedCell(viewer, lat, lon);
-    viewer.scene.render(); // 👈 forces immediate render (optional but helps visually)
-    viewer.scene.requestRender();
 
     try {
       const token = (await supabase.auth.getSession()).data?.session?.access_token;
