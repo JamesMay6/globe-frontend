@@ -465,14 +465,12 @@ function App() {
                       Enable Super Click
                     </label>
                   </div>
+                  <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+                      Purchase Clicks
+                    </div>
                   <button className="freeClicksButton" onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
-                  )}
-                  {!isPaymentEnabled && (
-                    <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-                      Paid clicks coming soon
-                    </div>
                   )}
                   {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
                     ({ clicks, price }) => (
@@ -481,7 +479,7 @@ function App() {
                         onClick={() => handleBuyClicks(clicks)}
                         disabled={!isPaymentEnabled}
                       >
-                        Buy {clicks.toLocaleString()} (£{price})
+                        Buy {clicks.toLocaleString()} (£{price}) 
                       </button>
                     )
                   )}
@@ -492,7 +490,7 @@ function App() {
                       <button onClick={handleUpgradeSuperClick} className="superClickButton">
                         Upgrade to a Super Click
                       </button>
-                      <p className="info-text">Use 200 clicks which are worth 500 when you use a super click!</p>
+                      <p className="info-text">Use 200 clicks to get 1 Super Click, which delete 500 coordinates at once!</p>
                   </div>
                 </div>
               )}
