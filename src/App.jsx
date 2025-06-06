@@ -249,6 +249,7 @@ export default function App() {
     const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
     drawDeletedCell(viewer, lat, lon);
+    viewer.scene.render(); // 👈 forces immediate render (optional but helps visually)
     viewer.scene.requestRender();
 
     try {
