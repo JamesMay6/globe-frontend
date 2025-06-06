@@ -281,6 +281,17 @@ function App() {
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [error, setError] = useState(null);
+  const [containerReady, setContainerReady] = useState(false);
+
+  //Container Setup
+  useEffect(() => {
+  const check = () => {
+    const el = document.getElementById("cesiumContainer");
+    if (el) setContainerReady(true);
+    else requestAnimationFrame(check);
+  };
+  check();
+}, []);
   
   // Game state
   const [gameState, dispatchGame] = useReducer(gameStateReducer, initialGameState);
@@ -539,44 +550,41 @@ function App() {
 
   // Initialize Cesium viewer - runs once
   useEffect(() => {
-    let viewer = null;
-    let handler = null;
+  if (!containerReady) return;
 
-    const initCesium = async () => {
-      try {
-        viewer = await CesiumHelpers.setupViewer();
-        viewerRef.current = viewer;
+  let viewer = null;
+  let handler = null;
 
-        await fetchDeletedCells(viewer);
-        fetchTotals();
+  const initCesium = async () => {
+    try {
+      viewer = await CesiumHelpers.setupViewer();
+      viewerRef.current = viewer;
 
-        // Set up event handlers
-        viewer.camera.moveEnd.addEventListener(() => {
-          debouncedFetchCells(viewer);
-        });
+      await fetchDeletedCells(viewer);
+      fetchTotals();
 
-        handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-        handler.setInputAction((movement) => {
-          handleClick(viewer, movement);
-        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      viewer.camera.moveEnd.addEventListener(() => {
+        debouncedFetchCells(viewer);
+      });
 
-      } catch (err) {
-        console.error("Cesium initialization failed:", err);
-        setError("Failed to initialize 3D viewer");
-      }
-    };
+      handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+      handler.setInputAction((movement) => {
+        handleClick(viewer, movement);
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-    initCesium();
+    } catch (err) {
+      console.error("Cesium initialization failed:", err);
+      setError("Failed to initialize 3D viewer");
+    }
+  };
 
-    return () => {
-      if (handler && !handler.isDestroyed()) {
-        handler.destroy();
-      }
-      if (viewer && !viewer.isDestroyed()) {
-        viewer.destroy();
-      }
-    };
-  }, [fetchDeletedCells, fetchTotals, debouncedFetchCells, handleClick]);
+  initCesium();
+
+  return () => {
+    if (handler && !handler.isDestroyed()) handler.destroy();
+    if (viewer && !viewer.isDestroyed()) viewer.destroy();
+  };
+}, [containerReady, fetchDeletedCells, fetchTotals, debouncedFetchCells, handleClick]);
 
   // Fetch leaderboard when opened
   useEffect(() => {
