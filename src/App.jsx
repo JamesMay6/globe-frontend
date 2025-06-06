@@ -172,7 +172,6 @@ export default function App() {
       },
     });
     viewer.scene.requestRender();
-    handleDummyClick();
   };
 
   // ==================== DRAW LOADED CELLS ====================
@@ -233,21 +232,22 @@ export default function App() {
     drawDeletedCells(viewer, cells);
   };
 
-  const handleDummyClick = async (viewer, movement) => {
-    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-    if (!cartesian) return;
-
-    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-  };
-
   const handleClick = async (viewer, movement) => {
     if (!userRef.current) return showMessage("You need to log in to delete Earth", "error");
 
     const isSuper = superClickEnabledRef.current;
     if (!isSuper && clicksRef.current <= 0) return showMessage("You're out of clicks!", "error");
     if (isSuper && superClicksRef.current <= 0) return showMessage("You're out of super clicks!", "error");
+
+    // Get the camera height above the ellipsoid (in meters)
+    const cameraHeight = viewer.camera.positionCartographic.height;
+
+    // Set your zoom threshold (e.g., 10,000 meters = zoomed in)
+    const zoomThreshold = 10000;
+
+    if (cameraHeight > zoomThreshold) {
+      return showMessage("Zoom in closer to delete Earth", "error");
+    }
 
     showMessage(isSuper ? "Super Click deleting Earth" : "Deleting Earth", "warn");
 
