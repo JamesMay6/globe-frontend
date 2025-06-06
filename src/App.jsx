@@ -130,6 +130,7 @@ const CesiumHelpers = {
   },
 
   setupViewer: async () => {
+  await new Promise(requestAnimationFrame);
   const container = document.getElementById("cesiumContainer");
   if (!container) throw new Error("Cesium container not found");
   
