@@ -286,14 +286,16 @@ button.cesium-infoBox-close {
 }
 .toastMessage.success {
   background: #106a25; /* green */
+  bottom: 75px !important;
 }
 
 .toastMessage.error {
   background: #9a1321; /* red */
+  bottom: 60px !important;
 }
 
 .toastMessage.warn {
-  background: #ed8830; /* red */
+  background: #ed8830; /* yellow */
 }
 
 .topLeftMenu {
