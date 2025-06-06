@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
-import { fetchUserProfile, handleAuth, handleLogout, setupAuthListener } from "./utils/auth";
+import { fetchUserProfile, handleAuth, handleLogout, setupAuthListener } from "../src/auth/auth";
 
 import {
   API_URL,
