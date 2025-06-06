@@ -29,15 +29,34 @@ function App() {
   const superClicksTotalRef = useRef(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const superClickEnabledRef = useRef(false);
+  const userRef = useRef(null);
 
+  //USE EFFCTS
   useEffect(() => {
   console.log("User state updated:", user);
-}, [user]);
+  }, [user]);
 
-useEffect(() => {
-  superClickEnabledRef.current = superClickEnabled;
-}, [superClickEnabled]);
+  useEffect(() => {
+    superClickEnabledRef.current = superClickEnabled;
+  }, [superClickEnabled]);
 
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
+
+   useEffect(() => {
+    clicksTotalRef.current = clicksTotal;
+  }, [clicksTotal]);
+
+  useEffect(() => {
+    superClicksTotalRef.current = superClicksTotal;
+  }, [superClicksTotal]);
+
+  useEffect(() => {
+    if (leaderboardOpen) {
+      fetchTopUsers();
+    }
+  }, [leaderboardOpen]);
 
   useEffect(() => {
   const initSession = async () => {
@@ -72,14 +91,7 @@ useEffect(() => {
   };
 }, []);
 
-  useEffect(() => {
-    clicksTotalRef.current = clicksTotal;
-  }, [clicksTotal]);
-
-  useEffect(() => {
-    superClicksTotalRef.current = superClicksTotal;
-  }, [superClicksTotal]);
-
+ 
   const fetchUserProfile = async (token) => {
   const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
   if (!accessToken) return;
@@ -159,12 +171,7 @@ useEffect(() => {
     }
   };
 
-  useEffect(() => {
-    if (leaderboardOpen) {
-      fetchTopUsers();
-    }
-  }, [leaderboardOpen]);
-
+ 
   function showMessage(text, type = "success", duration = 650) {
     const message = document.createElement("div");
     message.textContent = text;
@@ -178,7 +185,7 @@ useEffect(() => {
   }
 
   const handleClick = async (viewer, movement) => {
-  if (!user) {
+  if (!userRef.current) {
     showMessage("You need to log in to delete Earth", "error");
     return;
   }
@@ -512,7 +519,7 @@ useEffect(() => {
                       <button onClick={handleUpgradeSuperClick} className="superClickButton">
                         Upgrade to a Super Click
                       </button>
-                      <p className="info-text">Use 200 clicks to get 1 Super Click, which delete 500 coordinates at once!</p>
+                      <p className="info-text">Use 200 clicks to get 1 Super Click, which deletes over 500 coordinates at once!</p>
                   </div>
                 </div>
               )}
