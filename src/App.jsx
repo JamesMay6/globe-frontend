@@ -321,12 +321,11 @@ export default function App() {
   };
 
   // ==================== RENDER ====================
-
-  function zoomOut() {
-  viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 20000000.0)
-  });
-}
+  const zoomOut = () => {
+    viewerRef.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 20000000.0)
+    });
+  };
 
   return (
     <>
