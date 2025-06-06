@@ -27,12 +27,15 @@ function App() {
   const clicksTotalRef = useRef(0);
   const [superClicks, setSuperClicks] = useState(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
-
-
+  const superClickEnabledRef = useRef(false);
 
   useEffect(() => {
   console.log("User state updated:", user);
 }, [user]);
+
+useEffect(() => {
+  superClickEnabledRef.current = superClickEnabled;
+}, [superClickEnabled]);
 
 
   useEffect(() => {
@@ -169,18 +172,20 @@ function App() {
     }, duration);
   }
 
-  const handleClick = useCallback(async (viewer, movement) => {
+  const handleClick = async (viewer, movement) => {
   if (!user) {
     showMessage("You need to log in to delete Earth", "error");
     return;
   }
 
-  if (!superClickEnabled && clicksTotalRef.current <= 0) {
+  const isSuper = superClickEnabledRef.current;
+
+  if (!isSuper && clicksTotalRef.current <= 0) {
     showMessage("You're out of clicks! Buy more to keep deleting", "error");
     return;
   }
 
-  showMessage(superClickEnabled ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
+  showMessage(isSuper ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
 
   const ray = viewer.camera.getPickRay(movement.position);
   const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
@@ -203,7 +208,7 @@ function App() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ lat, lon, superClick: superClickEnabled }),
+      body: JSON.stringify({ lat, lon, superClick: isSuper }),
     });
 
     const data = await res.json();
@@ -214,20 +219,20 @@ function App() {
     }
 
     // Optionally draw nearby cells in superClick mode
-    if (superClickEnabled && Array.isArray(data.coordinates)) {
+    if (isSuper && Array.isArray(data.coordinates)) {
       data.coordinates.forEach(({ lat, lon }) => {
         drawDeletedCell(viewer, lat, lon);
       });
     }
 
-    showMessage(superClickEnabled ? "Super Earth deleted!" : "Earth deleted");
+    showMessage(isSuper ? "Super Earth deleted!" : "Earth deleted");
     fetchTotals();
     fetchUserProfile();
   } catch (error) {
     console.error("Delete request failed:", error);
     showMessage("Error deleting Earth.");
   }
-}, [user, superClickEnabled, clicksTotal]); 
+};
 
 
   useEffect(() => {
@@ -472,7 +477,7 @@ function App() {
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
                   )}
-
+                  
                   {!isPaymentEnabled && (
                     <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
                       Paid clicks coming soon
