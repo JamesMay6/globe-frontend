@@ -41,6 +41,11 @@ const debounce = (func, wait) => {
 // Toast notification system
 class ToastManager {
   static show(text, type = "success", duration = CONFIG.MESSAGE_DURATION) {
+    if (!document.body) {
+      console.warn("Cannot show toast: document.body is null");
+      return;
+    }
+
     const existingToasts = document.querySelectorAll('.toastMessage');
     existingToasts.forEach(toast => toast.remove());
 
