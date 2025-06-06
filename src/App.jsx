@@ -266,8 +266,8 @@ export default function App() {
         data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
       }
 
-      fetchUserProfile();
       showMessage(isSuper ? "Earth deleted with Super Click" : "Earth deleted!");
+      fetchUserProfile();
     } catch (err) {
       console.error(err);
       showMessage("Error deleting Earth", "error");
