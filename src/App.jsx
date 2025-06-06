@@ -37,7 +37,7 @@ const debounce = (func, wait) => {
     timeout = setTimeout(later, wait);
   };
 };
-
+/*
 // Toast notification system
 class ToastManager {
   static show(text, type = "success", duration = CONFIG.MESSAGE_DURATION) {
@@ -60,6 +60,7 @@ class ToastManager {
     }, duration);
   }
 }
+  */
 
 // ==================== GAME STATE REDUCER ====================
 const gameStateReducer = (state, action) => {
