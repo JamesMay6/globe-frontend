@@ -322,10 +322,15 @@ export default function App() {
 
   // ==================== RENDER ====================
   const zoomOut = () => {
-    viewerRef.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 20000000.0)
-    });
-  };
+    const viewer = viewerRef.current;
+    if (viewer) {
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 20000000.0),
+      });
+    } else {
+      console.warn("Viewer not ready yet");
+    }
+  }
 
   return (
     <>
