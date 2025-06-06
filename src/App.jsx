@@ -234,7 +234,6 @@ export default function App() {
   };
 
   const handleDummyClick = async (viewer, movement) => {
-    const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
     if (!cartesian) return;
 
