@@ -156,6 +156,24 @@ export default function App() {
   // ==================== CESIUM ====================
   const normalizeCoord = (val) => Math.floor(val * 1000) / 1000;
 
+  // ==================== DRAW DYNAMICALLY NEW CELLS ====================
+  const drawDeletedCell = (viewer, lat, lon) => {
+    const cellWidth = 0.001;
+    const padding = 0.00005;
+    const rect = Cesium.Rectangle.fromDegrees(
+      lon - padding, lat - padding,
+      lon + cellWidth + padding, lat + cellWidth + padding
+    );
+    viewer.entities.add({
+      rectangle: {
+        coordinates: rect,
+        material: Cesium.Color.BLACK.withAlpha(1.0),
+        classificationType: Cesium.ClassificationType.BOTH,
+      },
+    });
+  };
+
+  // ==================== DRAW LOADED CELLS ====================
   const drawnCells = new Set();
 
   const drawDeletedCells = (viewer, cells) => {
@@ -230,7 +248,7 @@ export default function App() {
     const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
     const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-    drawDeletedCells(viewer, lat, lon);
+    drawDeletedCell(viewer, lat, lon);
     viewer.scene.requestRender();
 
     try {
@@ -245,7 +263,7 @@ export default function App() {
       if (data.alreadyDeleted) return showMessage("Earth already deleted here", "error");
 
       if (isSuper && Array.isArray(data.coordinates)) {
-        data.coordinates.forEach(({ lat, lon }) => drawDeletedCells(viewer, lat, lon));
+        data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
       }
 
       fetchTotals();
