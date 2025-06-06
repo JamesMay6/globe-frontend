@@ -4,22 +4,22 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 import { createClient } from "@supabase/supabase-js";
 
 // ==================== CONFIG ====================
-const API_URL = process.env.API_URL;
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-const CESIUM_TOKEN = process.env.CESIUM_ION_TOKEN;
-const isPaymentEnabled = process.env.PAYMENT_ENABLED === "true";
-const MIN_ZOOM_LEVEL = process.env.MINIMUM_ZOOM_FOR_CLICK;
-const ZOOM_FACTOR = process.env.ZOOM_FACTOR;
-const INERTIA_ZOOM = process.env.INERTIA_ZOOM;
-const ZOOM_OUT_LEVEL = process.env.ZOOM_OUT_LEVEL;
-const BUY_CLICKS_PACKAGE_ONE = process.env.BUY_CLICKS_PACKAGE_ONE;
-const BUY_CLICKS_PACKAGE_TWO = process.env.BUY_CLICKS_PACKAGE_TWO;
-const BUY_CLICKS_PACKAGE_THREE = process.env.BUY_CLICKS_PACKAGE_THREE;
-const BUY_CLICKS_PACKAGE_ONE_COST = process.env.BUY_CLICKS_PACKAGE_ONE_COST;
-const BUY_CLICKS_PACKAGE_TWO_COST = process.env.BUY_CLICKS_PACKAGE_TWO_COST;
-const BUY_CLICKS_PACKAGE_THREE_COST = process.env.BUY_CLICKS_PACKAGE_THREE_COST;
-const FREE_CLICKS = process.env.FREE_CLICKS;
+const API_URL = process.env.VITE_API_URL;
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+const CESIUM_TOKEN = process.env.VITE_CESIUM_ION_TOKEN;
+const isPaymentEnabled = process.env.VITE_PAYMENT_ENABLED === "true";
+const MIN_ZOOM_LEVEL = process.env.VITE_MINIMUM_ZOOM_FOR_CLICK;
+const ZOOM_FACTOR = process.env.VITE_ZOOM_FACTOR;
+const INERTIA_ZOOM = process.env.VITE_INERTIA_ZOOM;
+const ZOOM_OUT_LEVEL = process.env.VITE_ZOOM_OUT_LEVEL;
+const BUY_CLICKS_PACKAGE_ONE = process.env.VITE_BUY_CLICKS_PACKAGE_ONE;
+const BUY_CLICKS_PACKAGE_TWO = process.env.VITE_BUY_CLICKS_PACKAGE_TWO;
+const BUY_CLICKS_PACKAGE_THREE = process.env.VITE_BUY_CLICKS_PACKAGE_THREE;
+const BUY_CLICKS_PACKAGE_ONE_COST = process.env.VITE_BUY_CLICKS_PACKAGE_ONE_COST;
+const BUY_CLICKS_PACKAGE_TWO_COST = process.env.VITE_BUY_CLICKS_PACKAGE_TWO_COST;
+const BUY_CLICKS_PACKAGE_THREE_COST = process.env.VITE_BUY_CLICKS_PACKAGE_THREE_COST;
+const FREE_CLICKS = process.env.VITE_FREE_CLICKS;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
