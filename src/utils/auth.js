@@ -1,4 +1,4 @@
-import { SUPABASE, API_URL } from "./config/config"; // or wherever you have your config
+import { SUPABASE, API_URL } from "../config/config";
 
 export const fakeEmail = (username) => `${username}@delete.theearth`;
 
