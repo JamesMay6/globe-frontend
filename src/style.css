@@ -272,7 +272,6 @@ button.cesium-infoBox-close {
 /* Toast */
 .toastMessage {
   position: fixed;
-  bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
   background: #222;
@@ -286,16 +285,19 @@ button.cesium-infoBox-close {
 }
 .toastMessage.success {
   background: #106a25; /* green */
-  bottom: 75px !important;
+  bottom: 80px !important;
+
 }
 
 .toastMessage.error {
   background: #9a1321; /* red */
-  bottom: 60px !important;
+  bottom: 50px !important;
 }
 
 .toastMessage.warn {
   background: #ed8830; /* yellow */
+  bottom: 110px !important;
+
 }
 
 .topLeftMenu {
