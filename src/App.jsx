@@ -9,6 +9,17 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const CESIUM_TOKEN = import.meta.env.VITE_CESIUM_ION_TOKEN;
 const isPaymentEnabled = import.meta.env.VITE_PAYMENT_ENABLED === "true";
+const MIN_ZOOM_LEVEL = import.meta.env.VITE_MINIMUM_ZOOM_FOR_CLICK;
+const ZOOM_FACTOR = import.meta.env.VITE_ZOOM_FACTOR;
+const INERTIA_ZOOM = import.meta.env.VITE_INERTIA_ZOOM;
+const ZOOM_OUT_LEVEL = import.meta.env.VITE_ZOOM_OUT_LEVEL;
+const BUY_CLICKS_PACKAGE_ONE = import.meta.env.VITE_BUY_CLICKS_PACKAGE_ONE;
+const BUY_CLICKS_PACKAGE_TWO = import.meta.env.VITE_BUY_CLICKS_PACKAGE_TWO;
+const BUY_CLICKS_PACKAGE_THREE = import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE;
+const BUY_CLICKS_PACKAGE_ONE_COST = import.meta.env.VITE_BUY_CLICKS_PACKAGE_ONE_COST;
+const BUY_CLICKS_PACKAGE_TWO_COST = import.meta.env.VITE_BUY_CLICKS_PACKAGE_TWO_COST;
+const BUY_CLICKS_PACKAGE_THREE_COST = import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE_COST;
+const FREE_CLICKS = import.meta.env.VITE_FREE_CLICKS;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -239,12 +250,8 @@ export default function App() {
     if (!isSuper && clicksRef.current <= 0) return showMessage("You're out of clicks!", "error");
     if (isSuper && superClicksRef.current <= 0) return showMessage("You're out of super clicks!", "error");
 
-    // Get the camera height above the ellipsoid (in meters)
     const cameraHeight = viewer.camera.positionCartographic.height;
-
-    // Set your zoom threshold (e.g., 10,000 meters = zoomed in)
-    const zoomThreshold = 10000;
-
+    const zoomThreshold = MIN_ZOOM_LEVEL;
     if (cameraHeight > zoomThreshold) {
       return showMessage("Zoom in closer to delete Earth", "error");
     }
@@ -308,8 +315,8 @@ export default function App() {
       viewer.trackedEntity = undefined;
 
       const controller = viewer.scene.screenSpaceCameraController;
-      controller.zoomFactor = 17.0;
-      controller.inertiaZoom = 0.9;
+      controller.zoomFactor = ZOOM_FACTOR;
+      controller.inertiaZoom = INERTIA_ZOOM;
 
       await fetchDeletedCells(viewer);
 
@@ -379,7 +386,7 @@ export default function App() {
     const viewer = viewerRef.current;
     if (viewer) {
       viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 20000000.0),
+        destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
       });
     } else {
       console.warn("Viewer not ready yet");
@@ -453,7 +460,7 @@ export default function App() {
                   <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
                       Purchase Clicks
                     </div>
-                  <button className="freeClicksButton" onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
+                  <button className="freeClicksButton" onClick={() => handleBuyClicks(FREE_CLICKS)}>Get {FREE_CLICKS} Free Clicks</button>
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
                   )}
@@ -463,7 +470,9 @@ export default function App() {
                       Paid clicks coming soon
                     </div>
                   )}
-                  {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 5000, price: 10 }].map(
+                  {[{ clicks: BUY_CLICKS_PACKAGE_ONE, price: BUY_CLICKS_PACKAGE_ONE_COST }, 
+                    { clicks: BUY_CLICKS_PACKAGE_TWO, price: BUY_CLICKS_PACKAGE_TWO_COST }, 
+                    { clicks: BUY_CLICKS_PACKAGE_THREE, price: BUY_CLICKS_PACKAGE_THREE_COST }].map(
                     ({ clicks, price }) => (
                       <button
                         key={clicks}
