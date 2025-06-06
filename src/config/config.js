@@ -13,12 +13,10 @@ export const MIN_ZOOM_LEVEL = import.meta.env.VITE_MINIMUM_ZOOM_FOR_CLICK;
 export const ZOOM_FACTOR = import.meta.env.VITE_ZOOM_FACTOR;
 export const INERTIA_ZOOM = import.meta.env.VITE_INERTIA_ZOOM;
 export const ZOOM_OUT_LEVEL = import.meta.env.VITE_ZOOM_OUT_LEVEL;
-export const BUY_CLICKS_PACKAGE_ONE = import.meta.env.VITE_BUY_CLICKS_PACKAGE_ONE;
-export const BUY_CLICKS_PACKAGE_TWO = import.meta.env.VITE_BUY_CLICKS_PACKAGE_TWO;
-export const BUY_CLICKS_PACKAGE_THREE = import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE;
-export const BUY_CLICKS_PACKAGE_ONE_COST = import.meta.env.VITE_BUY_CLICKS_PACKAGE_ONE_COST;
-export const BUY_CLICKS_PACKAGE_TWO_COST = import.meta.env.VITE_BUY_CLICKS_PACKAGE_TWO_COST;
-export const BUY_CLICKS_PACKAGE_THREE_COST = import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE_COST;
-export const FREE_CLICKS = import.meta.env.VITE_FREE_CLICKS;
-
-
+export const BUY_CLICKS_PACKAGE_ONE = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_ONE);
+export const BUY_CLICKS_PACKAGE_TWO = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_TWO);
+export const BUY_CLICKS_PACKAGE_THREE = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE);
+export const BUY_CLICKS_PACKAGE_ONE_COST = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_ONE_COST);
+export const BUY_CLICKS_PACKAGE_TWO_COST = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_TWO_COST);
+export const BUY_CLICKS_PACKAGE_THREE_COST = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE_COST);
+export const FREE_CLICKS = Number(import.meta.env.VITE_FREE_CLICKS);
