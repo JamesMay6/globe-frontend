@@ -172,7 +172,7 @@ export default function App() {
       },
     });
     viewer.scene.requestRender();
-
+    handleDummyClick();
   };
 
   // ==================== DRAW LOADED CELLS ====================
@@ -231,6 +231,16 @@ export default function App() {
     const res = await fetch(`${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`);
     const cells = await res.json();
     drawDeletedCells(viewer, cells);
+  };
+
+  const handleDummyClick = async (viewer, movement) => {
+    const ray = viewer.camera.getPickRay(movement.position);
+    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+    if (!cartesian) return;
+
+    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
+    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
   };
 
   const handleClick = async (viewer, movement) => {
