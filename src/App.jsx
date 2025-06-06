@@ -1,565 +1,68 @@
-import { useEffect, useRef, useState } from "react";
-import * as Cesium from "cesium";
-import "cesium/Build/Cesium/Widgets/widgets.css";
-import { createClient } from "@supabase/supabase-js";
+import React, { useState } from 'react';
+import AuthBox from './components/AuthBox';
+import BuyMenu from './components/BuyMenu';
+import StatsPanel from './components/StatsPanel';
+import Leaderboard from './components/Leaderboard';
+import CesiumCanvas from './components/CesiumCanvas';
+import ToastContainer, { useToast } from './components/ToastContainer';
+import { useSupabaseAuth } from './hooks/useSupabaseAuth';
+import { api } from './api/api';
 
-const API_URL = import.meta.env.VITE_API_URL;
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const isPaymentEnabled = import.meta.env.VITE_PAYMENT_ENABLED === "true";
-
-function App() {
-  const viewerRef = useRef(null);
-  const [user, setUser] = useState(null);
-  const [authMode, setAuthMode] = useState("login");
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
-  const [topUsers, setTopUsers] = useState([]);
-  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+export default function App() {
+  const { user, profile, setProfile, supabase, loading } = useSupabaseAuth();
+  const [authMode, setAuthMode] = useState('login');
   const [statsOpen, setStatsOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [buyMenuOpen, setBuyMenuOpen] = useState(false);
-  const [clicksTotal, setClicksTotal] = useState(0);
-  const [cooldownMessage, setCooldownMessage] = useState(null);
-  const [username, setUsername] = useState(localStorage.getItem("username") || null);
-  const [loadingSession, setLoadingSession] = useState(true);
-  const clicksTotalRef = useRef(0);
-  const [superClicksTotal, setSuperClicksTotal] = useState(0);
-  const superClicksTotalRef = useRef(0);
-  const [superClickEnabled, setSuperClickEnabled] = useState(false);
-  const superClickEnabledRef = useRef(false);
-  const userRef = useRef(null);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const toast = useToast();
 
-  //USE EFFCTS
-  useEffect(() => {
-  console.log("User state updated:", user);
-  }, [user]);
-
-  useEffect(() => {
-    superClickEnabledRef.current = superClickEnabled;
-  }, [superClickEnabled]);
-
-  useEffect(() => {
-    userRef.current = user;
-  }, [user]);
-
-   useEffect(() => {
-    clicksTotalRef.current = clicksTotal;
-  }, [clicksTotal]);
-
-  useEffect(() => {
-    superClicksTotalRef.current = superClicksTotal;
-  }, [superClicksTotal]);
-
-  useEffect(() => {
-    if (leaderboardOpen) {
-      fetchTopUsers();
-    }
-  }, [leaderboardOpen]);
-
-  useEffect(() => {
-  const initSession = async () => {
-    setLoadingSession(true); // Set first
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (session) {
-      setUser(session.user);
-      await fetchUserProfile(session.access_token);
-    } else {
-      setUser(null);
-    }
-    setLoadingSession(false); // Only after fetch completes
-  };
-
-  const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-    console.log("Auth change:", event, session);
-    if (session) {
-      setUser(session.user);
-      await fetchUserProfile(session.access_token);
-    } else {
-      setUser(null);
-    }
-  });
-
-  initSession();
-
-  return () => {
-    authListener.subscription.unsubscribe();
-  };
-}, []);
-
- 
-  const fetchUserProfile = async (token) => {
-  const accessToken = token || (await supabase.auth.getSession()).data?.session?.access_token;
-  if (!accessToken) return;
-
-  const res = await fetch(`${API_URL}/profile`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!res.ok) {
-    console.error("Failed to fetch clicks_total");
-    return;
-  }
-
-  const data = await res.json();
-  setUsername(data.username);
-  localStorage.setItem("username", data.username);
-  setClicksTotal(data.clicks_total);
-  setSuperClicksTotal(data.super_clicks);
-};
-
-  const normalizeCoord = (value) => Math.floor(value * 1000) / 1000;
-  const fakeEmail = (username) => `${username}@delete.theearth`;
-
-  const drawDeletedCell = (viewer, lat, lon) => {
-    const cellWidth = 0.001;
-    const padding = 0.00005;
-    const rect = Cesium.Rectangle.fromDegrees(
-      lon - padding,
-      lat - padding,
-      lon + cellWidth + padding,
-      lat + cellWidth + padding
-    );
-    viewer.entities.add({
-      rectangle: {
-        coordinates: rect,
-        material: Cesium.Color.BLACK.withAlpha(1.0),
-        classificationType: Cesium.ClassificationType.BOTH,
-      },
-    });
-  };
-
-  const fetchDeletedCells = async (viewer) => {
-    const rect = viewer.camera.computeViewRectangle();
-    if (!rect) return;
-
-    const minLat = Cesium.Math.toDegrees(rect.south);
-    const maxLat = Cesium.Math.toDegrees(rect.north);
-    const minLon = Cesium.Math.toDegrees(rect.west);
-    const maxLon = Cesium.Math.toDegrees(rect.east);
-
-    const response = await fetch(
-      `${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
-    );
-    const cells = await response.json();
-    cells.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
-  };
-
-  const fetchTotals = async () => {
-    try {
-      const res = await fetch(`${API_URL}/total-deletions`);
-      const data = await res.json();
-      setTotals(data);
-    } catch (e) {
-      console.error("Error fetching totals:", e);
+  const handleAuth = async ({ username, password }, mode) => {
+    const fakeEmail = `${username}@delete.theearth`;
+    const action = mode === 'register'
+      ? supabase.auth.signUp({ email: fakeEmail, password })
+      : supabase.auth.signInWithPassword({ email: fakeEmail, password });
+    const { data, error } = await action;
+    if (error) throw new Error(error.message);
+    if (mode === 'register') {
+      const session = data.session;
+      await api.createProfile(session.access_token, { id: session.user.id, username });
     }
   };
 
-  const fetchTopUsers = async () => {
-    try {
-      const res = await fetch(`${API_URL}/top-users`);
-      const data = await res.json();
-      setTopUsers(data);
-    } catch (e) {
-      console.error("Error fetching top users:", e);
-    }
+  const handleBuy = async (amount) => {
+    const token = (await supabase.auth.getSession()).data.session.access_token;
+    const updated = await api.buyClicks(token, { amount });
+    toast.success(`Purchased ${amount.toLocaleString()} clicks`);
+    setProfile(updated);
   };
 
- 
-  function showMessage(text, type = "success", duration = 650) {
-    const message = document.createElement("div");
-    message.textContent = text;
-    message.className = `toastMessage ${type}`;
-    document.body.appendChild(message);
-
-    setTimeout(() => {
-      message.style.opacity = "0";
-      setTimeout(() => message.remove(), 150);
-    }, duration);
-  }
-
-  const handleClick = async (viewer, movement) => {
-  if (!userRef.current) {
-    showMessage("You need to log in to delete Earth", "error");
-    return;
-  }
-
-  const isSuper = superClickEnabledRef.current;
-
-  if (!isSuper && clicksTotalRef.current <= 0) {
-    showMessage("You're out of clicks! Buy more to keep deleting", "error");
-    return;
-  }
-
-  if (isSuper && superClicksTotalRef.current <= 0) {
-    showMessage("You're out of super clicks. Upgrade your clicks!", "error");
-    return;
-  }
-
-
-  showMessage(isSuper ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
-
-  const ray = viewer.camera.getPickRay(movement.position);
-  const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-  viewer.trackedEntity = undefined;
-  if (!cartesian) return;
-
-  const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-  const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-  const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-
-  drawDeletedCell(viewer, lat, lon);
-  viewer.scene.requestRender();
-  viewer.scene.render();
-
-  try {
-    const token = (await supabase.auth.getSession()).data?.session?.access_token;
-    const res = await fetch(`${API_URL}/delete`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ lat, lon, superClick: isSuper }),
-    });
-
-    const data = await res.json();
-
-    if (data.alreadyDeleted) {
-      showMessage("Earth is already deleted here", "error");
-      return;
-    }
-
-    // Optionally draw nearby cells in superClick mode
-    if (isSuper && Array.isArray(data.coordinates)) {
-      data.coordinates.forEach(({ lat, lon }) => {
-        drawDeletedCell(viewer, lat, lon);
-      });
-    }
-
-    showMessage(isSuper ? "Super Earth deleted!" : "Earth deleted");
-    fetchTotals();
-    fetchUserProfile();
-  } catch (error) {
-    console.error("Delete request failed:", error);
-    showMessage("Error deleting Earth.");
-  }
-};
-
-
-  useEffect(() => {
-    Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN;
-
-    (async () => {
-      const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const viewer = new Cesium.Viewer("cesiumContainer", {
-        terrainProvider,
-        animation: false,
-        timeline: false,
-        baseLayerPicker: false,
-        homeButton: false,
-        sceneModePicker: false,
-        navigationHelpButton: false,
-        geocoder: true,
-        requestRenderMode: true,
-        maximumRenderTimeChange: 0,
-      });
-
-      viewer.trackedEntity = undefined;
-
-      const controller = viewer.scene.screenSpaceCameraController;
-      controller.zoomFactor = 17.0;
-      controller.inertiaZoom = 0.9;
-
-      viewerRef.current = viewer;
-
-      await fetchDeletedCells(viewer);
-      fetchTotals();
-
-      viewer.camera.moveEnd.addEventListener(() => {
-        fetchDeletedCells(viewer);
-      });
-
-      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-      handler.setInputAction((movement) => {
-        handleClick(viewer, movement);
-      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    })();
-
-    return () => {
-      if (viewerRef.current && !viewerRef.current.isDestroyed()) {
-        viewerRef.current.destroy();
-      }
-    };
-  }, [user]);
-
-  const handleAuth = async () => {
-    const email = fakeEmail(form.username);
-    try {
-      if (authMode === "register") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password: form.password,
-        });
-        if (error) return alert(`Registration failed: ${error.message}`);
-        if (!data.session || !data.user) return alert("No session returned");
-
-        setUser(data.session.user);
-        await fetchUserProfile(data.session.access_token);
-
-        const res = await fetch(`${API_URL}/create-profile`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${data.session.access_token}`,
-          },
-          body: JSON.stringify({ id: data.user.id, username: form.username }),
-        });
-        if (!res.ok) {
-          const errText = await res.text();
-          alert("Error creating profile: " + errText);
-          return;
-        }
-        alert("Registration successful!");
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password: form.password,
-        });
-        if (error) return alert(`Login failed: ${error.message}`);
-        if (!data.session) return alert("No session returned");
-
-        setUser(data.session.user);
-        await fetchUserProfile(data.session.access_token); // ✅ Add this
-
-      }
-    } catch (err) {
-      console.error("Authentication error:", err);
-      alert("An unexpected error occurred.");
-    }
+  const handleUpgrade = async () => {
+    const token = (await supabase.auth.getSession()).data.session.access_token;
+    const updated = await api.upgradeSuperClick(token);
+    toast.success('Super Click upgraded 🤘');
+    setProfile(updated);
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setUsername(null);
-    localStorage.removeItem("username");
-  };
-
-  const handleBuyClicks = async (clickAmount) => {
-    try {
-      setCooldownMessage(null);
-      const token = (await supabase.auth.getSession()).data?.session?.access_token;
-      const res = await fetch(`${API_URL}/buy-clicks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ amount: clickAmount }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        if (res.status === 429 && clickAmount === 200) {
-          setCooldownMessage(data.error);
-        } else {
-          showMessage(`Purchase failed: ${data.error || "Unknown error"}`, "error");
-        }
-        return;
-      }
-
-      showMessage(`Purchased ${clickAmount.toLocaleString()} clicks!`);
-      fetchUserProfile();
-    } catch (e) {
-      console.error("Buy clicks failed:", e);
-      showMessage("Buy clicks failed", "error");
-    }
-  };
-
-  useEffect(() => {
-    const authBox = document.querySelector(".authBox");
-    if (!authBox) return;
-
-    const inputs = authBox.querySelectorAll("input");
-    inputs.forEach((input) => {
-      const handleFocus = () => (authBox.style.bottom = "200px");
-      const handleBlur = () => (authBox.style.bottom = "20px");
-
-      input.addEventListener("focus", handleFocus);
-      input.addEventListener("blur", handleBlur);
-
-      return () => {
-        input.removeEventListener("focus", handleFocus);
-        input.removeEventListener("blur", handleBlur);
-      };
-    });
-  }, []);
-
-  const handleUpgradeSuperClick = async () => {
-  try {
-    const token = (await supabase.auth.getSession()).data?.session?.access_token;
-    const res = await fetch(`${API_URL}/profile/upgrade-super-click`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      showMessage(data.error || "Upgrade failed", "error");
-      return;
-    }
-
-    showMessage(data.message || "Upgrade successful!");
-    fetchUserProfile();
-  } catch (err) {
-    console.error("Upgrade error:", err);
-    showMessage("Upgrade failed", "error");
-  }
-};
-
+  if (loading) return <div>Loading…</div>;
 
   return (
     <>
-      <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
-      <div className="topLeftMenu">
-        {!user ? (
-          <div className={`authBox ${authOpen ? "expanded" : ""}`}>
-            <button onClick={() => setAuthOpen(!authOpen)}>
-              {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
-            </button>
-            {authOpen && (
-              <>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={form.username}
-                  onChange={(e) => setForm({ ...form, username: e.target.value })}
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                />
-                <button onClick={handleAuth}>
-                  {authMode === "login" ? "Log In" : "Register"}
-                </button>
-                <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-                  Switch to {authMode === "login" ? "Register" : "Login"}
-                </button>
-              </>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="authBox loggedIn">
-              <span>Hi {username}</span>
-              <button className="logout" onClick={handleLogout}>
-                Log Out
-              </button>
-            </div>
-            <div className="buyMenu">
-              <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
-                {buyMenuOpen ? "Hide User Menu ▲" : "Show User Menu ▼"}
-              </button>
-              {buyMenuOpen && (
-                <div className="buyContent">
-                  <div className="clicksAvailable">
-                    <div><strong>Available Clicks:</strong> {clicksTotal}</div>
-                    <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
-                  </div>
-                  <div className="superClickToggle" style={{ marginTop: "1rem" }}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={superClickEnabled}
-                        onChange={() => setSuperClickEnabled(!superClickEnabled)}
-                      />
-                      Enable Super Click
-                    </label>
-                  </div>
-                  <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-                      Purchase Clicks
-                    </div>
-                  <button className="freeClicksButton" onClick={() => handleBuyClicks(5)}>Get 5 Free Clicks</button>
-                  {cooldownMessage && (
-                    <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
-                  )}
-                  
-                  {!isPaymentEnabled && (
-                    <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-                      Paid clicks coming soon
-                    </div>
-                  )}
-                  {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 5000, price: 10 }].map(
-                    ({ clicks, price }) => (
-                      <button
-                        key={clicks}
-                        onClick={() => handleBuyClicks(clicks)}
-                        disabled={!isPaymentEnabled}
-                      >
-                        Buy {clicks.toLocaleString()} (£{price}) 
-                      </button>
-                    )
-                  )}
-                  <div className="upgradesMenu">
-                    <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-                      Upgrade Clicks - Delete More!
-                    </div>
-                      <button onClick={handleUpgradeSuperClick} className="superClickButton">
-                        Upgrade to a Super Click
-                      </button>
-                      <p className="info-text">Use 200 clicks to get 1 Super Click, which deletes over 500 coordinates at once!</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="statsMenu">
-        <button onClick={() => setStatsOpen(!statsOpen)}>
-          {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
-        </button>
-        {statsOpen && (
-          <div className="statsContent">
-            <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
-            <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
-            <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
-          </div>
-        )}
-      </div>
-
-      <div className="leaderboardMenu">
-        <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
-          {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
-        </button>
-        {leaderboardOpen && (
-          <div className="leaderboardContent">
-            <ol>
-              {topUsers.map(({ username, clicks_used }, index) => (
-                <li key={username} className={`rank-${index + 1}`}>
-                  <span className="username">{username}</span>
-                  <span className="score">{clicks_used.toLocaleString()}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-      </div>
+      <ToastContainer />
+      {!user ? (
+        <AuthBox mode={authMode} setMode={setAuthMode} onAuth={handleAuth} />
+      ) : (
+        <>
+          <BuyMenu profile={profile} onBuy={handleBuy} onUpgrade={handleUpgrade} paymentEnabled={import.meta.env.VITE_PAYMENT_ENABLED === 'true'} />
+          <button onClick={() => setStatsOpen(!statsOpen)}>
+            {statsOpen ? 'Hide Stats' : 'Show Stats'}
+          </button>
+          {statsOpen && <StatsPanel totals={profile.totals} />}
+          <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
+            {leaderboardOpen ? 'Hide Leaderboard' : 'Show Leaderboard'}
+          </button>
+          {leaderboardOpen && <Leaderboard topUsers={profile.top_users} />}
+        </>
+      )}
+      <CesiumCanvas user={user} profile={profile} setProfile={setProfile} />
     </>
   );
 }
-
-export default App;
