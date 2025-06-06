@@ -171,13 +171,15 @@ export default function App() {
   const drawDeletedCell = (viewer, lat, lon) => {
     const cellWidth = 0.001;
     const padding = 0.00005;
-    const rect = Cesium.Rectangle.fromDegrees(
-      lon - padding, lat - padding,
-      lon + cellWidth + padding, lat + cellWidth + padding
+    const rectangle = Cesium.Rectangle.fromDegrees(
+      lon - padding, 
+      lat - padding,
+      lon + cellWidth + padding,
+      lat + cellWidth + padding
     );
     viewer.entities.add({
       rectangle: {
-        coordinates: rect,
+        coordinates: rectangle,
         material: Cesium.Color.BLACK.withAlpha(1.0),
         classificationType: Cesium.ClassificationType.BOTH,
       },
@@ -197,13 +199,13 @@ export default function App() {
       drawnCells.add(key);
 
       const cellWidth = 0.001;
+      const padding = 0.00005;
       const rectangle = Cesium.Rectangle.fromDegrees(
-        lon,
-        lat,
-        lon + cellWidth,
-        lat + cellWidth
-      );
-
+        lon - padding, 
+        lat - padding,
+        lon + cellWidth + padding,
+        lat + cellWidth + padding
+    );
       instances.push(
         new Cesium.GeometryInstance({
           geometry: new Cesium.RectangleGeometry({
