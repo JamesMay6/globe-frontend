@@ -130,10 +130,13 @@ const CesiumHelpers = {
   },
 
   setupViewer: async () => {
-    Cesium.Ion.defaultAccessToken = CONFIG.CESIUM_TOKEN;
+  const container = document.getElementById("cesiumContainer");
+  if (!container) throw new Error("Cesium container not found");
+  
+  Cesium.Ion.defaultAccessToken = CONFIG.CESIUM_TOKEN;
     
-    const terrainProvider = await Cesium.createWorldTerrainAsync();
-    const viewer = new Cesium.Viewer("cesiumContainer", {
+  const terrainProvider = await Cesium.createWorldTerrainAsync();
+  const viewer = new Cesium.Viewer(container, "cesiumContainer", {
       terrainProvider,
       animation: false,
       timeline: false,
@@ -628,7 +631,7 @@ function App() {
   }
 
   return (
-    <>
+    <>      
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
       
       <div className="topLeftMenu">
