@@ -172,7 +172,7 @@ export default function App() {
       },
     });
     viewer.scene.requestRender();
-    viewer.camera.rotateRight(0); // Tiny imperceptible movement
+    viewer.camera.rotateRight(0.000001);
   };
 
   // ==================== DRAW LOADED CELLS ====================
