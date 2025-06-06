@@ -1,3 +1,5 @@
+  import { SUPABASE, API_URL } from "../config/config";
+
   // ==================== AUTH ====================
   const fakeEmail = (username) => `${username}@delete.theearth`;
 
