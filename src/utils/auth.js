@@ -2,6 +2,7 @@
 
   // ==================== AUTH ====================
   const fakeEmail = (username) => `${username}@delete.theearth`;
+  const [username, setUsername] = useState(localStorage.getItem("username") || null);
 
   export const fetchUserProfile = async (token) => {
     const accessToken = token || (await SUPABASE.auth.getSession()).data?.session?.access_token;
