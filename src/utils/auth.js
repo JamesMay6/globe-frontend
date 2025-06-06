@@ -1,4 +1,5 @@
-  import { SUPABASE, API_URL } from "../config/config";
+import { SUPABASE, API_URL } from "../config/config";
+import { useState } from "react";
 
   // ==================== AUTH ====================
   const fakeEmail = (username) => `${username}@delete.theearth`;
