@@ -472,6 +472,12 @@ function App() {
                   {cooldownMessage && (
                     <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
                   )}
+                  
+                  {!isPaymentEnabled && (
+                    <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+                      Paid clicks coming soon
+                    </div>
+                  )}
                   {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
                     ({ clicks, price }) => (
                       <button
