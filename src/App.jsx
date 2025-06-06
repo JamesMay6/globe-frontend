@@ -230,7 +230,7 @@ export default function App() {
     const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
     const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-    drawDeletedCell(viewer, lat, lon);
+    drawDeletedCells(viewer, lat, lon);
     viewer.scene.requestRender();
 
     try {
@@ -245,7 +245,7 @@ export default function App() {
       if (data.alreadyDeleted) return showMessage("Earth already deleted here", "error");
 
       if (isSuper && Array.isArray(data.coordinates)) {
-        data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
+        data.coordinates.forEach(({ lat, lon }) => drawDeletedCells(viewer, lat, lon));
       }
 
       fetchTotals();
