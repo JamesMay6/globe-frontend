@@ -445,7 +445,7 @@ useEffect(() => {
         ) : (
           <>
             <div className="authBox loggedIn">
-              <span>Hi {form.username}</span>
+              <span>Hi {username}</span>
               <button className="logout" onClick={handleLogout}>
                 Log Out
               </button>
@@ -483,7 +483,7 @@ useEffect(() => {
                       Paid clicks coming soon
                     </div>
                   )}
-                  {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 10000, price: 10 }].map(
+                  {[{ clicks: 100, price: 1 }, { clicks: 1000, price: 5 }, { clicks: 5000, price: 10 }].map(
                     ({ clicks, price }) => (
                       <button
                         key={clicks}
