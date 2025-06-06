@@ -191,7 +191,7 @@ export default function App() {
     if (!isSuper && clicksRef.current <= 0) return showMessage("You're out of clicks!", "error");
     if (isSuper && superClicksRef.current <= 0) return showMessage("You're out of super clicks!", "error");
 
-    showMessage(isSuper ? "Super Click deleting Earth" : "Deleting Earth");
+    showMessage(isSuper ? "Super Click deleting Earth" : "Deleting Earth", "warn");
 
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
@@ -335,7 +335,7 @@ export default function App() {
   return (
     <>
       <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
-      <button class="zoom-out-button" onclick={zoomOut()}>Show Full Earth</button>
+      <button class="zoom-out-button" onClick={zoomOut}>Show Full Earth</button>
 
       <div className="topLeftMenu">
         {!user ? (
