@@ -62,6 +62,7 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
   if (!containerRef.current) return;
 
   let viewer;
+  let handler;
 
   async function initCesium() {
     Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
@@ -83,21 +84,21 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
 
     viewerRef.current = viewer;
 
-    // Setup camera controller
     const controller = viewer.scene.screenSpaceCameraController;
     controller.zoomFactor = ZOOM_FACTOR;
     controller.inertiaZoom = INERTIA_ZOOM;
 
-    // Fetch initial deleted cells
     await fetchDeletedCells(viewer);
 
     viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
 
-    // Set up click handler
-    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+    handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
     handler.setInputAction((movement) => {
-      if (!viewerRef.current) return; // Safety check
-
+      // Add safety check for viewer and scene before using
+      if (!viewerRef.current || !viewerRef.current.scene) {
+        console.warn("Viewer or scene not ready yet on click");
+        return;
+      }
       handleClick(viewerRef.current, movement);
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
   }
@@ -105,12 +106,18 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
   initCesium();
 
   return () => {
+    if (handler) {
+      handler.destroy();
+      handler = null;
+    }
     if (viewer) {
       viewer.destroy();
       viewerRef.current = null;
+      viewer = null;
     }
   };
 }, [user, superClickEnabled]);
+
  
 
   const zoomOut = () => {
