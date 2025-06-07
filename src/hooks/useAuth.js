@@ -85,5 +85,5 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
     return () => authListener.subscription.unsubscribe();
   }, []);
 
-  return { user, handleAuth, handleLogout, loadingSession };
+  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile  };
 }
