@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as Cesium from "cesium";
 import { CESIUM_TOKEN, API_URL, MIN_ZOOM_LEVEL, ZOOM_FACTOR, INERTIA_ZOOM, ZOOM_OUT_LEVEL, SUPABASE } from '../config/config';
 import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "../utils/cesiumCells";
 
 export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile, showMessage }) {
   const viewerRef = useRef(null);
+  const containerRef = useRef(null);  // <-- container ref
 
   const handleClick = async (viewer, movement) => {
     if (!user) return showMessage("You need to log in to delete Earth", "error");
@@ -51,11 +52,13 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
   };
 
   useEffect(() => {
+    if (!containerRef.current) return;  // wait for container to be mounted
+
     Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
     (async () => {
       const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const viewer = new Cesium.Viewer("cesiumContainer", {
+      const viewer = new Cesium.Viewer(containerRef.current, {   // <-- use ref here
         terrainProvider,
         animation: false,
         timeline: false,
@@ -87,9 +90,8 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         viewerRef.current = null;
       }
     };
-  }, [user, superClickEnabled]); // re-attach handlers on auth or click mode change
+  }, [user, superClickEnabled]);  // re-init on these changes
 
-  // Expose zoomOut button here or lift up
   const zoomOut = () => {
     const viewer = viewerRef.current;
     if (viewer) {
@@ -103,7 +105,7 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
 
   return (
     <>
-      <div id="cesiumContainer" style={{ width: "100vw", height: "100vh" }} />
+      <div ref={containerRef} style={{ width: "100vw", height: "100vh" }} />
       <button className="zoom-out-button" onClick={zoomOut}>Show Full Earth</button>
     </>
   );

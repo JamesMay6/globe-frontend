@@ -28,7 +28,6 @@ export default function App() {
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [cooldownMessage, setCooldownMessage] = useState(null);
-  const [containerReady, setContainerReady] = useState(false);
 
   const {
   user,
@@ -56,16 +55,6 @@ export default function App() {
   useEffect(() => { clicksRef.current = clicksTotal; }, [clicksTotal]);
   useEffect(() => { superClicksRef.current = superClicksTotal; }, [superClicksTotal]);
   useEffect(() => { superClickEnabledRef.current = superClickEnabled; }, [superClickEnabled]);
-
-  // ---------- DOM Ready Check ----------
-  useEffect(() => {
-    const check = () => {
-      const el = document.getElementById("cesiumContainer");
-      if (el) setContainerReady(true);
-      else requestAnimationFrame(check);
-    };
-    check();
-  }, []);
 
   // ==================== DATA ====================
   const fetchTotals = async () => {
