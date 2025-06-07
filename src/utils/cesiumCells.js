@@ -1,4 +1,5 @@
 import * as Cesium from "cesium";
+import {API_URL} from '../config/config';
 
 export const normalizeCoord = (val) => Math.floor(val * 1000) / 1000;
 
@@ -65,7 +66,7 @@ export const drawDeletedCells = (viewer, cells) => {
   }
 };
 
-export const fetchDeletedCells = async (viewer, apiUrl) => {
+export const fetchDeletedCells = async (viewer) => {
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
   const minLat = Cesium.Math.toDegrees(rect.south);
@@ -73,7 +74,7 @@ export const fetchDeletedCells = async (viewer, apiUrl) => {
   const minLon = Cesium.Math.toDegrees(rect.west);
   const maxLon = Cesium.Math.toDegrees(rect.east);
 
-  const res = await fetch(`${apiUrl}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`);
+  const res = await fetch(`${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`);
   const cells = await res.json();
   drawDeletedCells(viewer, cells);
 };
