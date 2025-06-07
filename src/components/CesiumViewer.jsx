@@ -43,7 +43,7 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         showMessage("Zoom in closer to delete Earth", "error");
         return;
         }
-        
+
       showMessage(superClickEnabled ? "Super Click deleting Earth" : "Deleting Earth", "warn");
 
       const ray = viewer.camera.getPickRay(movement.position);
@@ -106,14 +106,18 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         requestRenderMode: true,
         maximumRenderTimeChange: 0,
       });
+        
+        viewer.trackedEntity = undefined;
 
-      viewerRef.current = viewer;
 
       const controller = viewer.scene.screenSpaceCameraController;
       controller.zoomFactor = ZOOM_FACTOR;
       controller.inertiaZoom = INERTIA_ZOOM;
 
-      await fetchDeletedCells(viewer);
+        viewerRef.current = viewer;
+
+
+      await fetchDeletedCells(viewer); fetchTotals();
 
       viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
 
