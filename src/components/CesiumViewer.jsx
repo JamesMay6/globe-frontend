@@ -7,27 +7,44 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
     const viewerRef = useRef(null);
     const containerRef = useRef(null); 
     const userRef = useRef(null);
+    const clickInProgress = useRef(false);
+
 
   useEffect(() => {
     userRef.current = user;
   }, [user]);
 
   const handleClick = async (viewer, movement) => {
-    if (!userRef.current) {
-    showMessage("You need to log in to delete Earth", "error");
-    return;
-  }
-    if (!superClickEnabled && viewer.clicksLeft <= 0) return showMessage("You're out of clicks!", "error");
-    if (superClickEnabled && viewer.superClicksLeft <= 0) return showMessage("You're out of super clicks!", "error");
+    if (clickInProgress.current) return; // ignore clicks while processing
 
-    if (viewer.camera.positionCartographic.height > MIN_ZOOM_LEVEL)
-      return showMessage("Zoom in closer to delete Earth", "error");
+    if (!userRef.current) {
+      showMessage("You need to log in to delete Earth", "error");
+      return;
+    }
+    if (!superClickEnabled && viewer.clicksLeft <= 0) {
+      showMessage("You're out of clicks!", "error");
+      return;
+    }
+    if (superClickEnabled && viewer.superClicksLeft <= 0) {
+      showMessage("You're out of super clicks!", "error");
+      return;
+    }
+
+    if (viewer.camera.positionCartographic.height > MIN_ZOOM_LEVEL) {
+      showMessage("Zoom in closer to delete Earth", "error");
+      return;
+    }
+
+    clickInProgress.current = true; // Lock clicks during processing
 
     showMessage(superClickEnabled ? "Super Click deleting Earth" : "Deleting Earth", "warn");
 
     const ray = viewer.camera.getPickRay(movement.position);
     const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-    if (!cartesian) return;
+    if (!cartesian) {
+      clickInProgress.current = false;
+      return;
+    }
 
     const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
     const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
@@ -44,7 +61,11 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
       });
 
       const data = await res.json();
-      if (data.alreadyDeleted) return showMessage("Earth already deleted here", "error");
+      if (data.alreadyDeleted) {
+        showMessage("Earth already deleted here", "error");
+        clickInProgress.current = false;
+        return;
+      }
 
       if (superClickEnabled && Array.isArray(data.coordinates)) {
         data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
@@ -55,6 +76,8 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
     } catch (err) {
       console.error(err);
       showMessage("Error deleting Earth", "error");
+    } finally {
+      clickInProgress.current = false; // Release lock
     }
   };
 
