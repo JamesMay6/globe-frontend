@@ -4,10 +4,19 @@ import { CESIUM_TOKEN, API_URL, MIN_ZOOM_LEVEL, ZOOM_FACTOR, INERTIA_ZOOM, ZOOM_
 import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "../utils/cesiumCells";
 
 export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile, showMessage }) {
-  const viewerRef = useRef(null);
-  const containerRef = useRef(null);  // <-- container ref
+    const viewerRef = useRef(null);
+    const containerRef = useRef(null); 
+    const userRef = useRef(null);
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   const handleClick = async (viewer, movement) => {
+    if (!userRef.current) {
+    showMessage("You need to log in to delete Earth", "error");
+    return;
+  }
     if (!user) return showMessage("You need to log in to delete Earth", "error");
 
     if (!superClickEnabled && viewer.clicksLeft <= 0) return showMessage("You're out of clicks!", "error");
@@ -52,13 +61,13 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
   };
 
   useEffect(() => {
-    if (!containerRef.current) return;  // wait for container to be mounted
+    if (!containerRef.current) return; 
 
     Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
     (async () => {
       const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const viewer = new Cesium.Viewer(containerRef.current, {   // <-- use ref here
+      const viewer = new Cesium.Viewer(containerRef.current, {   
         terrainProvider,
         animation: false,
         timeline: false,
@@ -90,7 +99,7 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         viewerRef.current = null;
       }
     };
-  }, [user, superClickEnabled]);  // re-init on these changes
+  }, [user, superClickEnabled]);  
 
   const zoomOut = () => {
     const viewer = viewerRef.current;
