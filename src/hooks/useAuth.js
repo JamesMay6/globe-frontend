@@ -26,6 +26,8 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
 
   const handleAuth = async (form, authMode, onSuccess, onError) => {
     const email = fakeEmail(form.username);
+    console.log("AUTH DEBUG → username:", form.username, "email:", email, "password:", form.password);
+
     try {
       if (authMode === "register") {
         const { data, error } = await SUPABASE.auth.signUp({ email, password: form.password });
