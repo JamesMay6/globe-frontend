@@ -117,7 +117,7 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         viewerRef.current = viewer;
 
 
-      await fetchDeletedCells(viewer); fetchTotals();
+      await fetchDeletedCells(viewer);
 
       viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
 
