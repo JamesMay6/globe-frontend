@@ -44,7 +44,8 @@ export default function App() {
   user,
   handleAuth,
   handleLogout,
-  loadingSession
+  loadingSession,
+  fetchUserProfile
 } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
   // ---------- UI Toggles ----------
