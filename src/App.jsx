@@ -345,7 +345,10 @@ export default function App() {
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
-                <button onClick={handleAuth}>
+                <button onClick={() => handleAuth(form, authMode, 
+                  (msg) => showMessage(msg, "success"), 
+                  (err) => showMessage(err, "error")
+                )}>
                   {authMode === "login" ? "Log In" : "Register"}
                 </button>
                 <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
