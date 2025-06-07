@@ -59,45 +59,59 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
   };
 
   useEffect(() => {
-    if (!containerRef.current) return; 
+  if (!containerRef.current) return;
 
+  let viewer;
+
+  async function initCesium() {
     Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
-    (async () => {
-      const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const viewer = new Cesium.Viewer(containerRef.current, {   
-        terrainProvider,
-        animation: false,
-        timeline: false,
-        baseLayerPicker: false,
-        homeButton: false,
-        sceneModePicker: false,
-        navigationHelpButton: false,
-        geocoder: true,
-        requestRenderMode: true,
-        maximumRenderTimeChange: 0,
-      });
+    const terrainProvider = await Cesium.createWorldTerrainAsync();
 
-      viewerRef.current = viewer;
+    viewer = new Cesium.Viewer(containerRef.current, {
+      terrainProvider,
+      animation: false,
+      timeline: false,
+      baseLayerPicker: false,
+      homeButton: false,
+      sceneModePicker: false,
+      navigationHelpButton: false,
+      geocoder: true,
+      requestRenderMode: true,
+      maximumRenderTimeChange: 0,
+    });
 
-      const controller = viewer.scene.screenSpaceCameraController;
-      controller.zoomFactor = ZOOM_FACTOR;
-      controller.inertiaZoom = INERTIA_ZOOM;
+    viewerRef.current = viewer;
 
-      await fetchDeletedCells(viewer);
-      viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
+    // Setup camera controller
+    const controller = viewer.scene.screenSpaceCameraController;
+    controller.zoomFactor = ZOOM_FACTOR;
+    controller.inertiaZoom = INERTIA_ZOOM;
 
-      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-      handler.setInputAction((movement) => handleClick(viewer, movement), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    })();
+    // Fetch initial deleted cells
+    await fetchDeletedCells(viewer);
 
-    return () => {
-      if (viewerRef.current) {
-        viewerRef.current.destroy();
-        viewerRef.current = null;
-      }
-    };
-  }, [user, superClickEnabled]);  
+    viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
+
+    // Set up click handler
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+    handler.setInputAction((movement) => {
+      if (!viewerRef.current) return; // Safety check
+
+      handleClick(viewerRef.current, movement);
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+  }
+
+  initCesium();
+
+  return () => {
+    if (viewer) {
+      viewer.destroy();
+      viewerRef.current = null;
+    }
+  };
+}, [user, superClickEnabled]);
+ 
 
   const zoomOut = () => {
     const viewer = viewerRef.current;
