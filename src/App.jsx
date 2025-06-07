@@ -20,18 +20,9 @@ import {
 } from './config/config';
 import { useAuth } from './hooks/useAuth';
 
-const {
-  user,
-  handleAuth,
-  handleLogout,
-  loadingSession
-} = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
-
-
 // ==================== APP ====================
 export default function App() {
   // ---------- State ----------
-  const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
   const [clicksTotal, setClicksTotal] = useState(0);
@@ -41,8 +32,14 @@ export default function App() {
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [cooldownMessage, setCooldownMessage] = useState(null);
-  const [loadingSession, setLoadingSession] = useState(true);
   const [containerReady, setContainerReady] = useState(false);
+
+  const {
+  user,
+  handleAuth,
+  handleLogout,
+  loadingSession
+} = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
   // ---------- UI Toggles ----------
   const [authOpen, setAuthOpen] = useState(false);
