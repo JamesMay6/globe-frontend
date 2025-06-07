@@ -17,8 +17,6 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
     showMessage("You need to log in to delete Earth", "error");
     return;
   }
-    if (!user) return showMessage("You need to log in to delete Earth", "error");
-
     if (!superClickEnabled && viewer.clicksLeft <= 0) return showMessage("You're out of clicks!", "error");
     if (superClickEnabled && viewer.superClicksLeft <= 0) return showMessage("You're out of super clicks!", "error");
 
