@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
-import { CESIUM_TOKEN, API_URL, MIN_ZOOM_LEVEL, ZOOM_FACTOR, INERTIA_ZOOM, ZOOM_OUT_LEVEL, SUPABASE } from './config/config';
-import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "./utils/cesiumCells";
+import { CESIUM_TOKEN, API_URL, MIN_ZOOM_LEVEL, ZOOM_FACTOR, INERTIA_ZOOM, ZOOM_OUT_LEVEL, SUPABASE } from '../config/config';
+import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "../utils/cesiumCells";
 
 export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile, showMessage }) {
   const viewerRef = useRef(null);
