@@ -38,10 +38,12 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         return;
       }
 
-      if (viewer.camera.positionCartographic?.height > MIN_ZOOM_LEVEL) {
-        return showMessage("Zoom in closer to delete Earth", "error");
-      }
-
+      const positionCartographic = Cesium.Cartographic.fromCartesian(viewer.camera.position);
+        if (!positionCartographic || positionCartographic.height > MIN_ZOOM_LEVEL) {
+        showMessage("Zoom in closer to delete Earth", "error");
+        return;
+        }
+        
       showMessage(superClickEnabled ? "Super Click deleting Earth" : "Deleting Earth", "warn");
 
       const ray = viewer.camera.getPickRay(movement.position);
