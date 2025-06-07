@@ -1,41 +1,59 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import { CESIUM_TOKEN, API_URL, MIN_ZOOM_LEVEL, ZOOM_FACTOR, INERTIA_ZOOM, ZOOM_OUT_LEVEL, SUPABASE } from '../config/config';
 import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "../utils/cesiumCells";
 
 export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile, showMessage }) {
-    const viewerRef = useRef(null);
-    const containerRef = useRef(null); 
-    const userRef = useRef(null);
+  const viewerRef = useRef(null);
+  const containerRef = useRef(null); 
+  const userRef = useRef(null);
+  const clickInProgressRef = useRef(false); // Prevent rapid clicks
 
   useEffect(() => {
     userRef.current = user;
   }, [user]);
 
   const handleClick = async (viewer, movement) => {
-    if (!userRef.current) {
-    showMessage("You need to log in to delete Earth", "error");
-    return;
-  }
-    if (!superClickEnabled && viewer.clicksLeft <= 0) return showMessage("You're out of clicks!", "error");
-    if (superClickEnabled && viewer.superClicksLeft <= 0) return showMessage("You're out of super clicks!", "error");
-
-    if (viewer.camera.positionCartographic.height > MIN_ZOOM_LEVEL)
-      return showMessage("Zoom in closer to delete Earth", "error");
-
-    showMessage(superClickEnabled ? "Super Click deleting Earth" : "Deleting Earth", "warn");
-
-    const ray = viewer.camera.getPickRay(movement.position);
-    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-    if (!cartesian) return;
-
-    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-    const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-
-    drawDeletedCell(viewer, lat, lon);
+    if (clickInProgressRef.current) return;
+    clickInProgressRef.current = true;
 
     try {
+      if (!viewer || !viewer.scene || !viewer.camera) {
+        console.warn("Viewer not ready on click");
+        return;
+      }
+
+      if (!userRef.current) {
+        showMessage("You need to log in to delete Earth", "error");
+        return;
+      }
+
+      if (!superClickEnabled && viewer.clicksLeft <= 0) {
+        showMessage("You're out of clicks!", "error");
+        return;
+      }
+
+      if (superClickEnabled && viewer.superClicksLeft <= 0) {
+        showMessage("You're out of super clicks!", "error");
+        return;
+      }
+
+      if (viewer.camera.positionCartographic?.height > MIN_ZOOM_LEVEL) {
+        return showMessage("Zoom in closer to delete Earth", "error");
+      }
+
+      showMessage(superClickEnabled ? "Super Click deleting Earth" : "Deleting Earth", "warn");
+
+      const ray = viewer.camera.getPickRay(movement.position);
+      const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+      if (!cartesian) return;
+
+      const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+      const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
+      const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
+
+      drawDeletedCell(viewer, lat, lon);
+
       const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
       const res = await fetch(`${API_URL}/delete`, {
         method: "POST",
@@ -44,7 +62,10 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
       });
 
       const data = await res.json();
-      if (data.alreadyDeleted) return showMessage("Earth already deleted here", "error");
+      if (data.alreadyDeleted) {
+        showMessage("Earth already deleted here", "error");
+        return;
+      }
 
       if (superClickEnabled && Array.isArray(data.coordinates)) {
         data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
@@ -55,70 +76,70 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
     } catch (err) {
       console.error(err);
       showMessage("Error deleting Earth", "error");
+    } finally {
+      clickInProgressRef.current = false;
     }
   };
 
   useEffect(() => {
-  if (!containerRef.current) return;
+    if (!containerRef.current) return;
 
-  let viewer;
-  let handler;
+    let viewer;
+    let handler;
 
-  async function initCesium() {
-    Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
+    async function initCesium() {
+      Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
-    const terrainProvider = await Cesium.createWorldTerrainAsync();
+      const terrainProvider = await Cesium.createWorldTerrainAsync();
 
-    viewer = new Cesium.Viewer(containerRef.current, {
-      terrainProvider,
-      animation: false,
-      timeline: false,
-      baseLayerPicker: false,
-      homeButton: false,
-      sceneModePicker: false,
-      navigationHelpButton: false,
-      geocoder: true,
-      requestRenderMode: true,
-      maximumRenderTimeChange: 0,
-    });
+      viewer = new Cesium.Viewer(containerRef.current, {
+        terrainProvider,
+        animation: false,
+        timeline: false,
+        baseLayerPicker: false,
+        homeButton: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        geocoder: true,
+        requestRenderMode: true,
+        maximumRenderTimeChange: 0,
+      });
 
-    viewerRef.current = viewer;
+      viewerRef.current = viewer;
 
-    const controller = viewer.scene.screenSpaceCameraController;
-    controller.zoomFactor = ZOOM_FACTOR;
-    controller.inertiaZoom = INERTIA_ZOOM;
+      const controller = viewer.scene.screenSpaceCameraController;
+      controller.zoomFactor = ZOOM_FACTOR;
+      controller.inertiaZoom = INERTIA_ZOOM;
 
-    await fetchDeletedCells(viewer);
+      await fetchDeletedCells(viewer);
 
-    viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
+      viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
 
-    handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    handler.setInputAction((movement) => {
-      // Add safety check for viewer and scene before using
-      if (!viewerRef.current || !viewerRef.current.scene) {
-        console.warn("Viewer or scene not ready yet on click");
-        return;
+      handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+      handler.setInputAction((movement) => {
+        const currentViewer = viewerRef.current;
+        if (!currentViewer || !currentViewer.scene || !currentViewer.camera) {
+          console.warn("Viewer or scene not ready yet on click");
+          return;
+        }
+        handleClick(currentViewer, movement);
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    }
+
+    initCesium();
+
+    return () => {
+      if (handler) {
+        handler.destroy();
+        handler = null;
       }
-      handleClick(viewerRef.current, movement);
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-  }
-
-  initCesium();
-
-  return () => {
-    if (handler) {
-      handler.destroy();
-      handler = null;
-    }
-    if (viewer) {
-      viewer.destroy();
-      viewerRef.current = null;
-      viewer = null;
-    }
-  };
-}, [user, superClickEnabled]);
-
- 
+      if (viewer) {
+        viewer.destroy();
+        viewerRef.current = null;
+        viewer = null;
+      }
+    };
+  }, [user, superClickEnabled]);
 
   const zoomOut = () => {
     const viewer = viewerRef.current;
