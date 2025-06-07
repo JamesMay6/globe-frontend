@@ -291,12 +291,12 @@ button.cesium-infoBox-close {
 
 .toastMessage.error {
   background: #9a1321; /* red */
-  bottom: 50px !important;
+  bottom: 45px !important;
 }
 
 .toastMessage.warn {
   background: #ed8830; /* yellow */
-  bottom: 110px !important;
+  bottom: 115px !important;
 
 }
 
