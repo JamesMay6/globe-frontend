@@ -1,7 +1,7 @@
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { useState } from "react";
 import { useAuth } from './hooks/useAuth';
-import { upgrade } from './hooks/useSuperClickUpgrade';
+import { useSuperClickUpgrade } from './hooks/useSuperClickUpgrade';
 import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
