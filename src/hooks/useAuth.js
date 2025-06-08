@@ -48,6 +48,7 @@ const fakeEmail = (username) =>
         if (!createRes.ok) return onError?.("Failed to create profile.");
 
         // Now fetch profile data after creation
+        setUsername(form.username); // optimistic update to avoid blank
         await fetchUserProfile(data.session.access_token);
 
         onSuccess?.("Registration successful!");
