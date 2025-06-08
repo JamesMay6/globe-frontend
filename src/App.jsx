@@ -24,11 +24,10 @@ export default function App() {
   const {
   user,
   handleAuth,
-  handleSubmit,
   handleLogout,
   loadingSession,
   fetchUserProfile
-  } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
+} = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
   useEffect(() => {
     if (username) {
@@ -151,7 +150,7 @@ export default function App() {
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
 
-                <button onClick={() => handleSubmit(form, authMode, 
+                <button onClick={() => handleAuth(form, authMode, 
                   (msg) => showMessage(msg, "success"), 
                   (err) => showMessage(err, "error")
                 )}>

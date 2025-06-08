@@ -5,8 +5,6 @@ import { SUPABASE, API_URL } from "../config/config";
 export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
-  const [errors, setErrors] = useState({ username: "", password: "" });
-
 
 const fakeEmail = (username) =>
   `${encodeURIComponent(username.toLowerCase().replace(/\s+/g, "_"))}@delete.theearth`;
@@ -27,26 +25,7 @@ const fakeEmail = (username) =>
     setSuperClicksTotal(data.super_clicks);
   };
 
-  const validateForm = () => {
-    const newErrors = { username: "", password: "" };
-    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-
-    if (!usernameRegex.test(form.username)) {
-      newErrors.username = "Username must be 3-20 characters, letters/numbers/_ only.";
-    }
-
-    if (authMode === "register" && form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
-    }
-
-    setErrors(newErrors);
-    return !newErrors.username && !newErrors.password;
-  };
-
-
-  const handleSubmit = () => {
-  if (!validateForm()) return;
-    const handleAuth = async (form, authMode, onSuccess, onError) => {
+  const handleAuth = async (form, authMode, onSuccess, onError) => {
     const email = fakeEmail(form.username);
 
     try {
@@ -85,7 +64,7 @@ const fakeEmail = (username) =>
       console.error(err);
       onError?.("Unexpected error during authentication.");
     }
-  }};
+  };
 
   const handleLogout = async () => {
     await SUPABASE.auth.signOut();
@@ -118,5 +97,5 @@ const fakeEmail = (username) =>
     return () => authListener.subscription.unsubscribe();
   }, []);
 
-  return { user, handleAuth, handleSubmit, handleLogout, loadingSession, fetchUserProfile  };
+  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile  };
 }
