@@ -1,6 +1,8 @@
 // components/AuthBox.jsx
 import { useState, useEffect } from "react";
-import leoProfanity from "leo-profanity";
+import Filter from "bad-words";
+
+const filter = new Filter();
 
 export default function AuthBox({
   user,
@@ -24,15 +26,10 @@ export default function AuthBox({
   const newErrors = { username: "", password: "" };
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
   const username = form.username;
-  const usernameLower = username.toLowerCase();
-  const usernameStripped = usernameLower.replace(/[0-9_]/g, ""); // remove digits and underscores
 
   if (!usernameRegex.test(username)) {
     newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-  } else if (
-    leoProfanity.check(usernameLower) ||  // direct whole word match
-    leoProfanity.badWordsUsed(usernameStripped).length > 0 // substring match after stripping
-  ) {
+  } else if (filter.isProfane(username.toLowerCase())) {
     newErrors.username = "Please choose a more appropriate username.";
   }
 
