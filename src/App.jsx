@@ -37,6 +37,12 @@ export default function App() {
   fetchUserProfile
 } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
+  useEffect(() => {
+    if (username) {
+      setForm((f) => ({ ...f, username }));
+    }
+  }, [username]);
+
   // ---------- UI Toggles ----------
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
