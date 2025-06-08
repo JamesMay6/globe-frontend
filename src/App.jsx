@@ -2,14 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import {
   API_URL,
-  isPaymentEnabled,
-  BUY_CLICKS_PACKAGE_ONE,
-  BUY_CLICKS_PACKAGE_TWO,
-  BUY_CLICKS_PACKAGE_THREE,
-  BUY_CLICKS_PACKAGE_ONE_COST,
-  BUY_CLICKS_PACKAGE_TWO_COST,
-  BUY_CLICKS_PACKAGE_THREE_COST,
-  FREE_CLICKS,
   SUPABASE
 } from './config/config';
 import { useAuth } from './hooks/useAuth';
