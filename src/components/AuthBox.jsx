@@ -4,6 +4,27 @@ import { Filter } from "bad-words";
 
 const filter = new Filter();
 
+function isProfaneUsername(username) {
+  const lower = username.toLowerCase();
+
+  // Remove digits and underscores
+  const stripped = lower.replace(/[0-9_]+/g, "");
+
+  // Direct whole username check
+  if (filter.isProfane(lower)) return true;
+
+  // Check stripped username (e.g. "jamescunt")
+  if (filter.isProfane(stripped)) return true;
+
+  // Check each substring split by digits/underscores
+  const parts = lower.split(/[\d_]+/);
+  for (const part of parts) {
+    if (filter.isProfane(part)) return true;
+  }
+
+  return false;
+}
+
 export default function AuthBox({
   user,
   username,
@@ -23,23 +44,23 @@ export default function AuthBox({
   }, [user]);
 
   const validateForm = () => {
-  const newErrors = { username: "", password: "" };
-  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-  const username = form.username;
+    const newErrors = { username: "", password: "" };
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    const usernameVal = form.username;
 
-  if (!usernameRegex.test(username)) {
-    newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-  } else if (filter.isProfane(username.toLowerCase())) {
-    newErrors.username = "Please choose a more appropriate username.";
-  }
+    if (!usernameRegex.test(usernameVal)) {
+      newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
+    } else if (isProfaneUsername(usernameVal)) {
+      newErrors.username = "Please choose a more appropriate username.";
+    }
 
-  if (authMode === "register" && form.password.length < 6) {
-    newErrors.password = "Password must be at least 6 characters.";
-  }
+    if (authMode === "register" && form.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters.";
+    }
 
-  setErrors(newErrors);
-  return !newErrors.username && !newErrors.password;
-};
+    setErrors(newErrors);
+    return !newErrors.username && !newErrors.password;
+  };
 
 
   const onSubmit = () => {
