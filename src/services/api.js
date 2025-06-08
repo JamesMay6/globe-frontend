@@ -14,8 +14,15 @@ export async function fetchTopUsers() {
 }
 
 //Requires User to be logged in
+
+async function getAuthToken() {
+  const { data, error } = await SUPABASE.auth.getSession();
+  if (error || !data?.session?.access_token) throw new Error("Not authenticated");
+  return data.session.access_token;
+}
+
 export async function buyClicks(amount) {
-  const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
+const token = await getAuthToken();
   const res = await fetch(`${API_URL}/buy-clicks`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -27,7 +34,7 @@ export async function buyClicks(amount) {
 }
 
 export async function upgradeSuperClick() {
-  const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
+const token = await getAuthToken();
   const res = await fetch(`${API_URL}/profile/upgrade-super-click`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -38,7 +45,7 @@ export async function upgradeSuperClick() {
 }
 
 export async function deleteEarth(lat, lon, superClick) {
-  const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
+const token = await getAuthToken();
   const res = await fetch(`${API_URL}/delete`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
