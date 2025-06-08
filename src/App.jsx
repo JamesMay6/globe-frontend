@@ -1,16 +1,18 @@
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { useState } from "react";
+//Hooks
 import { useAuth } from './hooks/useAuth';
 import { useSuperClickUpgrade } from './hooks/useSuperClickUpgrade';
+import { useBuyClicks } from "./hooks/useBuyClicks";
+//Utils
+import { showMessage } from "./utils/showMessage";
+//Components
 import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
-import { showMessage } from "./utils/showMessage";
-import { buyClicks } from './services/api';
 
-// ==================== APP ====================
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
@@ -21,40 +23,16 @@ export default function App() {
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
+
+  // Honor Order of Hooks
   const {
     user,
     handleAuth,
     handleLogout,
     fetchUserProfile
   } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
-  const { 
-    loading: upgrading, 
-    upgrade 
-  } = useSuperClickUpgrade(fetchUserProfile);
-
-
-  const handleBuyClicks = async (amount, free = false) => {
-  try {
-    const data = await buyClicks(amount);
-
-    if (data.error) {
-      if (data.status === 429 && amount === 200) setCooldownMessage(data.error);
-      else showMessage(data.error || "Purchase failed", "error");
-      return;
-    }
-
-    if (free) {
-      showMessage("Free clicks claimed!");
-    } else {
-      showMessage(`Purchased ${amount} clicks!`);
-    }
-
-    fetchUserProfile();
-  } catch (err) {
-    console.error(err);
-    showMessage("Buy clicks failed", "error");
-  }
-};
+  const { upgrade } = useSuperClickUpgrade(fetchUserProfile);
+  const { handleBuyClicks } = useBuyClicks(fetchUserProfile, setCooldownMessage);
 
   return (
     <>
