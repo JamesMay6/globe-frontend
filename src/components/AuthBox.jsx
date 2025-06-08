@@ -1,71 +1,102 @@
-// components/AuthBox.js
-import React from "react";
+// components/AuthBox.jsx
+import { useState, useEffect } from "react";
 
 export default function AuthBox({
   user,
   username,
-  authOpen,
-  setAuthOpen,
-  authMode,
   setAuthMode,
+  authMode,
   form,
   setForm,
   handleAuth,
   handleLogout,
   showMessage,
 }) {
-  if (!user) {
+  const [authOpen, setAuthOpen] = useState(false);
+  const [errors, setErrors] = useState({ username: "", password: "" });
+
+  useEffect(() => {
+    if (user) setAuthOpen(false); // close on login
+  }, [user]);
+
+  const validateForm = () => {
+    const newErrors = { username: "", password: "" };
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+
+    if (!usernameRegex.test(form.username)) {
+      newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
+    }
+
+    if (authMode === "register" && form.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters.";
+    }
+
+    setErrors(newErrors);
+    return !newErrors.username && !newErrors.password;
+  };
+
+  const onSubmit = () => {
+    if (!validateForm()) return;
+    handleAuth(
+      form,
+      authMode,
+      (msg) => showMessage(msg, "success"),
+      (err) => showMessage(err, "error")
+    );
+  };
+
+  if (user) {
+    // ---------- Logged In State ----------
     return (
-      <div className={`authBox ${authOpen ? "expanded" : ""}`}>
-        <button onClick={() => setAuthOpen(!authOpen)}>
-          {authOpen ? "Hide Login / Register ▲" : "Show Login / Register ▼"}
+      <div className="authBox loggedIn">
+        <span>Hi {username}</span>
+        <button className="logout" onClick={handleLogout}>
+          Log Out
         </button>
-        {authOpen && (
-          <>
-            <input
-              type="text"
-              placeholder="Username"
-              value={form.username}
-              onChange={(e) => setForm({ ...form, username: e.target.value })}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-            <button
-              onClick={() =>
-                handleAuth(
-                  form,
-                  authMode,
-                  (msg) => showMessage(msg, "success"),
-                  (err) => showMessage(err, "error")
-                )
-              }
-            >
-              {authMode === "login" ? "Log In" : "Register"}
-            </button>
-            <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-              Switch to {authMode === "login" ? "Register" : "Login"}
-            </button>
-            {authMode === "register" && (
-              <small style={{ color: "#888" }}>
-                Username must be unique and password at least 6 characters.
-              </small>
-            )}
-          </>
-        )}
       </div>
     );
   }
 
+  // ---------- Unauthenticated State ----------
   return (
-    <div className="authBox loggedIn">
-      <span>Hi {username}</span>
-      <button className="logout" onClick={handleLogout}>
-        Log Out
+    <div className={`authBox ${authOpen ? "expanded" : ""}`}>
+      <button onClick={() => setAuthOpen(!authOpen)}>
+        {authOpen ? "Hide Login / Register ▲" : "Show Login / Register ▼"}
       </button>
+
+      {authOpen && (
+        <>
+          <input
+            type="text"
+            placeholder="Username"
+            value={form.username}
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+          />
+          {errors.username && <div className="error">{errors.username}</div>}
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          {errors.password && <div className="error">{errors.password}</div>}
+
+          <button onClick={onSubmit}>
+            {authMode === "login" ? "Log In" : "Register"}
+          </button>
+
+          <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
+            Switch to {authMode === "login" ? "Register" : "Login"}
+          </button>
+
+          {authMode === "register" && (
+            <small style={{ color: "#888" }}>
+              Username must be unique and password at least 6 characters.
+            </small>
+          )}
+        </>
+      )}
     </div>
   );
 }
