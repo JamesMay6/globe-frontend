@@ -18,7 +18,7 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
       console.error(err);
 
       if (err.message === "Daily Free Clicks Used") {
-        showMessage("You have already claimed your free clicks today. Come back tomorrow!", "warning");
+        showMessage("Daily free clicks already claimed", "error");
       } else if (err.message.includes("429")) {
         // You can detect rate limits or other error codes here
         if (setCooldownMessage) setCooldownMessage(err.message);
