@@ -19,6 +19,7 @@ export default function App() {
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [cooldownMessage, setCooldownMessage] = useState(null);
   const [clicksTotal, setClicksTotal] = useState(0);
+  const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicksTotal, setSuperClicksTotal] = useState(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -30,7 +31,7 @@ export default function App() {
     handleAuth,
     handleLogout,
     fetchUserProfile
-  } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
+  } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setClicksUsed);
   const { upgrade } = useSuperClickUpgrade(fetchUserProfile);
   const { handleBuyClicks } = useBuyClicks(fetchUserProfile, setCooldownMessage);
 
@@ -65,6 +66,7 @@ export default function App() {
         {user && (
           <UserMenu
             clicksTotal={clicksTotal}
+            clicksUsed={clicksUsed} 
             superClicksTotal={superClicksTotal}
             superClickEnabled={superClickEnabled}
             setSuperClickEnabled={setSuperClickEnabled}
