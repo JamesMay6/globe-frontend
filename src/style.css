@@ -177,6 +177,7 @@ button.cesium-infoBox-close {
   padding: 5px;
   font-family: sans-serif;
   width: 200px;
+  transition: max-height 0.4s ease, padding 0.4s ease;
 }
 
 .statsMenu button {
@@ -207,6 +208,7 @@ button.cesium-infoBox-close {
   padding: 5px;
   font-family: sans-serif;
   z-index: 10;
+  transition: max-height 0.4s ease, padding 0.4s ease;
 }
 
 .leaderboardMenu button {

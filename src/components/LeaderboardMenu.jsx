@@ -12,9 +12,6 @@ export default function Leaderboard() {
       </button>
       {open && (
         <div className="leaderboardContent">
-          {loading && <div>Loading leaderboard</div>}
-          {error && <div>{error}</div>}
-          {!loading && !error && (
             <ol>
               {topUsers.map(({ username, clicks_used }, index) => (
                 <li key={username} className={`rank-${index + 1}`}>
@@ -23,7 +20,6 @@ export default function Leaderboard() {
                 </li>
               ))}
             </ol>
-          )}
         </div>
       )}
     </div>
