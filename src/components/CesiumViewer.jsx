@@ -1,29 +1,55 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
-import { CESIUM_TOKEN, API_URL, MIN_ZOOM_LEVEL, ZOOM_FACTOR, INERTIA_ZOOM, ZOOM_OUT_LEVEL, SUPABASE } from '../config/config';
-import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "../utils/cesiumCells";
+import {
+  CESIUM_TOKEN,
+  API_URL,
+  MIN_ZOOM_LEVEL,
+  ZOOM_FACTOR,
+  INERTIA_ZOOM,
+  ZOOM_OUT_LEVEL,
+  SUPABASE,
+} from "../config/config";
+import {
+  drawDeletedCell,
+  fetchDeletedCells,
+  normalizeCoord,
+} from "../utils/cesiumCells";
 
-export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile, showMessage }) {
+export default function CesiumViewer({
+  user,
+  superClickEnabled,
+  fetchUserProfile,
+  showMessage,
+}) {
   const viewerRef = useRef(null);
-  const containerRef = useRef(null); 
-  const clickInProgressRef = useRef(false); // Prevent rapid clicks
+  const containerRef = useRef(null);
+  const clickInProgressRef = useRef(false);
+
   const userRef = useRef(null);
-  const clicksRef = useRef(0);
+  const clicksTotalRef = useRef(0);
   const superClicksRef = useRef(0);
   const superClickEnabledRef = useRef(false);
 
-  // ---------- Sync Refs ----------
-  useEffect(() => { userRef.current = user; }, [user]);
-  useEffect(() => { clicksRef.current = clicksTotal; }, [clicksTotal]);
-  useEffect(() => { superClicksRef.current = superClicksTotal; }, [superClicksTotal]);
-  useEffect(() => { superClickEnabledRef.current = superClickEnabled; }, [superClickEnabled]);
+  const [clicksTotal, setClicksTotal] = useState(0);
+  const [superClicksTotal, setSuperClicksTotal] = useState(0);
 
+  // ---------- Sync Refs ----------
   useEffect(() => {
     userRef.current = user;
   }, [user]);
 
+  useEffect(() => {
+    clicksTotalRef.current = clicksTotal;
+  }, [clicksTotal]);
 
-  showMessage(isSuper ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
+  useEffect(() => {
+    superClicksRef.current = superClicksTotal;
+  }, [superClicksTotal]);
+
+  useEffect(() => {
+    superClickEnabledRef.current = superClickEnabled;
+  }, [superClickEnabled]);
+
   const handleClick = async (viewer, movement) => {
     if (clickInProgressRef.current) return;
     clickInProgressRef.current = true;
@@ -39,23 +65,40 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         return;
       }
 
-      if (!superClickEnabledRef.current && viewer.clicksTotalRef.current  <= 0) {
+      if (
+        !superClickEnabledRef.current &&
+        clicksTotalRef.current <= 0
+      ) {
         showMessage("You're out of clicks!", "error");
         return;
       }
 
-      if (superClickEnabledRef.current && viewer.superClicksTotalRef.current <= 0) {
+      if (
+        superClickEnabledRef.current &&
+        superClicksRef.current <= 0
+      ) {
         showMessage("You're out of super clicks!", "error");
         return;
       }
 
-      const positionCartographic = Cesium.Cartographic.fromCartesian(viewer.camera.position);
-        if (!positionCartographic || positionCartographic.height > MIN_ZOOM_LEVEL) {
+      const positionCartographic = Cesium.Cartographic.fromCartesian(
+        viewer.camera.position
+      );
+
+      if (
+        !positionCartographic ||
+        positionCartographic.height > MIN_ZOOM_LEVEL
+      ) {
         showMessage("Zoom in closer to delete Earth", "error");
         return;
-        }
+      }
 
-      showMessage(superClickEnabled ? "Super Click deleting Earth" : "Deleting Earth", "warn");
+      showMessage(
+        superClickEnabledRef.current
+          ? "Super Click deleting Earth"
+          : "Deleting Earth",
+        "warn"
+      );
 
       const ray = viewer.camera.getPickRay(movement.position);
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
@@ -67,11 +110,21 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
 
       drawDeletedCell(viewer, lat, lon);
 
-      const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
+      const token = (
+        await SUPABASE.auth.getSession()
+      ).data?.session?.access_token;
+
       const res = await fetch(`${API_URL}/delete`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ lat, lon, superClick: superClickEnabled }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          lat,
+          lon,
+          superClick: superClickEnabledRef.current,
+        }),
       });
 
       const data = await res.json();
@@ -80,12 +133,30 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         return;
       }
 
-      if (superClickEnabled && Array.isArray(data.coordinates)) {
-        data.coordinates.forEach(({ lat, lon }) => drawDeletedCell(viewer, lat, lon));
+      if (
+        superClickEnabledRef.current &&
+        Array.isArray(data.coordinates)
+      ) {
+        data.coordinates.forEach(({ lat, lon }) =>
+          drawDeletedCell(viewer, lat, lon)
+        );
       }
 
-      showMessage(superClickEnabled ? "Earth deleted with Super Click" : "Earth deleted!");
-      fetchUserProfile();
+      showMessage(
+        superClickEnabledRef.current
+          ? "Earth deleted with Super Click"
+          : "Earth deleted!"
+      );
+
+      await fetchUserProfile();
+
+      // optionally update local state if fetchUserProfile doesn't do it directly
+      setClicksTotal((prev) =>
+        superClickEnabledRef.current ? prev : prev - 1
+      );
+      setSuperClicksTotal((prev) =>
+        superClickEnabledRef.current ? prev - 1 : prev
+      );
     } catch (err) {
       console.error(err);
       showMessage("Error deleting Earth", "error");
@@ -117,25 +188,29 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         requestRenderMode: true,
         maximumRenderTimeChange: 0,
       });
-        
-        viewer.trackedEntity = undefined;
 
+      viewer.trackedEntity = undefined;
 
       const controller = viewer.scene.screenSpaceCameraController;
       controller.zoomFactor = ZOOM_FACTOR;
       controller.inertiaZoom = INERTIA_ZOOM;
 
-        viewerRef.current = viewer;
-
+      viewerRef.current = viewer;
 
       await fetchDeletedCells(viewer);
 
-      viewer.camera.moveEnd.addEventListener(() => fetchDeletedCells(viewer));
+      viewer.camera.moveEnd.addEventListener(() =>
+        fetchDeletedCells(viewer)
+      );
 
       handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((movement) => {
         const currentViewer = viewerRef.current;
-        if (!currentViewer || !currentViewer.scene || !currentViewer.camera) {
+        if (
+          !currentViewer ||
+          !currentViewer.scene ||
+          !currentViewer.camera
+        ) {
           console.warn("Viewer or scene not ready yet on click");
           return;
         }
@@ -150,7 +225,7 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         handler.destroy();
         handler = null;
       }
-      if (viewer) {
+      if (viewer && !viewer.isDestroyed()) {
         viewer.destroy();
         viewerRef.current = null;
         viewer = null;
@@ -162,7 +237,11 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
     const viewer = viewerRef.current;
     if (viewer) {
       viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
+        destination: Cesium.Cartesian3.fromDegrees(
+          0.0,
+          0.0,
+          ZOOM_OUT_LEVEL
+        ),
       });
     } else {
       console.warn("Viewer not ready yet");
@@ -171,8 +250,13 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
 
   return (
     <>
-      <div ref={containerRef} style={{ width: "100vw", height: "100vh" }} />
-      <button className="zoom-out-button" onClick={zoomOut}>Show Full Earth</button>
+      <div
+        ref={containerRef}
+        style={{ width: "100vw", height: "100vh" }}
+      />
+      <button className="zoom-out-button" onClick={zoomOut}>
+        Show Full Earth
+      </button>
     </>
   );
 }

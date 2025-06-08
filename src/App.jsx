@@ -21,13 +21,13 @@ export default function App() {
   // ---------- State ----------
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
-  const [clicksTotal, setClicksTotal] = useState(0);
-  const [superClicksTotal, setSuperClicksTotal] = useState(0);
-  const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [cooldownMessage, setCooldownMessage] = useState(null);
+  const [clicksTotal, setClicksTotal] = useState(0);
+  const [superClicksTotal, setSuperClicksTotal] = useState(0);
+  const [superClickEnabled, setSuperClickEnabled] = useState(false);
 
   const {
   user,
