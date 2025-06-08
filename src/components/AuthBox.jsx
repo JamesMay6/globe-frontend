@@ -72,7 +72,7 @@ export default function AuthBox({
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
           />
-          {errors.username && <div className="error">{errors.username}</div>}
+            {errors.username && <small className="error">{errors.username}</small>}
 
           <input
             type="password"
@@ -80,7 +80,7 @@ export default function AuthBox({
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
-          {errors.password && <div className="error">{errors.password}</div>}
+            {errors.password && <small className="error">{errors.password}</small>}
 
           <button onClick={onSubmit}>
             {authMode === "login" ? "Log In" : "Register"}
@@ -89,12 +89,6 @@ export default function AuthBox({
           <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
             Switch to {authMode === "login" ? "Register" : "Login"}
           </button>
-
-          {authMode === "register" && (
-            <small style={{ color: "#888" }}>
-              Username must be unique and password at least 6 characters.
-            </small>
-          )}
         </>
       )}
     </div>
