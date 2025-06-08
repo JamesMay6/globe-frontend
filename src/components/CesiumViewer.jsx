@@ -232,7 +232,7 @@ export default function CesiumViewer({
         viewer = null;
       }
     };
-  }, [user, superClickEnabled]);
+  }, []);
 
   const zoomOut = () => {
     const viewer = viewerRef.current;
