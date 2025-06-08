@@ -36,3 +36,15 @@ export async function upgradeSuperClick() {
   if (!res.ok) throw new Error(data.error || "Upgrade failed");
   return data;
 }
+
+export async function deleteEarth(lat, lon, superClick) {
+  const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
+  const res = await fetch(`${API_URL}/delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ lat, lon, superClick }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to delete Earth");
+  return data;
+}

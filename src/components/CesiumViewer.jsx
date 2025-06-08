@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import * as Cesium from "cesium";
 import {
   CESIUM_TOKEN,
-  API_URL,
   MIN_ZOOM_LEVEL,
   ZOOM_FACTOR,
   INERTIA_ZOOM,
@@ -14,6 +13,7 @@ import {
   fetchDeletedCells,
   normalizeCoord,
 } from "../utils/cesiumCells";
+import { deleteEarth } from "../services/api";
 
 export default function CesiumViewer({
   user,
@@ -111,28 +111,7 @@ export default function CesiumViewer({
 
       drawDeletedCell(viewer, lat, lon);
 
-      const token = (
-        await SUPABASE.auth.getSession()
-      ).data?.session?.access_token;
-
-      const res = await fetch(`${API_URL}/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          lat,
-          lon,
-          superClick: superClickEnabledRef.current,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.alreadyDeleted) {
-        showMessage("Earth already deleted here", "error");
-        return;
-      }
+      const data = await deleteEarth(lat, lon, superClickEnabledRef.current);
 
       if (
         superClickEnabledRef.current &&
