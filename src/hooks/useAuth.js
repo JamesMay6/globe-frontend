@@ -46,7 +46,7 @@ const fakeEmail = (username) =>
 
   const handleSubmit = () => {
   if (!validateForm()) return;
-    handleAuth = async (form, authMode, onSuccess, onError) => {
+    const handleAuth = async (form, authMode, onSuccess, onError) => {
     const email = fakeEmail(form.username);
 
     try {
