@@ -177,6 +177,7 @@ button.cesium-infoBox-close {
   padding: 5px;
   font-family: sans-serif;
   width: 200px;
+  max-height: 200px;
   transition: max-height 0.4s ease, padding 0.4s ease;
 }
 
@@ -208,6 +209,7 @@ button.cesium-infoBox-close {
   padding: 5px;
   font-family: sans-serif;
   z-index: 10;
+  max-height: 400px;
   transition: max-height 0.4s ease, padding 0.4s ease;
 }
 

@@ -1,13 +1,14 @@
-import { useState } from "react";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+import { useState } from "react";
 import { useAuth } from './hooks/useAuth';
+import { upgrade } from './hooks/useSuperClickUpgrade';
 import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import { showMessage } from "./utils/showMessage";
-import { buyClicks, upgradeSuperClick } from './services/api';
+import { buyClicks } from './services/api';
 
 // ==================== APP ====================
 export default function App() {
@@ -26,6 +27,11 @@ export default function App() {
     handleLogout,
     fetchUserProfile
   } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
+  const { 
+    loading: upgrading, 
+    upgrade 
+  } = useSuperClickUpgrade(fetchUserProfile);
+
 
   const handleBuyClicks = async (amount, free = false) => {
   try {
@@ -47,19 +53,6 @@ export default function App() {
   } catch (err) {
     console.error(err);
     showMessage("Buy clicks failed", "error");
-  }
-};
-
-  const handleUpgradeSuperClick = async () => {
-  try {
-    const data = await upgradeSuperClick();
-    if (data.error) return showMessage(data.error || "Upgrade failed", "error");
-
-    showMessage(data.message || "Upgrade successful!");
-    fetchUserProfile();
-  } catch (err) {
-    console.error(err);
-    showMessage("Upgrade failed", "error");
   }
 };
 
@@ -98,7 +91,7 @@ export default function App() {
             superClickEnabled={superClickEnabled}
             setSuperClickEnabled={setSuperClickEnabled}
             handleBuyClicks={handleBuyClicks}
-            handleUpgradeSuperClick={handleUpgradeSuperClick}
+            handleUpgradeSuperClick={upgrade}
             cooldownMessage={cooldownMessage}
             buyMenuOpen={buyMenuOpen}
             setBuyMenuOpen={setBuyMenuOpen}
