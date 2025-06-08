@@ -7,7 +7,7 @@ import {
   BUY_CLICKS_PACKAGE_TWO_COST,
   BUY_CLICKS_PACKAGE_THREE_COST,
   FREE_CLICKS
-} from './config/config';
+} from '../config/config';
 
 export default function UserMenu({
   clicksTotal,
