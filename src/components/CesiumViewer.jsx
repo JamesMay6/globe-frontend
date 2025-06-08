@@ -20,6 +20,10 @@ export default function CesiumViewer({
   superClickEnabled,
   fetchUserProfile,
   showMessage,
+  clicksTotal,
+  setClicksTotal,
+  superClicksTotal,
+  setSuperClicksTotal
 }) {
   const viewerRef = useRef(null);
   const containerRef = useRef(null);
@@ -29,9 +33,6 @@ export default function CesiumViewer({
   const clicksTotalRef = useRef(0);
   const superClicksRef = useRef(0);
   const superClickEnabledRef = useRef(false);
-
-  const [clicksTotal, setClicksTotal] = useState(0);
-  const [superClicksTotal, setSuperClicksTotal] = useState(0);
 
   // ---------- Sync Refs ----------
   useEffect(() => {

@@ -119,8 +119,16 @@ export default function App() {
 
   return (
     <>
-      <CesiumViewer user={user} superClickEnabled={superClickEnabled} fetchUserProfile={fetchUserProfile} showMessage={showMessage} />
-
+      <CesiumViewer
+        user={user}
+        fetchUserProfile={fetchUserProfile}
+        showMessage={showMessage}
+        superClickEnabled={superClickEnabled}
+        clicksTotal={clicksTotal}
+        superClicksTotal={superClicksTotal}
+        setClicksTotal={setClicksTotal}
+        setSuperClicksTotal={setSuperClicksTotal}
+      />
 
       <div className="topLeftMenu">
         {!user ? (
