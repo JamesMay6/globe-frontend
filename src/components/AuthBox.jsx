@@ -1,6 +1,6 @@
 // components/AuthBox.jsx
 import { useState, useEffect } from "react";
-import leoProfanity from "leo-profanity"; // ✅ correct
+import * as leoProfanity from "leo-profanity";
 
 export default function AuthBox({
   user,
