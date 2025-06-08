@@ -1,0 +1,83 @@
+// In components/UserMenu.jsx
+export default function UserMenu({
+  clicksTotal,
+  superClicksTotal,
+  superClickEnabled,
+  setSuperClickEnabled,
+  handleBuyClicks,
+  handleUpgradeSuperClick,
+  cooldownMessage,
+  buyMenuOpen,
+  setBuyMenuOpen,
+}) {
+  return (
+    <div className="buyMenu">
+      <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
+        {buyMenuOpen ? "Hide User Menu ▲" : "Show User Menu ▼"}
+      </button>
+      {buyMenuOpen && (
+        <div className="buyContent">
+          <div className="clicksAvailable">
+            <div><strong>Available Clicks:</strong> {clicksTotal}</div>
+            <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
+          </div>
+
+          <div className="superClickToggle" style={{ marginTop: "1rem" }}>
+            <label>
+              <input
+                type="checkbox"
+                checked={superClickEnabled}
+                onChange={() => setSuperClickEnabled(!superClickEnabled)}
+              />
+              Enable Super Click
+            </label>
+          </div>
+
+          <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+            Purchase Clicks
+          </div>
+
+          <button className="freeClicksButton" onClick={() => handleBuyClicks(FREE_CLICKS)}>
+            Get {FREE_CLICKS} Free Clicks
+          </button>
+
+          {cooldownMessage && (
+            <div style={{ color: "red", marginTop: "0.5rem" }}>{cooldownMessage}</div>
+          )}
+
+          {!isPaymentEnabled && (
+            <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+              Paid clicks coming soon
+            </div>
+          )}
+
+          {[{ clicks: BUY_CLICKS_PACKAGE_ONE, price: BUY_CLICKS_PACKAGE_ONE_COST }, 
+            { clicks: BUY_CLICKS_PACKAGE_TWO, price: BUY_CLICKS_PACKAGE_TWO_COST }, 
+            { clicks: BUY_CLICKS_PACKAGE_THREE, price: BUY_CLICKS_PACKAGE_THREE_COST }]
+            .map(({ clicks, price }) => (
+              <button
+                key={clicks}
+                onClick={() => handleBuyClicks(clicks)}
+                disabled={!isPaymentEnabled}
+              >
+                Buy {clicks.toLocaleString()} (£{price}) 
+              </button>
+            ))
+          }
+
+          <div className="upgradesMenu">
+            <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
+              Upgrade Clicks - Delete More!
+            </div>
+            <button onClick={handleUpgradeSuperClick} className="superClickButton">
+              Upgrade to a Super Click
+            </button>
+            <p className="info-text">
+              Use 200 clicks to get 1 Super Click, which deletes over 500 coordinates at once!
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
