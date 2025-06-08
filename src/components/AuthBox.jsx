@@ -30,9 +30,8 @@ export default function AuthBox({
   if (!usernameRegex.test(username)) {
     newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
   } else if (
-    leoProfanity.check(usernameLower) || // direct match
-    leoProfanity.check(usernameStripped) || // stripped match
-    leoProfanity.badWordsUsed(usernameStripped).length > 0 // embedded match
+    leoProfanity.check(usernameLower) ||  // direct whole word match
+    leoProfanity.badWordsUsed(usernameStripped).length > 0 // substring match after stripping
   ) {
     newErrors.username = "Please choose a more appropriate username.";
   }
@@ -44,6 +43,7 @@ export default function AuthBox({
   setErrors(newErrors);
   return !newErrors.username && !newErrors.password;
 };
+
 
   const onSubmit = () => {
     if (!validateForm()) return;
