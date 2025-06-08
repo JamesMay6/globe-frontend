@@ -143,11 +143,12 @@ export default function CesiumViewer({
         );
       }
 
-      showMessage(
-        superClickEnabledRef.current
-          ? "Earth deleted with Super Click"
-          : "Earth deleted!"
-      );
+      if (superClickEnabledRef.current) {
+        const count = data.insertedCount ?? data.coordinates?.length ?? 0;
+        showMessage(`Super Click deleted ${count} Earth coordinate${count === 1 ? "" : "s"}`);
+      } else {
+        showMessage("Earth deleted!");
+      }
      
       setClicksTotal((prev) =>
         superClickEnabledRef.current ? prev : prev - 1
