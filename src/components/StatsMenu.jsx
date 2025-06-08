@@ -12,15 +12,9 @@ export default function StatsMenu() {
       </button>
       {open && (
         <div className="statsContent">
-          {loading && <div>Loading stats</div>}
-          {error && <div>Error loading stats</div>}
-          {!loading && !error && (
-            <>
               <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
               <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
               <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
-            </>
-          )}
         </div>
       )}
     </div>
