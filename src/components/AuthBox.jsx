@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import leoProfanity from "leo-profanity";
 
+console.log("leoProfanity:", leoProfanity);
+
 export default function AuthBox({
   user,
   username,
