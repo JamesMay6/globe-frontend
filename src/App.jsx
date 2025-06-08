@@ -61,11 +61,6 @@ export default function App() {
     }
   }, [leaderboardOpen]);
 
-  useEffect(() => {
-    if (leaderboardOpen) fetchTopUsers();
-  }, [leaderboardOpen]);
-
-
   const handleBuyClicks = async (amount, free = false) => {
   try {
     const data = await buyClicks(amount);
@@ -149,7 +144,7 @@ export default function App() {
       </div>
 
       <div className="statsMenu">
-        <button onClick={() => {setStatsOpen(!statsOpen);fetchTotals();}}>
+        <button onClick={() => setStatsOpen(!statsOpen)}>
           {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
         </button>
         {statsOpen && (
@@ -162,7 +157,7 @@ export default function App() {
       </div>
 
       <div className="leaderboardMenu">
-        <button onClick={() => {setLeaderboardOpen(!leaderboardOpen);fetchTopUsers()}}>
+        <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
           {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
         </button>
         {leaderboardOpen && (
