@@ -1,5 +1,6 @@
 // components/AuthBox.jsx
 import { useState, useEffect } from "react";
+import { isProfane } from "leo-profanity";
 
 export default function AuthBox({
   user,
@@ -20,20 +21,22 @@ export default function AuthBox({
   }, [user]);
 
   const validateForm = () => {
-    const newErrors = { username: "", password: "" };
-    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  const newErrors = { username: "", password: "" };
+  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
 
-    if (!usernameRegex.test(form.username)) {
-      newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-    }
+  if (!usernameRegex.test(form.username)) {
+    newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
+  } else if (isProfane(form.username)) {
+    newErrors.username = "Please choose a more appropriate username.";
+  }
 
-    if (authMode === "register" && form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
-    }
+  if (authMode === "register" && form.password.length < 6) {
+    newErrors.password = "Password must be at least 6 characters.";
+  }
 
-    setErrors(newErrors);
-    return !newErrors.username && !newErrors.password;
-  };
+  setErrors(newErrors);
+  return !newErrors.username && !newErrors.password;
+};
 
   const onSubmit = () => {
     if (!validateForm()) return;
