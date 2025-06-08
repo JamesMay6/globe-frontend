@@ -1,6 +1,6 @@
 // components/AuthBox.jsx
 import { useState, useEffect } from "react";
-import Filter from "bad-words";
+import { Filter } from "bad-words";
 
 const filter = new Filter();
 
