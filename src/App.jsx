@@ -61,29 +61,35 @@ export default function App() {
   }, [leaderboardOpen]);
 
 
-  const handleBuyClicks = async (amount) => {
-    try {
-      const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
-      const res = await fetch(`${API_URL}/buy-clicks`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ amount }),
-      });
+  const handleBuyClicks = async (amount, free = false) => {
+  try {
+    const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
+    const res = await fetch(`${API_URL}/buy-clicks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ amount }),
+    });
 
-      const data = await res.json();
-      if (!res.ok) {
-        if (res.status === 429 && amount === 200) setCooldownMessage(data.error);
-        else showMessage(data.error || "Purchase failed", "error");
-        return;
-      }
-
-      showMessage(`Purchased ${amount} clicks!`);
-      fetchUserProfile();
-    } catch (err) {
-      console.error(err);
-      showMessage("Buy clicks failed", "error");
+    const data = await res.json();
+    if (!res.ok) {
+      if (res.status === 429 && amount === 200) setCooldownMessage(data.error);
+      else showMessage(data.error || "Purchase failed", "error");
+      return;
     }
-  };
+
+    if (free) {
+      showMessage("Free clicks claimed!");
+    } else {
+      showMessage(`Purchased ${amount} clicks!`);
+    }
+
+    fetchUserProfile();
+  } catch (err) {
+    console.error(err);
+    showMessage("Buy clicks failed", "error");
+  }
+};
+
 
   const handleUpgradeSuperClick = async () => {
     try {

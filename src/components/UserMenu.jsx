@@ -47,8 +47,8 @@ export default function UserMenu({
             Purchase Clicks
           </div>
 
-          <button className="freeClicksButton" onClick={() => handleBuyClicks(FREE_CLICKS)}>
-            Get {FREE_CLICKS} Free Clicks
+          <button className="freeClicksButton" onClick={() => handleBuyClicks(FREE_CLICKS, true)}>
+            Claim {FREE_CLICKS} Free Clicks
           </button>
 
           {cooldownMessage && (
