@@ -1,4 +1,14 @@
-// In components/UserMenu.jsx
+import {
+  isPaymentEnabled,
+  BUY_CLICKS_PACKAGE_ONE,
+  BUY_CLICKS_PACKAGE_TWO,
+  BUY_CLICKS_PACKAGE_THREE,
+  BUY_CLICKS_PACKAGE_ONE_COST,
+  BUY_CLICKS_PACKAGE_TWO_COST,
+  BUY_CLICKS_PACKAGE_THREE_COST,
+  FREE_CLICKS
+} from './config/config';
+
 export default function UserMenu({
   clicksTotal,
   superClicksTotal,
