@@ -1,6 +1,6 @@
 // components/AuthBox.jsx
 import { useState, useEffect } from "react";
-import { isProfane } from "leo-profanity";
+import leoProfanity from "leo-profanity"; // ✅ correct
 
 export default function AuthBox({
   user,
@@ -26,7 +26,7 @@ export default function AuthBox({
 
   if (!usernameRegex.test(form.username)) {
     newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-  } else if (isProfane(form.username)) {
+  } else if (leoProfanity.isProfane(form.username)) {
     newErrors.username = "Please choose a more appropriate username.";
   }
 
