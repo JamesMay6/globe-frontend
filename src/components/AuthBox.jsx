@@ -47,7 +47,7 @@ export default function AuthBox({
   }, [username]);
 
   useEffect(() => {
-    if (user) {
+    if (user && form.username) {
       setAuthOpen(false);
       setDisplayUsername(form.username);
     }
