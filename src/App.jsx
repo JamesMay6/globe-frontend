@@ -9,6 +9,7 @@ import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import { showMessage } from "./utils/showMessage";
+import { fetchTotals, fetchTopUsers, buyClicks, upgradeSuperClick } from './services/api';
 
 // ==================== APP ====================
 export default function App() {
@@ -44,17 +45,21 @@ export default function App() {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
   // ==================== DATA ====================
-  const fetchTotals = async () => {
-    const res = await fetch(`${API_URL}/total-deletions`);
-    if (!res.ok) return;
-    setTotals(await res.json());
-  };
+    useEffect(() => {
+    if (statsOpen) {
+      fetchTotals()
+        .then(setTotals)
+        .catch((err) => showMessage("Failed to load stats", "error"));
+    }
+  }, [statsOpen]);
 
-  const fetchTopUsers = async () => {
-    const res = await fetch(`${API_URL}/top-users`);
-    if (!res.ok) return;
-    setTopUsers(await res.json());
-  };
+    useEffect(() => {
+    if (leaderboardOpen) {
+      fetchTopUsers()
+        .then(setTopUsers)
+        .catch((err) => showMessage("Failed to load leaderboard", "error"));
+    }
+  }, [leaderboardOpen]);
 
   useEffect(() => {
     if (leaderboardOpen) fetchTopUsers();
@@ -63,16 +68,10 @@ export default function App() {
 
   const handleBuyClicks = async (amount, free = false) => {
   try {
-    const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
-    const res = await fetch(`${API_URL}/buy-clicks`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ amount }),
-    });
+    const data = await buyClicks(amount);
 
-    const data = await res.json();
-    if (!res.ok) {
-      if (res.status === 429 && amount === 200) setCooldownMessage(data.error);
+    if (data.error) {
+      if (data.status === 429 && amount === 200) setCooldownMessage(data.error);
       else showMessage(data.error || "Purchase failed", "error");
       return;
     }
@@ -92,23 +91,17 @@ export default function App() {
 
 
   const handleUpgradeSuperClick = async () => {
-    try {
-      const token = (await SUPABASE.auth.getSession()).data?.session?.access_token;
-      const res = await fetch(`${API_URL}/profile/upgrade-super-click`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      });
+  try {
+    const data = await upgradeSuperClick();
+    if (data.error) return showMessage(data.error || "Upgrade failed", "error");
 
-      const data = await res.json();
-      if (!res.ok) return showMessage(data.error || "Upgrade failed", "error");
-
-      showMessage(data.message || "Upgrade successful!");
-      fetchUserProfile();
-    } catch (err) {
-      console.error(err);
-      showMessage("Upgrade failed", "error");
-    }
-  };
+    showMessage(data.message || "Upgrade successful!");
+    fetchUserProfile();
+  } catch (err) {
+    console.error(err);
+    showMessage("Upgrade failed", "error");
+  }
+};
 
     // ==================== RENDER ====================
 
