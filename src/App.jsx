@@ -5,22 +5,21 @@ import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
+import Leaderboard from "./components/Leaderboard";
 import { showMessage } from "./utils/showMessage";
-import { fetchTopUsers, buyClicks, upgradeSuperClick } from './services/api';
+import { buyClicks, upgradeSuperClick } from './services/api';
 
 // ==================== APP ====================
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
-  const [topUsers, setTopUsers] = useState([]);
   const [cooldownMessage, setCooldownMessage] = useState(null);
   const [clicksTotal, setClicksTotal] = useState(0);
   const [superClicksTotal, setSuperClicksTotal] = useState(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
-  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const {
     user,
     handleAuth,
@@ -28,16 +27,6 @@ export default function App() {
     loadingSession,
     fetchUserProfile
   } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
-
-  // ==================== DATA ====================
-
-    useEffect(() => {
-    if (leaderboardOpen) {
-      fetchTopUsers()
-        .then(setTopUsers)
-        .catch((err) => showMessage("Failed to load leaderboard", "error"));
-    }
-  }, [leaderboardOpen]);
 
   const handleBuyClicks = async (amount, free = false) => {
   try {
@@ -119,24 +108,8 @@ export default function App() {
       </div>
 
         <StatsMenu />
+        <Leaderboard />
 
-      <div className="leaderboardMenu">
-        <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
-          {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
-        </button>
-        {leaderboardOpen && (
-          <div className="leaderboardContent">
-            <ol>
-              {topUsers.map(({ username, clicks_used }, index) => (
-                <li key={username} className={`rank-${index + 1}`}>
-                  <span className="username">{username}</span>
-                  <span className="score">{clicks_used.toLocaleString()}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-      </div>
     </>
   );
 }

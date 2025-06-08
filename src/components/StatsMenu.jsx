@@ -12,7 +12,6 @@ export default function StatsMenu() {
       </button>
       {open && (
         <div className="statsContent">
-          {loading && <div>Loading stats...</div>}
           {error && <div>Error loading stats</div>}
           {!loading && !error && (
             <>
