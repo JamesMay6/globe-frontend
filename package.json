@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vite build",
     "prebuild": "chmod +x node_modules/.bin/vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postbuild": "cp -r node_modules/cesium/Build/Cesium dist/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
