@@ -11,6 +11,7 @@ import {
 
 export default function UserMenu({
   clicksTotal,
+  clicksUsed,
   superClicksTotal,
   superClickEnabled,
   setSuperClickEnabled,
@@ -29,6 +30,7 @@ export default function UserMenu({
         <div className="buyContent">
           <div className="clicksAvailable">
             <div><strong>Available Clicks:</strong> {clicksTotal}</div>
+            <div><strong>Clicks Used:</strong> {clicksUsed}</div>
             <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
           </div>
 

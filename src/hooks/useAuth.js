@@ -6,7 +6,7 @@ import {
 } from "../services/api";
 import { fakeEmail } from "../utils/fakeEmail";
 
-export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
+export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setClicksUsed) {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
@@ -35,6 +35,7 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
         setUsername(profile.username);
         setClicksTotal(profile.clicks_total);
         setSuperClicksTotal(profile.super_clicks);
+        setClicksUsed(profile.clicks_used);
         localStorage.setItem("username", profile.username);
 
         setSkipProfileFetch(false);
@@ -50,6 +51,7 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
         setUsername(profile.username);
         setClicksTotal(profile.clicks_total);
         setSuperClicksTotal(profile.super_clicks);
+        setClicksUsed(profile.clicks_used);
         localStorage.setItem("username", profile.username);
       }
     } catch (err) {
@@ -75,6 +77,7 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
         setUsername(profile.username);
         setClicksTotal(profile.clicks_total);
         setSuperClicksTotal(profile.super_clicks);
+        setClicksUsed(profile.clicks_used);
         localStorage.setItem("username", profile.username);
       }
       setLoadingSession(false);
@@ -90,6 +93,7 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
         setUsername(profile.username);
         setClicksTotal(profile.clicks_total);
         setSuperClicksTotal(profile.super_clicks);
+        setClicksUsed(profile.clicks_used);
         localStorage.setItem("username", profile.username);
       } else if (!session) {
         setUser(null);
