@@ -6,7 +6,6 @@ import {
   ZOOM_FACTOR,
   INERTIA_ZOOM,
   ZOOM_OUT_LEVEL,
-  SUPABASE,
 } from "../config/config";
 import {
   drawDeletedCell,
@@ -21,7 +20,9 @@ export default function CesiumViewer({
   fetchUserProfile,
   showMessage,
   clicksTotal,
+  clicksUsed,
   setClicksTotal,
+  setClicksUsed,
   superClicksTotal,
   setSuperClicksTotal
 }) {
@@ -31,6 +32,7 @@ export default function CesiumViewer({
 
   const userRef = useRef(null);
   const clicksTotalRef = useRef(0);
+  const clicksUsedRef = useRef(0);
   const superClicksRef = useRef(0);
   const superClickEnabledRef = useRef(false);
 
@@ -42,6 +44,10 @@ export default function CesiumViewer({
   useEffect(() => {
     clicksTotalRef.current = clicksTotal;
   }, [clicksTotal]);
+
+  useEffect(() => {
+    clicksUsedRef.current = clicksUsed;
+  }, [clicksUsed]);
 
   useEffect(() => {
     superClicksRef.current = superClicksTotal;
