@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { useAuth } from './hooks/useAuth';
 import CesiumViewer from "./components/CesiumViewer";
@@ -24,7 +24,6 @@ export default function App() {
     user,
     handleAuth,
     handleLogout,
-    loadingSession,
     fetchUserProfile
   } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
