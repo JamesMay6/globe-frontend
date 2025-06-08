@@ -1,13 +1,13 @@
-// hooks/useAuth.js
 import { useEffect, useState } from "react";
 import { SUPABASE, API_URL } from "../config/config";
 
 export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
+  const [skipProfileFetch, setSkipProfileFetch] = useState(false);
 
-const fakeEmail = (username) =>
-  `${encodeURIComponent(username.toLowerCase().replace(/\s+/g, "_"))}@delete.theearth`;
+  const fakeEmail = (username) =>
+    `${encodeURIComponent(username.toLowerCase().replace(/\s+/g, "_"))}@delete.theearth`;
 
   const fetchUserProfile = async (token) => {
     const accessToken = token || (await SUPABASE.auth.getSession()).data?.session?.access_token;
@@ -30,6 +30,7 @@ const fakeEmail = (username) =>
 
     try {
       if (authMode === "register") {
+        setSkipProfileFetch(true); 
         const { data, error } = await SUPABASE.auth.signUp({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");
 
@@ -52,6 +53,8 @@ const fakeEmail = (username) =>
         onSuccess?.("Registration successful!");
         await fetchUserProfile(data.session.access_token);
 
+        setSkipProfileFetch(false);
+
       } else {
         const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");
@@ -72,6 +75,7 @@ const fakeEmail = (username) =>
     localStorage.removeItem("username");
   };
 
+  // Run once on mount to initialize session
   useEffect(() => {
     const initSession = async () => {
       setLoadingSession(true);
@@ -82,19 +86,24 @@ const fakeEmail = (username) =>
       }
       setLoadingSession(false);
     };
+    initSession();
+  }, []);
 
+  // Listen to auth changes and fetch profile if allowed
+  useEffect(() => {
     const { data: authListener } = SUPABASE.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
+      if (session && !skipProfileFetch) {
         setUser(session.user);
         await fetchUserProfile(session.access_token);
-      } else {
+      } else if (!session) {
         setUser(null);
       }
     });
 
-    initSession();
-    return () => authListener.subscription.unsubscribe();
-  }, []);
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [skipProfileFetch]);
 
-  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile  };
+  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile };
 }
