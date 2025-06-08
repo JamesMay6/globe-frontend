@@ -43,19 +43,6 @@ export default function App() {
   const [statsOpen, setStatsOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
-  // ---------- Refs ----------
-  const viewerRef = useRef(null);
-  const userRef = useRef(null);
-  const clicksRef = useRef(0);
-  const superClicksRef = useRef(0);
-  const superClickEnabledRef = useRef(false);
-
-  // ---------- Sync Refs ----------
-  useEffect(() => { userRef.current = user; }, [user]);
-  useEffect(() => { clicksRef.current = clicksTotal; }, [clicksTotal]);
-  useEffect(() => { superClicksRef.current = superClicksTotal; }, [superClicksTotal]);
-  useEffect(() => { superClickEnabledRef.current = superClickEnabled; }, [superClickEnabled]);
-
   // ==================== DATA ====================
   const fetchTotals = async () => {
     const res = await fetch(`${API_URL}/total-deletions`);

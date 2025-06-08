@@ -6,13 +6,24 @@ import { drawDeletedCell, fetchDeletedCells, normalizeCoord } from "../utils/ces
 export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile, showMessage }) {
   const viewerRef = useRef(null);
   const containerRef = useRef(null); 
-  const userRef = useRef(null);
   const clickInProgressRef = useRef(false); // Prevent rapid clicks
+  const userRef = useRef(null);
+  const clicksRef = useRef(0);
+  const superClicksRef = useRef(0);
+  const superClickEnabledRef = useRef(false);
+
+  // ---------- Sync Refs ----------
+  useEffect(() => { userRef.current = user; }, [user]);
+  useEffect(() => { clicksRef.current = clicksTotal; }, [clicksTotal]);
+  useEffect(() => { superClicksRef.current = superClicksTotal; }, [superClicksTotal]);
+  useEffect(() => { superClickEnabledRef.current = superClickEnabled; }, [superClickEnabled]);
 
   useEffect(() => {
     userRef.current = user;
   }, [user]);
 
+
+  showMessage(isSuper ? "Super Deleting Earth..." : "Deleting Earth...", "warn");
   const handleClick = async (viewer, movement) => {
     if (clickInProgressRef.current) return;
     clickInProgressRef.current = true;
@@ -28,12 +39,12 @@ export default function CesiumViewer({ user, superClickEnabled, fetchUserProfile
         return;
       }
 
-      if (!superClickEnabled && viewer.clicksLeft <= 0) {
+      if (!superClickEnabledRef.current && viewer.clicksTotalRef.current  <= 0) {
         showMessage("You're out of clicks!", "error");
         return;
       }
 
-      if (superClickEnabled && viewer.superClicksLeft <= 0) {
+      if (superClickEnabledRef.current && viewer.superClicksTotalRef.current <= 0) {
         showMessage("You're out of super clicks!", "error");
         return;
       }
