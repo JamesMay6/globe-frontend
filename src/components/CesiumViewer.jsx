@@ -148,16 +148,16 @@ export default function CesiumViewer({
           ? "Earth deleted with Super Click"
           : "Earth deleted!"
       );
-
-      await fetchUserProfile();
-
-      // optionally update local state if fetchUserProfile doesn't do it directly
+     
       setClicksTotal((prev) =>
         superClickEnabledRef.current ? prev : prev - 1
       );
       setSuperClicksTotal((prev) =>
         superClickEnabledRef.current ? prev - 1 : prev
       );
+
+       await fetchUserProfile();
+
     } catch (err) {
       console.error(err);
       showMessage("Error deleting Earth", "error");
