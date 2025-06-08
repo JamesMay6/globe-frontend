@@ -23,10 +23,17 @@ export default function AuthBox({
   const validateForm = () => {
   const newErrors = { username: "", password: "" };
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  const username = form.username;
+  const usernameLower = username.toLowerCase();
+  const usernameStripped = usernameLower.replace(/[0-9_]/g, ""); // remove digits and underscores
 
-  if (!usernameRegex.test(form.username)) {
+  if (!usernameRegex.test(username)) {
     newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-  } else if (leoProfanity.check(form.username)) {
+  } else if (
+    leoProfanity.check(usernameLower) || // direct match
+    leoProfanity.check(usernameStripped) || // stripped match
+    leoProfanity.badWordsUsed(usernameStripped).length > 0 // embedded match
+  ) {
     newErrors.username = "Please choose a more appropriate username.";
   }
 
