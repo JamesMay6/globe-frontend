@@ -5,14 +5,13 @@ import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import { showMessage } from "./utils/showMessage";
-import { fetchTotals, fetchTopUsers, buyClicks, upgradeSuperClick } from './services/api';
+import { fetchTopUsers, buyClicks, upgradeSuperClick } from './services/api';
 
 // ==================== APP ====================
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
-  const [totals, setTotals] = useState({ total: 0, expected_total: 0, percentage: 0 });
   const [topUsers, setTopUsers] = useState([]);
   const [cooldownMessage, setCooldownMessage] = useState(null);
   const [clicksTotal, setClicksTotal] = useState(0);
@@ -20,7 +19,6 @@ export default function App() {
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
-  const [statsOpen, setStatsOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const {
     user,
@@ -31,13 +29,6 @@ export default function App() {
   } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
   // ==================== DATA ====================
-    useEffect(() => {
-    if (statsOpen) {
-      fetchTotals()
-        .then(setTotals)
-        .catch((err) => showMessage("Failed to load stats", "error"));
-    }
-  }, [statsOpen]);
 
     useEffect(() => {
     if (leaderboardOpen) {
@@ -70,7 +61,6 @@ export default function App() {
   }
 };
 
-
   const handleUpgradeSuperClick = async () => {
   try {
     const data = await upgradeSuperClick();
@@ -83,8 +73,6 @@ export default function App() {
     showMessage("Upgrade failed", "error");
   }
 };
-
-    // ==================== RENDER ====================
 
   return (
     <>
@@ -129,18 +117,7 @@ export default function App() {
         )}
       </div>
 
-      <div className="statsMenu">
-        <button onClick={() => setStatsOpen(!statsOpen)}>
-          {statsOpen ? "Hide Stats ▼" : "Show Stats ▲"}
-        </button>
-        {statsOpen && (
-          <div className="statsContent">
-            <div><strong>Current Deleted:</strong> {totals.total.toLocaleString()}</div>
-            <div><strong>Total: </strong> {totals.expected_total.toLocaleString()}</div>
-            <div><strong>% Deleted:</strong> {totals.percentage?.toFixed(10)}%</div>
-          </div>
-        )}
-      </div>
+        <StatsMenu />
 
       <div className="leaderboardMenu">
         <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
