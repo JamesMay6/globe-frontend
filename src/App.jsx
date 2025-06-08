@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import "cesium/Build/Cesium/Widgets/widgets.css";
-import {
-  API_URL,
-  SUPABASE
-} from './config/config';
 import { useAuth } from './hooks/useAuth';
 import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
@@ -13,7 +9,6 @@ import { fetchTotals, fetchTopUsers, buyClicks, upgradeSuperClick } from './serv
 
 // ==================== APP ====================
 export default function App() {
-  // ---------- State ----------
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
@@ -23,26 +18,17 @@ export default function App() {
   const [clicksTotal, setClicksTotal] = useState(0);
   const [superClicksTotal, setSuperClicksTotal] = useState(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
-
-  const {
-  user,
-  handleAuth,
-  handleLogout,
-  loadingSession,
-  fetchUserProfile
-} = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
-
-  useEffect(() => {
-    if (username) {
-      setForm((f) => ({ ...f, username }));
-    }
-  }, [username]);
-
-  // ---------- UI Toggles ----------
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const {
+    user,
+    handleAuth,
+    handleLogout,
+    loadingSession,
+    fetchUserProfile
+  } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal);
 
   // ==================== DATA ====================
     useEffect(() => {
