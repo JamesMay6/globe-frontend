@@ -57,6 +57,7 @@ const fakeEmail = (username) =>
         const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");
         setUser(data.session.user);
+        setUsername(form.username); // optimistic update to avoid blank
         await fetchUserProfile(data.session.access_token);
       }
     } catch (err) {
