@@ -93,7 +93,7 @@ export default function AuthBox({
       <div className="authBox loggedIn">
         <span>Hi {displayUsername}</span>
         <button className="logout" onClick={handleLogout}>
-          Log Out
+          Logout
         </button>
       </div>
     );
