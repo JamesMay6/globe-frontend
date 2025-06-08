@@ -7,6 +7,7 @@ import {
 import { useAuth } from './hooks/useAuth';
 import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
+import AuthBox from "./components/AuthBox";
 
 // ==================== APP ====================
 export default function App() {
@@ -129,64 +130,32 @@ export default function App() {
       />
 
       <div className="topLeftMenu">
-        {!user ? (
-          <div className={`authBox ${authOpen ? "expanded" : ""}`}>
-            <button onClick={() => setAuthOpen(!authOpen)}>
-              {authOpen ? "Hide Login / Register ▲" : "Show Login / Register  ▼"}
-            </button>
-            {authOpen && (
-              <>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={form.username}
-                  onChange={(e) => setForm({ ...form, username: e.target.value })}
-                />
+        <AuthBox
+          user={user}
+          username={username}
+          authOpen={authOpen}
+          setAuthOpen={setAuthOpen}
+          authMode={authMode}
+          setAuthMode={setAuthMode}
+          form={form}
+          setForm={setForm}
+          handleAuth={handleAuth}
+          handleLogout={handleLogout}
+          showMessage={showMessage}
+        />
 
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                />
-
-                <button onClick={() => handleAuth(form, authMode, 
-                  (msg) => showMessage(msg, "success"), 
-                  (err) => showMessage(err, "error")
-                )}>
-                  {authMode === "login" ? "Log In" : "Register"}
-                </button>
-                <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-                  Switch to {authMode === "login" ? "Register" : "Login"}
-                </button>
-                {authMode === "register" && (
-                  <small style={{ color: "#888" }}>
-                    Username must be unique and password at least 6 characters.
-                  </small>
-                )}
-              </>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="authBox loggedIn">
-              <span>Hi {username}</span>
-              <button className="logout" onClick={handleLogout}>
-                Log Out
-              </button>
-            </div>
-            <UserMenu
-              clicksTotal={clicksTotal}
-              superClicksTotal={superClicksTotal}
-              superClickEnabled={superClickEnabled}
-              setSuperClickEnabled={setSuperClickEnabled}
-              handleBuyClicks={handleBuyClicks}
-              handleUpgradeSuperClick={handleUpgradeSuperClick}
-              cooldownMessage={cooldownMessage}
-              buyMenuOpen={buyMenuOpen}
-              setBuyMenuOpen={setBuyMenuOpen}
-            />
-          </>
+        {user && (
+          <UserMenu
+            clicksTotal={clicksTotal}
+            superClicksTotal={superClicksTotal}
+            superClickEnabled={superClickEnabled}
+            setSuperClickEnabled={setSuperClickEnabled}
+            handleBuyClicks={handleBuyClicks}
+            handleUpgradeSuperClick={handleUpgradeSuperClick}
+            cooldownMessage={cooldownMessage}
+            buyMenuOpen={buyMenuOpen}
+            setBuyMenuOpen={setBuyMenuOpen}
+          />
         )}
       </div>
 
