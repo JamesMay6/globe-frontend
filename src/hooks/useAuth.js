@@ -31,9 +31,11 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
       if (authMode === "register") {
         const { data, error } = await SUPABASE.auth.signUp({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");
+
         setUser(data.session.user);
-        await fetchUserProfile(data.session.access_token);
-        await fetch(`${API_URL}/create-profile`, {
+
+        // First, create the profile
+        const createRes = await fetch(`${API_URL}/create-profile`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -41,7 +43,14 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
           },
           body: JSON.stringify({ id: data.user.id, username: form.username }),
         });
+
+        if (!createRes.ok) return onError?.("Failed to create profile.");
+
+        // Now fetch profile data after creation
+        await fetchUserProfile(data.session.access_token);
+
         onSuccess?.("Registration successful!");
+
       } else {
         const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");

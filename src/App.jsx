@@ -251,7 +251,7 @@ export default function App() {
       </div>
 
       <div className="leaderboardMenu">
-        <button onClick={() => setLeaderboardOpen(!leaderboardOpen)}>
+        <button onClick={() => {setLeaderboardOpen(!leaderboardOpen);fetchTopUsers()}}>
           {leaderboardOpen ? "Hide Leaderboard ▼" : "Show Leaderboard ▲"}
         </button>
         {leaderboardOpen && (
