@@ -282,6 +282,9 @@ button.cesium-infoBox-close {
   font-family: sans-serif;
   opacity: 1;
   transition: opacity 0.5s ease;
+  width: max-content; /* 🔥 Let it grow with text */
+  max-width: 90vw;     /* Optional: prevent it from going off screen */
+  white-space: nowrap; /* Optional: keep on one line */
 }
 .toastMessage.success {
   background: #106a25; /* green */
@@ -396,4 +399,11 @@ button.cesium-infoBox-close {
     position: absolute;
     box-sizing: border-box;
   }
+}
+
+/*for safari*/
+input,
+textarea,
+select {
+  font-size: 16px !important;
 }

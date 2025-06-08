@@ -197,7 +197,7 @@ export default function CesiumViewer({
       controller.inertiaZoom = INERTIA_ZOOM;
 
       viewerRef.current = viewer;
-      viewer.camera.setView({ // or flyTo
+      viewer.camera.flyTo({ 
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
 

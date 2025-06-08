@@ -6,7 +6,8 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
 
-  const fakeEmail = (username) => `${username}@delete.theearth`;
+const fakeEmail = (username) =>
+  `${encodeURIComponent(username.toLowerCase().replace(/\s+/g, "_"))}@delete.theearth`;
 
   const fetchUserProfile = async (token) => {
     const accessToken = token || (await SUPABASE.auth.getSession()).data?.session?.access_token;
