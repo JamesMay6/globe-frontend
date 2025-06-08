@@ -7,15 +7,6 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
     try {
       const data = await buyClicks(amount);
 
-      if (data.error) {
-        if (data.status === 429 && amount === 200) {
-          if (setCooldownMessage) setCooldownMessage(data.error);
-        } else {
-          showMessage(data.error || "Purchase failed", "error");
-        }
-        return;
-      }
-
       if (free) {
         showMessage("Free clicks claimed!");
       } else {
@@ -25,7 +16,15 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
       if (fetchUserProfile) fetchUserProfile();
     } catch (err) {
       console.error(err);
-      showMessage("Buy clicks failed", "error");
+
+      if (err.message === "Daily Free Clicks Used") {
+        showMessage("You have already claimed your free clicks today. Come back tomorrow!", "warning");
+      } else if (err.message.includes("429")) {
+        // You can detect rate limits or other error codes here
+        if (setCooldownMessage) setCooldownMessage(err.message);
+      } else {
+        showMessage(err.message || "Buy clicks failed", "error");
+      }
     }
   };
 
