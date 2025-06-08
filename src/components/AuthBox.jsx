@@ -38,6 +38,20 @@ export default function AuthBox({
 }) {
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
+  const [displayUsername, setDisplayUsername] = useState(username || "");
+
+  useEffect(() => {
+    if (username) {
+      setDisplayUsername(username);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    if (user) {
+      setAuthOpen(false);
+      setDisplayUsername(form.username);
+    }
+  }, [user, form.username]);
 
   useEffect(() => {
     if (user) setAuthOpen(false); // close on login
@@ -77,7 +91,7 @@ export default function AuthBox({
     // ---------- Logged In State ----------
     return (
       <div className="authBox loggedIn">
-        <span>Hi {username}</span>
+        <span>Hi {displayUsername}</span>
         <button className="logout" onClick={handleLogout}>
           Log Out
         </button>

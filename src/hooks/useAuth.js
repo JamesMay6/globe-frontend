@@ -49,9 +49,8 @@ const fakeEmail = (username) =>
 
         // Now fetch profile data after creation
         setUsername(form.username); // optimistic update to avoid blank
-        await fetchUserProfile(data.session.access_token);
-
         onSuccess?.("Registration successful!");
+        await fetchUserProfile(data.session.access_token);
 
       } else {
         const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
