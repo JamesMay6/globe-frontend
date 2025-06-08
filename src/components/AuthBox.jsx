@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import leoProfanity from "leo-profanity";
 
-console.log("leoProfanity:", leoProfanity);
-
 export default function AuthBox({
   user,
   username,
@@ -28,7 +26,7 @@ export default function AuthBox({
 
   if (!usernameRegex.test(form.username)) {
     newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-  } else if (leoProfanity.isProfane(form.username)) {
+  } else if (leoProfanity.check(form.username)) {
     newErrors.username = "Please choose a more appropriate username.";
   }
 
