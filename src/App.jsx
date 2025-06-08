@@ -43,8 +43,10 @@ export default function App() {
         showMessage={showMessage}
         superClickEnabled={superClickEnabled}
         clicksTotal={clicksTotal}
+        clicksUsed={clicksUsed} 
         superClicksTotal={superClicksTotal}
         setClicksTotal={setClicksTotal}
+        setClicksUsed={setClicksUsed} 
         setSuperClicksTotal={setSuperClicksTotal}
       />
 

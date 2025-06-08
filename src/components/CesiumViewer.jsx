@@ -138,6 +138,9 @@ export default function CesiumViewer({
       setClicksTotal((prev) =>
         superClickEnabledRef.current ? prev : prev - 1
       );
+      setClicksUsed((prev) =>
+        superClickEnabledRef.current ? prev : prev + 1
+      );
       setSuperClicksTotal((prev) =>
         superClickEnabledRef.current ? prev - 1 : prev
       );
