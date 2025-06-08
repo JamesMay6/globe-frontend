@@ -1,66 +1,56 @@
 import { useEffect, useState } from "react";
-import { SUPABASE, API_URL } from "../config/config";
+import { SUPABASE } from "../config/config";
+import {
+  fetchUserProfile,
+  createUserProfile
+} from "../services/api";
+import { fakeEmail } from "../utils/fakeEmail";
 
 export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
 
-  const fakeEmail = (username) =>
-    `${encodeURIComponent(username.toLowerCase().replace(/\s+/g, "_"))}@delete.theearth`;
-
-  const fetchUserProfile = async (token) => {
-    const accessToken = token || (await SUPABASE.auth.getSession()).data?.session?.access_token;
-    if (!accessToken) return;
-
-    const res = await fetch(`${API_URL}/profile`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    if (!res.ok) return;
-
-    const data = await res.json();
-    setUsername(data.username);
-    localStorage.setItem("username", data.username);
-    setClicksTotal(data.clicks_total);
-    setSuperClicksTotal(data.super_clicks);
-  };
-
   const handleAuth = async (form, authMode, onSuccess, onError) => {
     const email = fakeEmail(form.username);
 
     try {
       if (authMode === "register") {
-        setSkipProfileFetch(true); 
+        setSkipProfileFetch(true);
         const { data, error } = await SUPABASE.auth.signUp({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");
 
         setUser(data.session.user);
 
-        // First, create the profile
-        const createRes = await fetch(`${API_URL}/create-profile`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${data.session.access_token}`,
-          },
-          body: JSON.stringify({ id: data.user.id, username: form.username }),
-        });
+        try {
+          await createUserProfile(data.user.id, form.username, data.session.access_token);
+        } catch {
+          return onError?.("Failed to create profile.");
+        }
 
-        if (!createRes.ok) return onError?.("Failed to create profile.");
-
-        // Now fetch profile data after creation
-        setUsername(form.username); // optimistic update to avoid blank
+        setUsername(form.username); // Optimistic
         onSuccess?.("Registration successful!");
-        await fetchUserProfile(data.session.access_token);
+
+        const profile = await fetchUserProfile(data.session.access_token);
+        setUsername(profile.username);
+        setClicksTotal(profile.clicks_total);
+        setSuperClicksTotal(profile.super_clicks);
+        localStorage.setItem("username", profile.username);
 
         setSkipProfileFetch(false);
 
       } else {
         const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
         if (error || !data.session) return onError?.(error?.message || "No session returned");
+
         setUser(data.session.user);
-        setUsername(form.username); // optimistic update to avoid blank
-        await fetchUserProfile(data.session.access_token);
+        setUsername(form.username); // Optimistic
+
+        const profile = await fetchUserProfile(data.session.access_token);
+        setUsername(profile.username);
+        setClicksTotal(profile.clicks_total);
+        setSuperClicksTotal(profile.super_clicks);
+        localStorage.setItem("username", profile.username);
       }
     } catch (err) {
       console.error(err);
@@ -75,26 +65,32 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal) {
     localStorage.removeItem("username");
   };
 
-  // Run once on mount to initialize session
   useEffect(() => {
     const initSession = async () => {
       setLoadingSession(true);
       const { data: { session } } = await SUPABASE.auth.getSession();
       if (session) {
         setUser(session.user);
-        await fetchUserProfile(session.access_token);
+        const profile = await fetchUserProfile(session.access_token);
+        setUsername(profile.username);
+        setClicksTotal(profile.clicks_total);
+        setSuperClicksTotal(profile.super_clicks);
+        localStorage.setItem("username", profile.username);
       }
       setLoadingSession(false);
     };
     initSession();
   }, []);
 
-  // Listen to auth changes and fetch profile if allowed
   useEffect(() => {
     const { data: authListener } = SUPABASE.auth.onAuthStateChange(async (event, session) => {
       if (session && !skipProfileFetch) {
         setUser(session.user);
-        await fetchUserProfile(session.access_token);
+        const profile = await fetchUserProfile(session.access_token);
+        setUsername(profile.username);
+        setClicksTotal(profile.clicks_total);
+        setSuperClicksTotal(profile.super_clicks);
+        localStorage.setItem("username", profile.username);
       } else if (!session) {
         setUser(null);
       }
