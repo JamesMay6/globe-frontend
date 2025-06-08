@@ -144,12 +144,14 @@ export default function App() {
                   value={form.username}
                   onChange={(e) => setForm({ ...form, username: e.target.value })}
                 />
+
                 <input
                   type="password"
                   placeholder="Password"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
+
                 <button onClick={() => handleAuth(form, authMode, 
                   (msg) => showMessage(msg, "success"), 
                   (err) => showMessage(err, "error")
@@ -159,6 +161,11 @@ export default function App() {
                 <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
                   Switch to {authMode === "login" ? "Register" : "Login"}
                 </button>
+                {authMode === "register" && (
+                  <small style={{ color: "#888" }}>
+                    Username must be unique and password at least 6 characters.
+                  </small>
+                )}
               </>
             )}
           </div>
