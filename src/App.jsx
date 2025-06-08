@@ -8,6 +8,7 @@ import { useAuth } from './hooks/useAuth';
 import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
+import { showMessage } from "./utils/showMessage";
 
 // ==================== APP ====================
 export default function App() {
@@ -59,17 +60,6 @@ export default function App() {
     if (leaderboardOpen) fetchTopUsers();
   }, [leaderboardOpen]);
 
-  // ==================== UTILITY ====================
-  function showMessage(text, type = "success", duration = 700) {
-    const message = document.createElement("div");
-    message.textContent = text;
-    message.className = `toastMessage ${type}`;
-    document.body.appendChild(message);
-    setTimeout(() => {
-      message.style.opacity = "0";
-      setTimeout(() => message.remove(), 200);
-    }, duration);
-  }
 
   const handleBuyClicks = async (amount) => {
     try {
