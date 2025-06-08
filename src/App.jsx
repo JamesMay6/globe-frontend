@@ -5,7 +5,7 @@ import CesiumViewer from "./components/CesiumViewer";
 import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
-import Leaderboard from "./components/Leaderboard";
+import Leaderboard from "./components/LeaderboardMenu";
 import { showMessage } from "./utils/showMessage";
 import { buyClicks, upgradeSuperClick } from './services/api';
 
