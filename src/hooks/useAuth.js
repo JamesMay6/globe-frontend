@@ -32,8 +32,6 @@ export function useAuth(fetchUserProfile) {
         }
 
         onSuccess?.("Registration successful!");
-
-        // Fetch fresh profile
         await fetchUserProfile();
 
         setSkipProfileFetch(false);
@@ -47,8 +45,6 @@ export function useAuth(fetchUserProfile) {
           return onError?.(error?.message || "No session returned");
 
         setUser(data.session.user);
-
-        // Fetch fresh profile
         await fetchUserProfile();
       }
     } catch (err) {
@@ -60,7 +56,6 @@ export function useAuth(fetchUserProfile) {
   const handleLogout = async () => {
     await SUPABASE.auth.signOut();
     setUser(null);
-    // You can clear local storage or profile state inside useUserProfile if needed
   };
 
   useEffect(() => {
@@ -76,7 +71,6 @@ export function useAuth(fetchUserProfile) {
         setUser(session.user);
         await fetchUserProfile();
       } else {
-        // Fallback: try getUser in case session is null on reload
         const {
           data: { user: fallbackUser },
           error: userError

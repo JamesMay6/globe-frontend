@@ -1,46 +1,54 @@
-// hooks/useUserProfile.js
-import { useState, useEffect } from "react";
-import { SUPABASE } from "../config/config";
-import { fetchUserProfile as fetchUserProfileAPI } from "../services/api";
+import { useEffect, useState } from "react";
+import { SUPABASE } from "../lib/supabaseClient";
+import { useAuth } from "./useAuth"; // <- we pull in the user here
 
 export function useUserProfile() {
-  const [username, setUsername] = useState(null);
+  const { user } = useAuth(); // access current logged-in user
+  const [username, setUsername] = useState("");
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
-  const [superClicksTotal, setSuperClicksTotal] = useState(0);
-  const [superClickEnabled, setSuperClickEnabled] = useState(false);
+  const [superClicks, setSuperClicks] = useState(0);
 
   const fetchUserProfile = async () => {
-    try {
-        const {
-        data: { session },
-        } = await SUPABASE.auth.getSession();
+    if (!user?.id) return;
 
-        if (!session || !session.access_token || !session.user) {
-        console.warn("No valid session for fetching profile");
-        return;
-        }
+    const { data, error } = await SUPABASE
+      .from("profiles")
+      .select("username, clicks_total, clicks_used, super_clicks")
+      .eq("id", user.id)
+      .single();
 
-        const profile = await fetchUserProfileAPI(session.access_token);
-        setUsername(profile.username);
-        setClicksTotal(profile.clicks_total);
-        setClicksUsed(profile.clicks_used);
-        setSuperClicksTotal(profile.super_clicks_total);
-    } catch (err) {
-        console.error(err);
+    if (error) {
+      console.error("Error fetching user profile:", error);
+      return;
     }
-    };
+
+    setUsername(data.username);
+    setClicksTotal(data.clicks_total);
+    setClicksUsed(data.clicks_used);
+    setSuperClicks(data.super_clicks);
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    console.log("👤 user:", user);
+    console.log("📛 username:", username);
+    }, [user, username]);
 
   return {
     username,
     clicksTotal,
     clicksUsed,
-    superClicksTotal,
-    superClickEnabled,
-    setSuperClickEnabled,
+    superClicks,
+    setUsername,
     setClicksTotal,
     setClicksUsed,
-    setSuperClicksTotal,
+    setSuperClicks,
     fetchUserProfile,
   };
 }
