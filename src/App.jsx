@@ -44,7 +44,7 @@ export default function App() {
     loadProfile
   } = useUserProfile(user, fetchUserProfile);
 
-  const { upgrade } = useSuperClickUpgrade(fetchUserProfile);
+  const { upgrade } = useSuperClickUpgrade(loadProfile);
   const { handleBuyClicks } = useBuyClicks(loadProfile, setCooldownMessage);
 
   const refreshUserProfile = async () => {
