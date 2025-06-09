@@ -49,7 +49,7 @@ const token = await getAuthToken();
   const res = await fetch(`${API_URL}/delete`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ lat, lon, superClick }),
+    body: JSON.stringify({ lat, lon, z, superClick }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Failed to delete Earth");
