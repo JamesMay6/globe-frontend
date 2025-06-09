@@ -23,23 +23,22 @@ export default function App() {
 
   // Honor Order of Hooks
   const {
-    username,
-    clicksTotal,
-    clicksUsed,
-    superClicksTotal,
-    setSuperClickEnabled,
-    superClickEnabled,
-    fetchUserProfile,
-    setClicksTotal,
-    setClicksUsed,
-    setSuperClicksTotal
-  } = useUserProfile();
-
-  const {
     user,
     handleAuth,
     handleLogout
   } = useAuth(fetchUserProfile); // pass fetchUserProfile down
+
+  const {
+    username,
+    clicksTotal,
+    clicksUsed,
+    superClicks: superClicksTotal,
+    setUsername,
+    setClicksTotal,
+    setClicksUsed,
+    setSuperClicks: setSuperClicksTotal,
+    fetchUserProfile
+  } = useUserProfile(user);
 
   const { upgrade } = useSuperClickUpgrade(fetchUserProfile);
   const { handleBuyClicks } = useBuyClicks(fetchUserProfile, setCooldownMessage);

@@ -1,9 +1,8 @@
+// hooks/useUserProfile.js
 import { useState, useEffect } from "react";
 import { SUPABASE } from "../config/config";
-import { useAuth } from "./useAuth"; 
 
-export function useUserProfile() {
-  const { user } = useAuth(); 
+export function useUserProfile(user) {
   const [username, setUsername] = useState("");
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
@@ -38,7 +37,7 @@ export function useUserProfile() {
   useEffect(() => {
     console.log("👤 user:", user);
     console.log("📛 username:", username);
-    }, [user, username]);
+  }, [user, username]);
 
   return {
     username,
