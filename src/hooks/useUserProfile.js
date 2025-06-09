@@ -1,3 +1,4 @@
+// hooks/useUserProfile.js
 import { useState, useEffect } from "react";
 
 export function useUserProfile(user, fetchUserProfile) {
@@ -5,20 +6,32 @@ export function useUserProfile(user, fetchUserProfile) {
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
-  const [superClickEnabled, setSuperClickEnabled] = useState(false);
 
   const updateProfileFromData = (data) => {
+    console.log("📝 Updating profile state with data:", data);
     if (data) {
-      setUsername(data.username);
-      setClicksTotal(data.clicks_total);
-      setClicksUsed(data.clicks_used);
-      setSuperClicks(data.super_clicks);
+      setUsername(data.username || "");
+      setClicksTotal(data.clicks_total || 0);
+      setClicksUsed(data.clicks_used || 0);
+      setSuperClicks(data.super_clicks || 0);
     }
   };
 
   useEffect(() => {
+    console.log("🔄 useUserProfile effect triggered, user:", user?.id, "fetchUserProfile:", !!fetchUserProfile);
+    
     if (user && fetchUserProfile) {
-      fetchUserProfile().then(updateProfileFromData);
+      console.log("🚀 Calling fetchUserProfile...");
+      fetchUserProfile()
+        .then(data => {
+          console.log("📦 Received profile data:", data);
+          updateProfileFromData(data);
+        })
+        .catch(err => {
+          console.error("❌ Error in profile fetch:", err);
+        });
+    } else {
+      console.log("⏸️ Skipping profile fetch - user:", !!user, "fetchUserProfile:", !!fetchUserProfile);
     }
   }, [user, fetchUserProfile]);
 
@@ -32,12 +45,10 @@ export function useUserProfile(user, fetchUserProfile) {
     clicksTotal,
     clicksUsed,
     superClicks,
-    superClickEnabled,
-    setSuperClickEnabled,
     setUsername,
     setClicksTotal,
     setClicksUsed,
     setSuperClicks,
-    updateProfileFromData, // Export this for manual updates
+    updateProfileFromData,
   };
 }

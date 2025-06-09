@@ -11,20 +11,33 @@ export function useAuth() {
 
   // Move the fetching logic here
   const fetchUserProfile = async () => {
-    if (!user?.id) return null;
-
-    const { data, error } = await SUPABASE
-      .from("profiles")
-      .select("username, clicks_total, clicks_used, super_clicks")
-      .eq("id", user.id)
-      .single();
-
-    if (error) {
-      console.error("Error fetching user profile:", error);
+    console.log("🔍 fetchUserProfile called, user:", user);
+    
+    if (!user?.id) {
+      console.log("❌ No user ID available");
       return null;
     }
 
-    return data;
+    console.log("📡 Fetching profile for user ID:", user.id);
+
+    try {
+      const { data, error } = await SUPABASE
+        .from("profiles")
+        .select("username, clicks_total, clicks_used, super_clicks")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("❌ Error fetching user profile:", error);
+        return null;
+      }
+
+      console.log("✅ Profile data fetched:", data);
+      return data;
+    } catch (err) {
+      console.error("❌ Exception in fetchUserProfile:", err);
+      return null;
+    }
   };
 
   const handleAuth = async (form, authMode, onSuccess, onError) => {
