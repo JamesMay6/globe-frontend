@@ -12,24 +12,24 @@ export function useUserProfile() {
 
   const fetchUserProfile = async () => {
     try {
-      const {
+        const {
         data: { session },
-      } = await SUPABASE.auth.getSession();
+        } = await SUPABASE.auth.getSession();
 
-      if (!session || !session.access_token) {
+        if (!session || !session.access_token || !session.user) {
         console.warn("No valid session for fetching profile");
         return;
-      }
+        }
 
-      const profile = await fetchUserProfileAPI(session.access_token);
-      setUsername(profile.username);
-      setClicksTotal(profile.clicks_total);
-      setClicksUsed(profile.clicks_used);
-      setSuperClicksTotal(profile.super_clicks_total);
+        const profile = await fetchUserProfileAPI(session.access_token);
+        setUsername(profile.username);
+        setClicksTotal(profile.clicks_total);
+        setClicksUsed(profile.clicks_used);
+        setSuperClicksTotal(profile.super_clicks_total);
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
-  };
+    };
 
   return {
     username,
