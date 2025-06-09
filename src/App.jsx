@@ -1,6 +1,7 @@
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { useState } from "react";
 //Hooks
+import { useUserProfile } from './hooks/useUserProfile';
 import { useAuth } from './hooks/useAuth';
 import { useSuperClickUpgrade } from './hooks/useSuperClickUpgrade';
 import { useBuyClicks } from "./hooks/useBuyClicks";
@@ -16,22 +17,30 @@ import Leaderboard from "./components/LeaderboardMenu";
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
-  const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [cooldownMessage, setCooldownMessage] = useState(null);
-  const [clicksTotal, setClicksTotal] = useState(0);
-  const [clicksUsed, setClicksUsed] = useState(0);
-  const [superClicksTotal, setSuperClicksTotal] = useState(0);
-  const [superClickEnabled, setSuperClickEnabled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
 
   // Honor Order of Hooks
   const {
+    username,
+    clicksTotal,
+    clicksUsed,
+    superClicksTotal,
+    setSuperClickEnabled,
+    superClickEnabled,
+    fetchUserProfile,
+    setClicksTotal,
+    setClicksUsed,
+    setSuperClicksTotal
+  } = useUserProfile();
+
+  const {
     user,
     handleAuth,
     handleLogout,
-    fetchUserProfile
-  } = useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setClicksUsed);
+  } = useAuth(fetchUserProfile); // pass fetchUserProfile down
+
   const { upgrade } = useSuperClickUpgrade(fetchUserProfile);
   const { handleBuyClicks } = useBuyClicks(fetchUserProfile, setCooldownMessage);
 
@@ -77,9 +86,6 @@ export default function App() {
             cooldownMessage={cooldownMessage}
             buyMenuOpen={buyMenuOpen}
             setBuyMenuOpen={setBuyMenuOpen}
-            setClicksTotal={setClicksTotal} 
-            setClicksUsed={setClicksUsed} 
-            setSuperClicksTotal={setSuperClicksTotal}
           />
         )}
       </div>
