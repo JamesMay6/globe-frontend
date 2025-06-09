@@ -1,8 +1,8 @@
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { useState } from "react";
 //Hooks
-import { useUserProfile } from './hooks/useUserProfile';
 import { useAuth } from './hooks/useAuth';
+import { useUserProfile } from './hooks/useUserProfile';
 import { useSuperClickUpgrade } from './hooks/useSuperClickUpgrade';
 import { useBuyClicks } from "./hooks/useBuyClicks";
 //Utils
@@ -26,7 +26,7 @@ export default function App() {
     user,
     handleAuth,
     handleLogout
-  } = useAuth(fetchUserProfile); // pass fetchUserProfile down
+  } = useAuth(fetchUserProfile); 
 
   const {
     username,
