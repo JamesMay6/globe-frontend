@@ -1,5 +1,6 @@
 // hooks/useUserProfile.js
 import { useState, useEffect } from "react";
+import { SUPABASE } from "../config/config";
 import { fetchUserProfile as fetchUserProfileAPI } from "../services/api";
 
 export function useUserProfile() {
@@ -11,7 +12,16 @@ export function useUserProfile() {
 
   const fetchUserProfile = async () => {
     try {
-      const profile = await fetchUserProfileAPI();
+      const {
+        data: { session },
+      } = await SUPABASE.auth.getSession();
+
+      if (!session || !session.access_token) {
+        console.warn("No valid session for fetching profile");
+        return;
+      }
+
+      const profile = await fetchUserProfileAPI(session.access_token);
       setUsername(profile.username);
       setClicksTotal(profile.clicks_total);
       setClicksUsed(profile.clicks_used);
