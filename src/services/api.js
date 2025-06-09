@@ -44,7 +44,7 @@ const token = await getAuthToken();
   return data;
 }
 
-export async function deleteEarth(lat, lon, superClick) {
+export async function deleteEarth(lat, lon, z, superClick) {
 const token = await getAuthToken();
   const res = await fetch(`${API_URL}/delete`, {
     method: "POST",
