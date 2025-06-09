@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { SUPABASE } from "../config/config";
 import { createUserProfile } from "../services/api";
 import { fakeEmail } from "../utils/fakeEmail";
+import { logEvent } from "../utils/logger";
 
 export function useAuth() {
   const [user, setUser] = useState(null);
@@ -15,9 +16,7 @@ export function useAuth() {
       console.log("No user ID available");
       return null;
     }
-
-    console.log("📡 Fetching profile for user ID:", user.id);
-
+    logEvent("Fetching profile for User ID: ", user.id);
     try {
       const { data, error } = await SUPABASE
         .from("profiles")
@@ -27,6 +26,7 @@ export function useAuth() {
 
       if (error) {
         console.error("Error fetching user profile:", error);
+        logEvent("Error etching profile for User ID: ", user.id, " with error: ", error);
         return null;
       }
       return data;
