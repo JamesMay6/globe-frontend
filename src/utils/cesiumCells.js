@@ -24,8 +24,6 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
 const drawnCells = new Set();
 
-let primitiveLayer;
-
 export const drawDeletedCells = (viewer, cells) => {
   const instances = [];
 
@@ -58,15 +56,13 @@ export const drawDeletedCells = (viewer, cells) => {
   }
 
   if (instances.length > 0) {
-    if (primitiveLayer) {
-      viewer.scene.primitives.remove(primitiveLayer);
-    }
-    primitiveLayer = new Cesium.GroundPrimitive({
-      geometryInstances: instances,
-      appearance: new Cesium.PerInstanceColorAppearance(),
-      classificationType: Cesium.ClassificationType.BOTH,
-    });
-    viewer.scene.primitives.add(primitiveLayer);
+    viewer.scene.primitives.add(
+      new Cesium.GroundPrimitive({
+        geometryInstances: instances,
+        appearance: new Cesium.PerInstanceColorAppearance(),
+        classificationType: Cesium.ClassificationType.BOTH,
+      })
+    );
   }
 };
 
