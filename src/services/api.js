@@ -76,5 +76,4 @@ export async function createUserProfile(id, username, token) {
     body: JSON.stringify({ id, username }),
   });
   if (!res.ok) throw new Error("Failed to create profile");
-  return res.json();
 }
