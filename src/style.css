@@ -68,6 +68,9 @@ button.cesium-infoBox-close {
 .cesium-button.cesium-fullscreenButton, .cesium-button.cesium-vrButton{
   display: none !important;
 }
+.cesium-viewer-geocoderContainer .search-results {
+  display: none;
+}
 
 /* Zoom Out Button */
 .zoom-out-button {
