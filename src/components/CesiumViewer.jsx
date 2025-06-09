@@ -6,6 +6,7 @@ import {
   ZOOM_FACTOR,
   INERTIA_ZOOM,
   ZOOM_OUT_LEVEL,
+  SUPABASE_URL
 } from "../config/config";
 import {
   drawDeletedCell,
@@ -184,6 +185,15 @@ export default function CesiumViewer({
         maximumRenderTimeChange: 0,
       });
 
+      viewer.imageryLayers.addImageryProvider(
+        new Cesium.UrlTemplateImageryProvider({
+          url: `${SUPABASE_URL}/tiles/{z}/{x}/{y}.png`,
+          tilingScheme: new Cesium.WebMercatorTilingScheme(),
+          maximumLevel: 18,
+          credit: "Deleted Tiles",
+        })
+      );
+      
       viewer.trackedEntity = undefined;
 
       const controller = viewer.scene.screenSpaceCameraController;
@@ -195,11 +205,13 @@ export default function CesiumViewer({
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
 
+      /*
       await fetchDeletedCells(viewer);
 
       viewer.camera.moveEnd.addEventListener(() =>
         fetchDeletedCells(viewer)
       );
+      */
 
       handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((movement) => {
@@ -217,7 +229,6 @@ export default function CesiumViewer({
       
       handler.setInputAction(() => {}, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
     }
-    
 
     initCesium();
 
