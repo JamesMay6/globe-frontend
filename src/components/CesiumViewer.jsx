@@ -186,7 +186,7 @@ export default function CesiumViewer({
 
       viewer.imageryLayers.addImageryProvider(
         new Cesium.UrlTemplateImageryProvider({
-          url: `${process.env.SUPABASE_URL}/tiles/{z}/{x}/{y}.png`,
+          url: `${import.meta.env.VITE_SUPABASE_URL}/tiles/{z}/{x}/{y}.png`,
           tilingScheme: new Cesium.WebMercatorTilingScheme(),
           maximumLevel: 18,
           credit: "Deleted Tiles",
