@@ -1,5 +1,5 @@
 // hooks/useUserProfile.js
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function useUserProfile(user, fetchUserProfile) {
   const [username, setUsername] = useState("");
@@ -7,7 +7,7 @@ export function useUserProfile(user, fetchUserProfile) {
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
 
-  const updateProfileFromData = (data) => {
+  const updateProfileFromData = useCallback((data) => {
     console.log("📝 Updating profile state with data:", data);
     if (data) {
       setUsername(data.username || "");
@@ -15,25 +15,30 @@ export function useUserProfile(user, fetchUserProfile) {
       setClicksUsed(data.clicks_used || 0);
       setSuperClicks(data.super_clicks || 0);
     }
-  };
+  }, []);
+
+  const loadProfile = useCallback(async () => {
+    if (user && fetchUserProfile) {
+      console.log("🚀 Calling fetchUserProfile...");
+      try {
+        const data = await fetchUserProfile();
+        console.log("📦 Received profile data:", data);
+        updateProfileFromData(data);
+      } catch (err) {
+        console.error("❌ Error in profile fetch:", err);
+      }
+    }
+  }, [user, fetchUserProfile, updateProfileFromData]);
 
   useEffect(() => {
     console.log("🔄 useUserProfile effect triggered, user:", user?.id, "fetchUserProfile:", !!fetchUserProfile);
     
     if (user && fetchUserProfile) {
-      console.log("🚀 Calling fetchUserProfile...");
-      fetchUserProfile()
-        .then(data => {
-          console.log("📦 Received profile data:", data);
-          updateProfileFromData(data);
-        })
-        .catch(err => {
-          console.error("❌ Error in profile fetch:", err);
-        });
+      loadProfile();
     } else {
       console.log("⏸️ Skipping profile fetch - user:", !!user, "fetchUserProfile:", !!fetchUserProfile);
     }
-  }, [user, fetchUserProfile]);
+  }, [user, fetchUserProfile, loadProfile]);
 
   useEffect(() => {
     console.log("👤 user:", user);
@@ -50,5 +55,6 @@ export function useUserProfile(user, fetchUserProfile) {
     setClicksUsed,
     setSuperClicks,
     updateProfileFromData,
+    loadProfile, // Export this for manual refresh
   };
 }

@@ -1,5 +1,5 @@
 // hooks/useAuth.js
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { SUPABASE } from "../config/config";
 import { createUserProfile } from "../services/api";
 import { fakeEmail } from "../utils/fakeEmail";
@@ -9,8 +9,8 @@ export function useAuth() {
   const [loadingSession, setLoadingSession] = useState(true);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
 
-  // Move the fetching logic here
-  const fetchUserProfile = async () => {
+  // Use useCallback to ensure fetchUserProfile always has the latest user value
+  const fetchUserProfile = useCallback(async () => {
     console.log("🔍 fetchUserProfile called, user:", user);
     
     if (!user?.id) {
@@ -38,7 +38,7 @@ export function useAuth() {
       console.error("❌ Exception in fetchUserProfile:", err);
       return null;
     }
-  };
+  }, [user]); // Depend on user so it updates when user changes
 
   const handleAuth = async (form, authMode, onSuccess, onError) => {
     const email = fakeEmail(form.username);
@@ -64,8 +64,6 @@ export function useAuth() {
         }
 
         onSuccess?.("Registration successful!");
-        await fetchUserProfile();
-
         setSkipProfileFetch(false);
       } else {
         const { data, error } = await SUPABASE.auth.signInWithPassword({
@@ -77,7 +75,6 @@ export function useAuth() {
           return onError?.(error?.message || "No session returned");
 
         setUser(data.session.user);
-        await fetchUserProfile();
       }
     } catch (err) {
       console.error(err);
@@ -101,7 +98,6 @@ export function useAuth() {
 
       if (session?.user) {
         setUser(session.user);
-        await fetchUserProfile();
       } else {
         const {
           data: { user: fallbackUser },
@@ -110,7 +106,6 @@ export function useAuth() {
 
         if (fallbackUser) {
           setUser(fallbackUser);
-          await fetchUserProfile();
         }
       }
 
@@ -124,7 +119,6 @@ export function useAuth() {
       async (event, session) => {
         if (session && !skipProfileFetch) {
           setUser(session.user);
-          await fetchUserProfile();
         } else if (!session) {
           setUser(null);
         }
@@ -136,5 +130,5 @@ export function useAuth() {
     };
   }, [skipProfileFetch]);
 
-  return { user, handleAuth, handleLogout, loadingSession };
+  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile };
 }
