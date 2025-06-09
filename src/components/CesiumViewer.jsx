@@ -111,12 +111,11 @@ export default function CesiumViewer({
       const ray = viewer.camera.getPickRay(movement.position);
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
       if (!cartesian) return;
-      /*
+      
 
       const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
       const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
       const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-      */
 
       const height = positionCartographic.height;
 
