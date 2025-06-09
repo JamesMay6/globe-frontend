@@ -31,11 +31,6 @@ export function useUserProfile() {
     }
   };
 
-  // Optionally fetch on mount
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
   return {
     username,
     clicksTotal,
