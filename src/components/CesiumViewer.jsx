@@ -209,7 +209,10 @@ export default function CesiumViewer({
         }
         handleClick(currentViewer, movement);
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      
+      handler.setInputAction(() => {}, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
     }
+    
 
     initCesium();
 
