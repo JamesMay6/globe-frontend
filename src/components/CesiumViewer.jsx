@@ -6,6 +6,7 @@ import {
   ZOOM_FACTOR,
   INERTIA_ZOOM,
   ZOOM_OUT_LEVEL,
+  BACKEND_URL
 } from "../config/config";
 import {
   drawDeletedCell,
@@ -186,7 +187,7 @@ export default function CesiumViewer({
 
       viewer.imageryLayers.addImageryProvider(
         new Cesium.UrlTemplateImageryProvider({
-          url: `${import.meta.env.VITE_SUPABASE_URL}/tiles/{z}/{x}/{y}.png`,
+          url: `${BACKEND_URL}/tiles/{z}/{x}/{y}.png`,
           tilingScheme: new Cesium.WebMercatorTilingScheme(),
           maximumLevel: 18,
           credit: "Deleted Tiles",
