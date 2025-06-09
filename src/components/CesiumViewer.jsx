@@ -184,15 +184,6 @@ export default function CesiumViewer({
         requestRenderMode: true,
         maximumRenderTimeChange: 0,
       });
-
-      viewer.imageryLayers.addImageryProvider(
-        new Cesium.UrlTemplateImageryProvider({
-          url: `${BACKEND_URL}/tiles/{z}/{x}/{y}.png`,
-          tilingScheme: new Cesium.WebMercatorTilingScheme(),
-          maximumLevel: 18,
-          credit: "Deleted Tiles",
-        })
-      );
       
       viewer.trackedEntity = undefined;
 
@@ -205,13 +196,11 @@ export default function CesiumViewer({
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
 
-      /*
       await fetchDeletedCells(viewer);
 
       viewer.camera.moveEnd.addEventListener(() =>
         fetchDeletedCells(viewer)
       );
-      */
 
       handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((movement) => {
