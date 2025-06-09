@@ -10,11 +10,9 @@ export function useAuth() {
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
 
   // Use useCallback to ensure fetchUserProfile always has the latest user value
-  const fetchUserProfile = useCallback(async () => {
-    console.log("🔍 fetchUserProfile called, user:", user);
-    
+  const fetchUserProfile = useCallback(async () => {   
     if (!user?.id) {
-      console.log("❌ No user ID available");
+      console.log("No user ID available");
       return null;
     }
 
@@ -28,14 +26,12 @@ export function useAuth() {
         .single();
 
       if (error) {
-        console.error("❌ Error fetching user profile:", error);
+        console.error("Error fetching user profile:", error);
         return null;
       }
-
-      console.log("✅ Profile data fetched:", data);
       return data;
     } catch (err) {
-      console.error("❌ Exception in fetchUserProfile:", err);
+      console.error("Exception in fetchUserProfile:", err);
       return null;
     }
   }, [user]); // Depend on user so it updates when user changes
