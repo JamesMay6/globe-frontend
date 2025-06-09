@@ -51,10 +51,10 @@ export function useAuth() {
         if (error || !data.session)
           return onError?.(error?.message || "No session returned");
 
-        setUser(data.session.user);
-
         try {
           await createUserProfile(data.user.id, form.username, data.session.access_token);
+          setUser(data.session.user);
+
         } catch {
           return onError?.("Failed to create profile.");
         }
