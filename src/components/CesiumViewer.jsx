@@ -115,9 +115,14 @@ export default function CesiumViewer({
       const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
       const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-      drawDeletedCell(viewer, lat, lon);
-
       const data = await deleteEarth(lat, lon, superClickEnabledRef.current);
+
+      if (data.alreadyDeleted) {
+      showMessage("Earth is already deleted here", "error");
+      return;
+      }
+
+      drawDeletedCell(viewer, lat, lon);
 
       if (
         superClickEnabledRef.current &&

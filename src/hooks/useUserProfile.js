@@ -32,7 +32,6 @@ export function useUserProfile(user, fetchUserProfile) {
     if (user && fetchUserProfile) {
       loadProfile();
     } else {
-      console.log("Skipping profile fetch - user:", !!user, "fetchUserProfile:", !!fetchUserProfile);
     }
   }, [user, fetchUserProfile, loadProfile]);
 
