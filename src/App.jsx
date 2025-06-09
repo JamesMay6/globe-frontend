@@ -38,7 +38,7 @@ export default function App() {
   const {
     user,
     handleAuth,
-    handleLogout,
+    handleLogout
   } = useAuth(fetchUserProfile); // pass fetchUserProfile down
 
   const { upgrade } = useSuperClickUpgrade(fetchUserProfile);

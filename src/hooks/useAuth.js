@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { SUPABASE } from "../config/config";
-import {
-  fetchUserProfile,
-  createUserProfile
-} from "../services/api";
+import { createUserProfile } from "../services/api";
 import { fakeEmail } from "../utils/fakeEmail";
 
-export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setClicksUsed) {
+export function useAuth(fetchUserProfile) {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
@@ -17,8 +14,14 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setCli
     try {
       if (authMode === "register") {
         setSkipProfileFetch(true);
-        const { data, error } = await SUPABASE.auth.signUp({ email, password: form.password });
-        if (error || !data.session) return onError?.(error?.message || "No session returned");
+
+        const { data, error } = await SUPABASE.auth.signUp({
+          email,
+          password: form.password,
+        });
+
+        if (error || !data.session)
+          return onError?.(error?.message || "No session returned");
 
         setUser(data.session.user);
 
@@ -28,31 +31,25 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setCli
           return onError?.("Failed to create profile.");
         }
 
-        setUsername(form.username); // Optimistic
         onSuccess?.("Registration successful!");
 
-        const profile = await fetchUserProfile(data.session.access_token);
-        setUsername(profile.username);
-        setClicksTotal(profile.clicks_total);
-        setSuperClicksTotal(profile.super_clicks);
-        setClicksUsed(profile.clicks_used);
-        localStorage.setItem("username", profile.username);
+        // Fetch fresh profile
+        await fetchUserProfile();
 
         setSkipProfileFetch(false);
-
       } else {
-        const { data, error } = await SUPABASE.auth.signInWithPassword({ email, password: form.password });
-        if (error || !data.session) return onError?.(error?.message || "No session returned");
+        const { data, error } = await SUPABASE.auth.signInWithPassword({
+          email,
+          password: form.password,
+        });
+
+        if (error || !data.session)
+          return onError?.(error?.message || "No session returned");
 
         setUser(data.session.user);
-        setUsername(form.username); // Optimistic
 
-        const profile = await fetchUserProfile(data.session.access_token);
-        setUsername(profile.username);
-        setClicksTotal(profile.clicks_total);
-        setSuperClicksTotal(profile.super_clicks);
-        setClicksUsed(profile.clicks_used);
-        localStorage.setItem("username", profile.username);
+        // Fetch fresh profile
+        await fetchUserProfile();
       }
     } catch (err) {
       console.error(err);
@@ -63,22 +60,19 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setCli
   const handleLogout = async () => {
     await SUPABASE.auth.signOut();
     setUser(null);
-    setUsername(null);
-    localStorage.removeItem("username");
+    // You can clear local storage or profile state inside useUserProfile if needed
   };
 
   useEffect(() => {
     const initSession = async () => {
       setLoadingSession(true);
-      const { data: { session } } = await SUPABASE.auth.getSession();
+      const {
+        data: { session },
+      } = await SUPABASE.auth.getSession();
+
       if (session) {
         setUser(session.user);
-        const profile = await fetchUserProfile(session.access_token);
-        setUsername(profile.username);
-        setClicksTotal(profile.clicks_total);
-        setSuperClicksTotal(profile.super_clicks);
-        setClicksUsed(profile.clicks_used);
-        localStorage.setItem("username", profile.username);
+        await fetchUserProfile();
       }
       setLoadingSession(false);
     };
@@ -86,24 +80,21 @@ export function useAuth(setUsername, setClicksTotal, setSuperClicksTotal, setCli
   }, []);
 
   useEffect(() => {
-    const { data: authListener } = SUPABASE.auth.onAuthStateChange(async (event, session) => {
-      if (session && !skipProfileFetch) {
-        setUser(session.user);
-        const profile = await fetchUserProfile(session.access_token);
-        setUsername(profile.username);
-        setClicksTotal(profile.clicks_total);
-        setSuperClicksTotal(profile.super_clicks);
-        setClicksUsed(profile.clicks_used);
-        localStorage.setItem("username", profile.username);
-      } else if (!session) {
-        setUser(null);
+    const { data: authListener } = SUPABASE.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session && !skipProfileFetch) {
+          setUser(session.user);
+          await fetchUserProfile();
+        } else if (!session) {
+          setUser(null);
+        }
       }
-    });
+    );
 
     return () => {
       authListener.subscription.unsubscribe();
     };
   }, [skipProfileFetch]);
 
-  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile };
+  return { user, handleAuth, handleLogout, loadingSession };
 }
