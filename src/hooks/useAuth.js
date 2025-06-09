@@ -66,14 +66,28 @@ export function useAuth(fetchUserProfile) {
   useEffect(() => {
     const initSession = async () => {
       setLoadingSession(true);
+
       const {
         data: { session },
+        error: sessionError,
       } = await SUPABASE.auth.getSession();
 
-      if (session) {
+      if (session?.user) {
         setUser(session.user);
         await fetchUserProfile();
+      } else {
+        // Fallback: try getUser in case session is null on reload
+        const {
+          data: { user: fallbackUser },
+          error: userError
+        } = await SUPABASE.auth.getUser();
+
+        if (fallbackUser) {
+          setUser(fallbackUser);
+          await fetchUserProfile();
+        }
       }
+
       setLoadingSession(false);
     };
     initSession();
