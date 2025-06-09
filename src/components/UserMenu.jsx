@@ -8,6 +8,7 @@ import {
   BUY_CLICKS_PACKAGE_THREE_COST,
   FREE_CLICKS
 } from '../config/config';
+import { fetchUserProfile } from '../services/api';
 
 export default function UserMenu({
   clicksTotal,
@@ -69,7 +70,7 @@ export default function UserMenu({
             .map(({ clicks, price }) => (
               <button
                 key={clicks}
-                onClick={() => handleBuyClicks(clicks)}
+                onClick={() => {handleBuyClicks(clicks);fetchUserProfile()}}
                 disabled={!isPaymentEnabled}
               >
                 Buy {clicks.toLocaleString()} (£{price}) 
