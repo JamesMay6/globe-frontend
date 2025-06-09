@@ -26,7 +26,7 @@ export function useAuth() {
 
       if (error) {
         console.error("Error fetching user profile:", error);
-        logEvent("Error etching profile for User ID: ", user.id, " with error: ", error);
+        logEvent("Error fetching profile for User ID: ", user.id, " with error: ", error);
         return null;
       }
       return data;
