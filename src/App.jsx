@@ -77,6 +77,9 @@ export default function App() {
             cooldownMessage={cooldownMessage}
             buyMenuOpen={buyMenuOpen}
             setBuyMenuOpen={setBuyMenuOpen}
+            setClicksTotal={setClicksTotal} 
+            setClicksUsed={setClicksUsed} 
+            setSuperClicksTotal={setSuperClicksTotal}
           />
         )}
       </div>

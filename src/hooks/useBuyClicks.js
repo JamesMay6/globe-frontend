@@ -13,7 +13,7 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
         showMessage(`Purchased ${amount} clicks!`);
       }
 
-      if (fetchUserProfile) fetchUserProfile();
+      if (fetchUserProfile) await fetchUserProfile();
     } catch (err) {
       console.error(err);
 
