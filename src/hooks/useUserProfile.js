@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { SUPABASE } from "../lib/supabaseClient";
-import { useAuth } from "./useAuth"; // <- we pull in the user here
+import { useState, useEffect } from "react";
+import { SUPABASE } from "../config/config";
+import { useAuth } from "./useAuth"; 
 
 export function useUserProfile() {
-  const { user } = useAuth(); // access current logged-in user
+  const { user } = useAuth(); 
   const [username, setUsername] = useState("");
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
