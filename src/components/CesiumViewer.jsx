@@ -199,9 +199,14 @@ export default function CesiumViewer({
 
       await fetchDeletedCells(viewer);
 
-      viewer.camera.moveEnd.addEventListener(() =>
-        fetchDeletedCells(viewer)
-      );
+      let moveEndTimeout;
+
+      viewer.camera.moveEnd.addEventListener(() => {
+        clearTimeout(moveEndTimeout);
+        moveEndTimeout = setTimeout(() => {
+          fetchDeletedCells(viewer);
+        }, 300);
+      });
 
       handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((movement) => {
