@@ -6,6 +6,7 @@ export function useUserProfile(user, fetchUserProfile) {
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
+  const [superClickEnabled, setSuperClickEnabled] = useState(0);
 
   const updateProfileFromData = useCallback((data) => {
     console.log("📝 Updating profile state with data:", data);
@@ -54,6 +55,8 @@ export function useUserProfile(user, fetchUserProfile) {
     setClicksTotal,
     setClicksUsed,
     setSuperClicks,
+    superClickEnabled,
+    setSuperClickEnabled,
     updateProfileFromData,
     loadProfile, // Export this for manual refresh
   };
