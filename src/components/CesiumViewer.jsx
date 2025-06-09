@@ -111,24 +111,12 @@ export default function CesiumViewer({
       const ray = viewer.camera.getPickRay(movement.position);
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
       if (!cartesian) return;
-      
 
       const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
       const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
       const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-      const height = positionCartographic.height;
-
-      // 👇 Compute z from height
-      let z;
-      if (height > 10000000) z = 2;
-      else if (height > 5000000) z = 3;
-      else if (height > 2500000) z = 4;
-      else if (height > 1250000) z = 5;
-      else if (height > 600000) z = 6;
-      else z = 7;
-
-      const data = await deleteEarth(lat, lon, z, superClickEnabledRef.current);
+      const data = await deleteEarth(lat, lon, superClickEnabledRef.current);
 
       if (data.alreadyDeleted) {
       showMessage("Earth is already deleted here", "error");
@@ -207,6 +195,7 @@ export default function CesiumViewer({
       viewer.camera.flyTo({ 
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
+
 
       await fetchDeletedCells(viewer);
 
