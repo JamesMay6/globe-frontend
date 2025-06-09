@@ -22,11 +22,12 @@ export default function App() {
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
 
   // Honor Order of Hooks
-  const {
+    const {
     user,
     handleAuth,
-    handleLogout
-  } = useAuth(fetchUserProfile); 
+    handleLogout,
+    fetchUserProfile
+  } = useAuth();
 
   const {
     username,
@@ -37,17 +38,22 @@ export default function App() {
     setClicksTotal,
     setClicksUsed,
     setSuperClicks: setSuperClicksTotal,
-    fetchUserProfile
-  } = useUserProfile(user);
+    updateProfileFromData
+  } = useUserProfile(user, fetchUserProfile);
 
   const { upgrade } = useSuperClickUpgrade(fetchUserProfile);
   const { handleBuyClicks } = useBuyClicks(fetchUserProfile, setCooldownMessage);
+
+  const refreshUserProfile = async () => {
+    const data = await fetchUserProfile();
+    updateProfileFromData(data);
+  };
 
   return (
     <>
       <CesiumViewer
         user={user}
-        fetchUserProfile={fetchUserProfile}
+        fetchUserProfile={refreshUserProfile}
         showMessage={showMessage}
         superClickEnabled={superClickEnabled}
         clicksTotal={clicksTotal}

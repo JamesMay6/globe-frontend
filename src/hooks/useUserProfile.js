@@ -1,38 +1,25 @@
-// hooks/useUserProfile.js
 import { useState, useEffect } from "react";
-import { SUPABASE } from "../config/config";
 
-export function useUserProfile(user) {
+export function useUserProfile(user, fetchUserProfile) {
   const [username, setUsername] = useState("");
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
 
-  const fetchUserProfile = async () => {
-    if (!user?.id) return;
-
-    const { data, error } = await SUPABASE
-      .from("profiles")
-      .select("username, clicks_total, clicks_used, super_clicks")
-      .eq("id", user.id)
-      .single();
-
-    if (error) {
-      console.error("Error fetching user profile:", error);
-      return;
+  const updateProfileFromData = (data) => {
+    if (data) {
+      setUsername(data.username);
+      setClicksTotal(data.clicks_total);
+      setClicksUsed(data.clicks_used);
+      setSuperClicks(data.super_clicks);
     }
-
-    setUsername(data.username);
-    setClicksTotal(data.clicks_total);
-    setClicksUsed(data.clicks_used);
-    setSuperClicks(data.super_clicks);
   };
 
   useEffect(() => {
-    if (user) {
-      fetchUserProfile();
+    if (user && fetchUserProfile) {
+      fetchUserProfile().then(updateProfileFromData);
     }
-  }, [user]);
+  }, [user, fetchUserProfile]);
 
   useEffect(() => {
     console.log("👤 user:", user);
@@ -48,6 +35,6 @@ export function useUserProfile(user) {
     setClicksTotal,
     setClicksUsed,
     setSuperClicks,
-    fetchUserProfile,
+    updateProfileFromData, // Export this for manual updates
   };
 }

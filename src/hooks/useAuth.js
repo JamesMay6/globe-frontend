@@ -1,12 +1,31 @@
+// hooks/useAuth.js
 import { useEffect, useState } from "react";
 import { SUPABASE } from "../config/config";
 import { createUserProfile } from "../services/api";
 import { fakeEmail } from "../utils/fakeEmail";
 
-export function useAuth(fetchUserProfile) {
+export function useAuth() {
   const [user, setUser] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
+
+  // Move the fetching logic here
+  const fetchUserProfile = async () => {
+    if (!user?.id) return null;
+
+    const { data, error } = await SUPABASE
+      .from("profiles")
+      .select("username, clicks_total, clicks_used, super_clicks")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching user profile:", error);
+      return null;
+    }
+
+    return data;
+  };
 
   const handleAuth = async (form, authMode, onSuccess, onError) => {
     const email = fakeEmail(form.username);
