@@ -38,6 +38,8 @@ export default function App() {
     setClicksTotal,
     setClicksUsed,
     setSuperClicks: setSuperClicksTotal,
+    superClickEnabled,
+    setSuperClickEnabled,
     updateProfileFromData
   } = useUserProfile(user, fetchUserProfile);
 

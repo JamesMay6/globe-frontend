@@ -5,6 +5,7 @@ export function useUserProfile(user, fetchUserProfile) {
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
+  const [superClickEnabled, setSuperClickEnabled] = useState(false);
 
   const updateProfileFromData = (data) => {
     if (data) {
@@ -31,6 +32,8 @@ export function useUserProfile(user, fetchUserProfile) {
     clicksTotal,
     clicksUsed,
     superClicks,
+    superClickEnabled,
+    setSuperClickEnabled,
     setUsername,
     setClicksTotal,
     setClicksUsed,
