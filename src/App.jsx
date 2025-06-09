@@ -94,6 +94,7 @@ export default function App() {
             cooldownMessage={cooldownMessage}
             buyMenuOpen={buyMenuOpen}
             setBuyMenuOpen={setBuyMenuOpen}
+            fetchUserProfile={refreshUserProfile}
           />
         )}
       </div>

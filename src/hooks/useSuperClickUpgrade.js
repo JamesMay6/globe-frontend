@@ -2,7 +2,7 @@
 import { upgradeSuperClick } from "../services/api";
 import { showMessage } from "../utils/showMessage";
 
-export function useSuperClickUpgrade(onSuccess) {
+export function useSuperClickUpgrade(fetchUserProfile,onSuccess) {
   async function upgrade() {
     try {
       const data = await upgradeSuperClick();
@@ -11,6 +11,7 @@ export function useSuperClickUpgrade(onSuccess) {
       } else {
         showMessage(data.message || "Upgrade successful!");
         if (onSuccess) onSuccess();
+        if (fetchUserProfile) await fetchUserProfile();
       }
     } catch (err) {
       console.error(err);
