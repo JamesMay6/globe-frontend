@@ -22,6 +22,8 @@ export default function UserMenu({
   setBuyMenuOpen,
 }) {
   
+  const [showUpgradeOverlay, setShowUpgradeOverlay] = useState(false);
+
   return (
     <div className="buyMenu">
       <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
