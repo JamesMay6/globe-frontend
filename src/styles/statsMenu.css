@@ -7,7 +7,7 @@
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px; /* Default padding */
+  padding: 6px; /* Default padding */
   font-family: sans-serif;
   width: 200px; /* Default width */
   max-height: 200px; /* Default max-height */
@@ -24,6 +24,7 @@
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
+  margin-bottom: 5px;
 }
 
 .statsMenu .statsContent {
@@ -36,7 +37,7 @@
   .statsMenu {
     width: 45%; /* Smaller width for tablets/larger phones */
     max-height: 150px; /* Adjusted max height */
-    padding: 8px; /* Slightly more padding */
+    padding: 6px; /* Slightly more padding */
   }
 
   .statsMenu button {

@@ -7,7 +7,7 @@
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px;
+  padding: 6px; 
   font-family: sans-serif;
   z-index: 10;
   max-height: 600px; /* Default max-height */
@@ -80,7 +80,7 @@
   .leaderboardMenu {
     width: 45%; /* Smaller width for tablets/larger phones */
     max-height: 70vh; /* Adjust max height relative to viewport */
-    padding: 8px; /* Slightly more padding */
+    padding: 6px; /* Slightly more padding */
   }
 
   .leaderboardMenu button {
