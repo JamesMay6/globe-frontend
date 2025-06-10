@@ -16,7 +16,11 @@ import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
 //css
 import "./styles/aboutMenu.css";
-
+import "./styles/toast.css";
+import "./styles/leaderboardMenu.css";
+import "./styles/statsMenu.css";
+import "./styles/cesiumWidgets.css";
+import "./styles/authBox.css";
 
 export default function App() {
   const [authMode, setAuthMode] = useState("login");

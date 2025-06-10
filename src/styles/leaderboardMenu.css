@@ -1,0 +1,74 @@
+.leaderboardMenu {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 200px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+  font-family: sans-serif;
+  z-index: 10;
+  max-height: 600px;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.leaderboardMenu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.leaderboardContent {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 5px;
+}
+
+.leaderboardContent ol {
+  padding: 4px 0px;
+  margin: 0;
+}
+
+.leaderboardContent li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.rank-1 {
+  background: linear-gradient(90deg, #ffd700, #bfa700);
+  font-weight: bold;
+  color: #333;
+}
+
+.rank-2 {
+  background: linear-gradient(90deg, #c0c0c0, #8f8f8f);
+  font-weight: bold;
+  color: #222;
+}
+
+.rank-3 {
+  background: linear-gradient(90deg, #cd7f32, #8b572a);
+  font-weight: bold;
+  color: #fff;
+}
+
+.username {
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.score {
+  margin-left: 10px;
+  font-variant-numeric: tabular-nums;
+}

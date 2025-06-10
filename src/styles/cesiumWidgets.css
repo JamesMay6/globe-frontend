@@ -1,0 +1,54 @@
+/* Hide Cesium UI Elements */
+.cesium-widget-credits,
+.cesium-infoBox-title,
+.cesium-selection-wrapper-visible,
+.cesium-infoBox-visible,
+button.cesium-infoBox-camera,
+button.cesium-infoBox-close,
+.cesium-svgPath-svg,
+.cesium-geocoder-searchButton,
+.cesium-geocoder-searchButton svg,
+.cesium-button.cesium-fullscreenButton,
+.cesium-button.cesium-vrButton {
+  display: none !important;
+}
+
+.cesium-baseLayerPicker-selected {
+  visibility: hidden;
+}
+
+/* Geocoder Container */
+.cesium-viewer-geocoderContainer {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  z-index: 10;
+  font-family: sans-serif;
+}
+
+/* Input Box */
+.cesium-geocoder-input {
+  background: #222 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 6px 10px !important;
+  font-size: 16px !important;
+  width: 170px !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Input Placeholder */
+.cesium-geocoder-input input::placeholder {
+  color: #bbb !important;
+}
+
+/* Disable search hover effect */
+.cesium-geocoder-searchButton:hover {
+  background: #555 !important;
+}
+
+/* Hide geocoder search results */
+.cesium-viewer-geocoderContainer .search-results {
+  display: none;
+}

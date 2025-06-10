@@ -1,0 +1,30 @@
+.statsMenu {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 10;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+  font-family: sans-serif;
+  width: 200px;
+  max-height: 200px;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.statsMenu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.statsMenu .statsContent {
+  font-size: 14px;
+  line-height: 1.6;
+}

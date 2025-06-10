@@ -1,0 +1,65 @@
+.topLeftMenu {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.buyMenu {
+  width: 200px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+  font-family: sans-serif;
+  z-index: 10;
+}
+
+.buyMenu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.buyContent {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 5px;
+}
+
+.freeClicksButton {
+  margin-top: 10px;
+}
+
+.upgradesMenu {
+  margin-top: 10px;
+}
+
+.superClickButton {
+  background-color: #ff5722;
+  color: white;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.superClickButton:hover {
+  background-color: #e64a19;
+}
+
+.info-text {
+  font-size:10px;
+  color: #bbb;
+}
