@@ -9,7 +9,7 @@ export function useSuperClickUpgrade(fetchUserProfile, onSuccess) {
       if (data.error) {
         showMessage(data.error || "Upgrade failed", "error");
       } else {
-        showMessage(data.message || "Upgrade successful!");
+        showMessage(data.message || "Upgrade successful!", "success", 3000);
         if (onSuccess) onSuccess();
         if (fetchUserProfile) await fetchUserProfile();
       }
