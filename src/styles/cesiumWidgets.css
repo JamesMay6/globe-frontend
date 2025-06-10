@@ -65,9 +65,9 @@ button.cesium-infoBox-close,
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .cesium-viewer-geocoderContainer {
-    width: 45%; /* Smaller width for tablets/larger phones */
-    padding: 6px 8px; /* Slightly more padding for better touch input */
-    top: 40px; /* Adjust vertical position slightly */
+    width: 44vw; /* Smaller width for tablets/larger phones */
+    padding: 8px 6px; /* Slightly more padding for better touch input */
+    top: 60px; /* Adjust vertical position slightly */
     right: 5px; /* Keep right position, but ensure it doesn't get cut off */
   }
 
