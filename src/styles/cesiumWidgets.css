@@ -21,12 +21,12 @@ button.cesium-infoBox-close,
 .cesium-viewer-geocoderContainer {
   position: absolute;
   top: 50px;
-  right: 10px;
+  right: 5px;
   z-index: 999;
   font-family: sans-serif;
   background: #222;
   border-radius: 8px;
-  padding: 5px;
+  padding: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   width: 200px;
   box-sizing: border-box;
@@ -38,7 +38,7 @@ button.cesium-infoBox-close,
   color: white !important;
   border: none !important;
   border-radius: 4px !important;
-  padding: 5px !important;
+  padding: 4px !important;
   font-size: 16px !important;
   width: 100% !important;
   box-shadow: none !important;

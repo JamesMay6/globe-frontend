@@ -11,8 +11,8 @@ html, body, #cesiumContainer {
 .statsMenu,
 .leaderboardMenu,
 .buyMenu,
-.aboutMenu
-{
+.aboutMenu,
+.cesium-viewer-geocoderContainer {
   width: 200px;
 }
 

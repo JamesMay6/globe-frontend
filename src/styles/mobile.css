@@ -15,7 +15,8 @@
   }
 
   .leaderboardMenu,
-  .aboutMenu {
+  .aboutMenu,
+  .cesium-viewer-geocoderContainer {
     width: 45%;
     right: 2%;
     position: absolute;
