@@ -9,7 +9,7 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
       if (free) {
         showMessage("Free clicks claimed!");
       } else {
-        showMessage(`Purchasing ${amount} clicks!`, "warn");
+        showMessage(`Purchasing ${amount} clicks..`, "warn");
       }
 
       if (fetchUserProfile) await fetchUserProfile();
