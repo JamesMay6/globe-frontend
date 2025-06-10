@@ -1,18 +1,19 @@
 /* Base styles for larger screens (and as a default) */
 .leaderboardMenu {
-  position: absolute;
+  position: absolute; /* Remains absolute */
   bottom: 10px;
   right: 10px;
-  width: 200px;
+  width: 200px; /* Default width */
   background: #222;
   color: white;
   border-radius: 8px;
   padding: 5px;
   font-family: sans-serif;
   z-index: 10;
-  max-height: 600px;
-  transition: max-height 0.4s ease, padding 0.4s ease;
-  box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+  max-height: 600px; /* Default max-height */
+  transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease; /* Add width to transition */
+  box-sizing: border-box; /* Crucial for consistent sizing */
+  overflow-y: auto; /* Allow scrolling if content exceeds height */
 }
 
 .leaderboardMenu button {
@@ -74,52 +75,59 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* --- Mobile-specific styles --- */
+/* --- Mobile-specific styles (retaining position) --- */
 @media (max-width: 768px) {
   .leaderboardMenu {
-    /* Reposition to cover more of the screen or be easily accessible */
-    position: fixed; /* Stays in place when scrolling */
-    bottom: 0;
-    left: 0;
-    width: 100%; /* Takes full width of the screen */
-    right: auto; /* Remove right positioning */
-    border-radius: 8px 8px 0 0; /* Rounded top corners, sharp bottom corners */
-    padding: 10px; /* Slightly more padding */
-    max-height: 80vh; /* Limits height to 80% of viewport height */
-    overflow-y: auto; /* Enables scrolling if content exceeds max-height */
+    width: 160px; /* Smaller width for tablets/larger phones */
+    max-height: 70vh; /* Adjust max height relative to viewport */
+    padding: 8px; /* Slightly more padding */
   }
 
   .leaderboardMenu button {
-    padding: 12px 10px; /* Larger tap target */
-    font-size: 16px;
+    padding: 10px 8px; /* Larger tap target */
+    font-size: 15px;
   }
 
   .leaderboardContent {
-    font-size: 13px; /* Slightly smaller font for readability on small screens */
-    line-height: 1.5;
+    font-size: 13px; /* Slightly smaller font for readability */
   }
 
   .leaderboardContent li {
-    padding: 8px 10px; /* More padding for list items */
+    padding: 7px 8px; /* Adjusted padding for list items */
   }
 }
 
 /* --- Even smaller screens (e.g., small phones) --- */
 @media (max-width: 480px) {
   .leaderboardMenu {
-    padding: 8px; /* Slightly less padding for very small screens */
+    width: 140px; /* Even smaller width for very small screens */
+    max-height: 60vh; /* Further adjust max height */
+    padding: 6px; /* Reduced padding */
+    /* If it becomes too cramped, you might consider adjusting right/bottom to give it more space,
+       e.g., right: 5px; bottom: 5px; */
   }
 
   .leaderboardMenu button {
-    padding: 10px 8px;
-    font-size: 15px;
+    padding: 8px 6px;
+    font-size: 14px;
   }
 
   .leaderboardContent {
-    font-size: 12px;
+    font-size: 12px; /* Smallest font size */
   }
 
   .leaderboardContent li {
-    padding: 6px 8px;
+    padding: 5px 6px;
   }
+}
+
+/* Optional: To ensure it doesn't get cut off on very narrow screens
+   if the 10px right margin is too much for the reduced width. */
+@media (max-width: 320px) {
+    .leaderboardMenu {
+        right: 5px; /* Pull it closer to the edge */
+        bottom: 5px; /* Pull it closer to the bottom */
+        width: 120px; /* Potentially even smaller */
+        font-size: 0.8em; /* Scale down text more globally if needed */
+    }
 }
