@@ -20,7 +20,7 @@ button.cesium-infoBox-close,
 /* Geocoder Container */
 .cesium-viewer-geocoderContainer {
   position: absolute;
-  top: 10px;
+  top: 35px;
   right: 5px;
   z-index: 10;
   font-family: sans-serif;
@@ -32,9 +32,9 @@ button.cesium-infoBox-close,
   color: white !important;
   border: none !important;
   border-radius: 8px !important;
-  padding: 6px 10px !important;
+  padding: 5px !important;
   font-size: 16px !important;
-  width: 170px !important;
+  width: 200px !important;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
 }
 
