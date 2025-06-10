@@ -6,7 +6,7 @@ const fetchedBounds = new Set();
 
 export const drawDeletedCell = (viewer, lat, lon) => {
   const cellWidth = 0.001;
-  const padding = 0.00005;
+  const padding = 0.0001;
   const rectangle = Cesium.Rectangle.fromDegrees(
     lon - padding,
     lat - padding,
@@ -34,7 +34,7 @@ export const drawDeletedCells = (viewer, cells) => {
     drawnCells.add(key);
 
     const cellWidth = 0.001;
-    const padding = 0.00005;
+    const padding = 0.0001;
     const rectangle = Cesium.Rectangle.fromDegrees(
       lon - padding,
       lat - padding,
