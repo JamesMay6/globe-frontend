@@ -82,12 +82,30 @@ export default function UserMenu({
             <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
               Upgrade Clicks - Delete More!
             </div>
-            <button onClick={handleUpgradeSuperClick} className="superClickButton">
-              Upgrade to a Super Click
-            </button>
-            <p className="info-text">
-              Use 75 clicks to get 1 Super Click which deletes up to 289 coordinates at once
-            </p>
+            <div className="upgrade-button-container">
+              <button onClick={handleUpgradeSuperClick} className="superClickButton">
+                Upgrade to a Super Click
+              </button>
+              <button 
+                className="upgrade-info-button" 
+                onClick={() => setShowUpgradeOverlay(true)}
+                aria-label="Upgrade information"
+              >
+                i
+              </button>
+            </div>
+
+            {showUpgradeOverlay && (
+              <div className="upgradeOverlay" onClick={() => setShowUpgradeOverlay(false)}>
+                <div className="upgradeOverlay-content" onClick={(e) => e.stopPropagation()}>
+                  <h2>Super Click Upgrade</h2>
+                  <p>
+                    Use 75 clicks to get 1 Super Click which deletes up to 289 coordinates at once
+                  </p>
+                  <button onClick={() => setShowUpgradeOverlay(false)}>Close</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

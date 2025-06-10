@@ -21,9 +21,10 @@ export default function AboutMenu() {
           <div className="aboutOverlay-content" onClick={(e) => e.stopPropagation()}>
             <h3>About "Delete The Earth"</h3>
             <p>
-              An interactive globe-based experience where users can delete parts of the world map one grid cell at a time. Every action is stored and shared globally in real-time. Play responsibly.
+              An interactive globe-based experience where users can delete parts of the world map one grid cell at a time. 
             </p>
-            
+            <p>
+            Sign up for free, purchase clicks and start deleting and compete against others to be at the top!</p>
             <br />
             <h3>Delete the Earth Coin - Coming Soon</h3>
             <p>
