@@ -21,6 +21,8 @@ import "./styles/leaderboardMenu.css";
 import "./styles/statsMenu.css";
 import "./styles/cesiumWidgets.css";
 import "./styles/authBox.css";
+import "./styles/userMenu.css";
+import "./styles/mobile.css";
 
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
