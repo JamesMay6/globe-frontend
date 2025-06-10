@@ -20,6 +20,8 @@ export default function App() {
   const [cooldownMessage, setCooldownMessage] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
+  const [aboutMenuOpen, setAboutMenuOpen] = useState(false);
+
 
   // Honor Order of Hooks
     const {
@@ -100,6 +102,7 @@ export default function App() {
       </div>
 
         <StatsMenu />
+        <AboutMenu />
         <Leaderboard />
 
     </>
