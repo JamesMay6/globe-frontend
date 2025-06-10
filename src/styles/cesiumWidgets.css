@@ -21,26 +21,27 @@ button.cesium-infoBox-close,
 .cesium-viewer-geocoderContainer {
   position: absolute;
   top: 55px;
-  right: 5px;
-  z-index: 10;
+  right: 10px;
+  z-index: 999;
   font-family: sans-serif;
 }
 
 /* Input Box */
 .cesium-geocoder-input {
-  background: #222 !important;
+  background: #444 !important;
   color: white !important;
   border: none !important;
   border-radius: 8px !important;
-  padding: 5px !important;
+  padding: 8px 10px !important;
   font-size: 16px !important;
   width: 200px !important;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  font-weight: bold !important;
 }
 
-/* Input Placeholder */
-.cesium-geocoder-input input::placeholder {
-  color: #bbb !important;
+/* Optional: Style the placeholder text */
+.cesium-geocoder-input::placeholder {
+  color: #ccc !important;
 }
 
 /* Disable search hover effect */
