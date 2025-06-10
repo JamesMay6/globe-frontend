@@ -25,10 +25,9 @@ html, body, #cesiumContainer {
   background: #444;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 5px;
   font-size: 14px;
-  font-weight: bold;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   font-family: sans-serif;
