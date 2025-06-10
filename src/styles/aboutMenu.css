@@ -1,59 +1,99 @@
 .aboutMenu-container {
-  position: absolute;
-  width: 200px;
-  top: 10px;
-  right: 10px;
-  background: #222;
-  color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  z-index: 999;
-  font-family: sans-serif;
-  padding: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  max-height: 40px;
-  transition: max-height 0.4s ease, padding 0.4s ease;
-  font-size: 16px;
+          position: absolute;
+          width: 200px;
+          top: 10px;
+          right: 10px;
+          background: #222;
+          color: white;
+          border-radius: 8px;
+          overflow: hidden;
+          z-index: 999;
+          font-family: sans-serif;
+          padding: 5px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.5);
+          font-size: 16px;
+        }
 
+        .aboutMenu-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-weight: bold;
+          color: white;
+          border-radius: 4px;
+          width: 100%;
+          background: #444;
+          padding: 8px 10px;
+        }
 
-}
+        .info-button {
+          background: #666;
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: bold;
+          transition: background-color 0.2s ease;
+        }
 
-.aboutMenu-header {
-  font-weight: bold;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 2px;
-  width: 100%;
-  background: #444;
-  border: none;
-}
+        .info-button:hover {
+          background: #777;
+        }
 
-.aboutMenu-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+        .aboutOverlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
 
-.aboutOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
+        .aboutOverlay-content {
+          background: #fff;
+          color: #000;
+          padding: 30px;
+          border-radius: 10px;
+          max-width: 600px;
+          width: 90%;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
 
-.aboutOverlay-content {
-  background: #fff;
-  color: #000;
-  padding: 30px;
-  border-radius: 10px;
-  max-width: 600px;
-  width: 90%;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
+        .overlay-links {
+          margin: 20px 0;
+        }
+
+        .overlay-links a {
+          color: #007bff;
+          text-decoration: none;
+          font-weight: bold;
+        }
+
+        .overlay-links a:hover {
+          text-decoration: underline;
+        }
+
+        .aboutOverlay-content button {
+          background: #007bff;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+          margin-top: 10px;
+        }
+
+        .aboutOverlay-content button:hover {
+          background: #0056b3;
+        }
