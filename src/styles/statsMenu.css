@@ -34,7 +34,7 @@
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .statsMenu {
-    width: 160px; /* Smaller width for tablets/larger phones */
+    width: 45%; /* Smaller width for tablets/larger phones */
     max-height: 150px; /* Adjusted max height */
     padding: 8px; /* Slightly more padding */
   }
