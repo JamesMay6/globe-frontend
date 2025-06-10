@@ -171,9 +171,11 @@ export default function CesiumViewer({
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
       const terrainProvider = await Cesium.createWorldTerrainAsync();
+      const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2);
 
       viewer = new Cesium.Viewer(containerRef.current, {
         terrainProvider,
+        imageryProvider,
         animation: false,
         timeline: false,
         baseLayerPicker: false,
