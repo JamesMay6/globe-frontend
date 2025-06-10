@@ -13,6 +13,7 @@ import UserMenu from "./components/UserMenu";
 import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
+import AboutMenu from "./components/AboutMenu";
 
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
