@@ -27,6 +27,7 @@
   .leaderboardMenu button,
   .statsMenu button {
       padding: 0.9vh 1vw; 
+      margin-bottom: 1vh;
   }
 
 }
