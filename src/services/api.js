@@ -1,4 +1,11 @@
-import { API_URL, SUPABASE } from "../config/config";
+import { 
+  API_URL, 
+  SUPABASE,
+  FREE_CLICKS,
+  BUY_CLICKS_PACKAGE_ONE,
+  BUY_CLICKS_PACKAGE_TWO,
+  BUY_CLICKS_PACKAGE_THREE
+ } from "../config/config";
 
 //global APis
 export async function fetchTotals() {
@@ -37,7 +44,6 @@ const token = await getAuthToken();
 
 export async function buyClicks(amount) {
 const token = await getAuthToken();
-  const FREE_CLICKS = 5; // or import this from your config if available
   if (amount === FREE_CLICKS) {
   const res = await fetch(`${API_URL}/buy-clicks`, {
       method: "POST",
@@ -56,13 +62,13 @@ const token = await getAuthToken();
   // 💳 Redirect to Stripe Checkout for paid clicks
   let packageType;
   switch (amount) {
-    case Number(process.env.VITE_BUY_CLICKS_PACKAGE_ONE):
+    case BUY_CLICKS_PACKAGE_ONE:
       packageType = "small";
       break;
-    case Number(process.env.VITE_BUY_CLICKS_PACKAGE_TWO):
+    case BUY_CLICKS_PACKAGE_TWO:
       packageType = "medium";
       break;
-    case Number(process.env.VITE_BUY_CLICKS_PACKAGE_THREE):
+    case BUY_CLICKS_PACKAGE_THREE:
       packageType = "large";
       break;
     default:
