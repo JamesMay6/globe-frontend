@@ -14,6 +14,9 @@ import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
+//css
+import "./styles/aboutMenu";
+
 
 export default function App() {
   const [authMode, setAuthMode] = useState("login");
