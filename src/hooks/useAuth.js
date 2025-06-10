@@ -1,3 +1,4 @@
+// hooks/useAuth.js
 import { useEffect, useState, useCallback } from "react";
 import { SUPABASE } from "../config/config";
 import { fakeEmail } from "../utils/fakeEmail";
@@ -48,43 +49,61 @@ export function useAuth() {
       if (authMode === "register") {
         setSkipProfileFetch(true);
 
-        const { data, error } = await SUPABASE.rpc('signup_and_create_profile', {
-            p_email: email,
-            p_password: form.password,
-            p_username: form.username
+        // Step 1: Supabase Authentication
+        const { data: authData, error: authError } = await SUPABASE.auth.signUp({
+          email,
+          password: form.password,
         });
 
-        if (error) {
-            console.error("RPC signup_and_create_profile error:", error);
+        if (authError || !authData.session) {
+          onError?.(authError?.message || "Registration failed: No session returned.");
+          setUser(null);
+          setUserProfile(null);
+          setSkipProfileFetch(false); // Reset on auth error
+          return;
+        }
+
+        // User is now authenticated in Supabase, but profile might be missing.
+        // Step 2: Create User Profile using RPC
+        try {
+          const { data: profileData, error: rpcError } = await SUPABASE.rpc('create_user_profile_rpc', {
+              p_user_id: authData.user.id,
+              p_username: form.username
+          });
+
+          if (rpcError) {
+              console.error("RPC create_user_profile_rpc error:", rpcError);
+              onError?.(rpcError.message || "Failed to create profile after registration.");
+
+              // If profile creation fails, we need to log the user out of Supabase Auth
+              // to prevent a "half-registered" state.
+              const { error: signOutError } = await SUPABASE.auth.signOut();
+              if (signOutError) console.error("Error signing out after profile creation failure:", signOutError);
+
+              setUser(null);
+              setUserProfile(null);
+              setSkipProfileFetch(false); // Reset on profile creation error
+              return;
+          }
+
+          // Both authentication and profile creation succeeded.
+          setUser(authData.session.user);
+          setUserProfile(profileData); // Set the profile data returned by the RPC
+          onSuccess?.("Registration successful! Welcome.");
+          setSkipProfileFetch(false); // Reset on success
+
+        } catch (profileCreationCatchError) {
+            console.error("Unexpected error during profile RPC call:", profileCreationCatchError);
+            onError?.("An unexpected error occurred during profile creation.");
+
+            // Attempt to sign out if an unexpected error occurs during RPC call
+            await SUPABASE.auth.signOut();
             setUser(null);
             setUserProfile(null);
-            onError?.(error.message || "Registration failed.");
-            setSkipProfileFetch(false);
-            return;
+            setSkipProfileFetch(false); // Reset on unexpected error
         }
 
-        const { error: setSessionError } = await SUPABASE.auth.setSession({
-            access_token: data.access_token,
-            refresh_token: data.refresh_token
-        });
-
-        if (setSessionError) {
-            console.error("Error setting session after RPC signup:", setSessionError);
-            onError?.("Registration successful but failed to log you in. Please try logging in manually.");
-            setUser(null);
-            setUserProfile(null);
-            return;
-        }
-
-        const { data: { user: currentUser } } = await SUPABASE.auth.getUser();
-        if (currentUser) {
-            setUser(currentUser);
-        }
-
-        onSuccess?.("Registration successful! Welcome.");
-        setSkipProfileFetch(false);
-
-      } else {
+      } else { // Login flow (signInWithPassword) - remains the same
         const { data, error } = await SUPABASE.auth.signInWithPassword({
           email,
           password: form.password,
@@ -100,9 +119,9 @@ export function useAuth() {
         setUser(data.session.user);
         onSuccess?.("Login successful!");
       }
-    } catch (err) {
-      console.error("Unexpected error during authentication:", err);
-      onError?.("Unexpected error during authentication.");
+    } catch (err) { // Catch for the entire handleAuth try block
+      console.error("Unexpected error during authentication or registration flow:", err);
+      onError?.("An unexpected error occurred during authentication.");
       setUser(null);
       setUserProfile(null);
     }
