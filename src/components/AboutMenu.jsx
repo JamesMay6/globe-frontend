@@ -24,7 +24,7 @@ export default function AboutMenu() {
               An interactive globe-based experience where users can delete parts of the world map one grid cell at a time. 
             </p>
             <p>
-            Sign up for free, purchase clicks and start deleting and compete against others to be at the top!</p>
+            Sign up for free and then purchase clicks to start deleting and compete against others to be at the top!</p>
             <br />
             <h3>Delete the Earth Coin - Coming Soon</h3>
             <p>
