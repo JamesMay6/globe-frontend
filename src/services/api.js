@@ -21,6 +21,7 @@ async function getAuthToken() {
   return data.session.access_token;
 }
 
+/*
 export async function buyClicks(amount) {
 const token = await getAuthToken();
   const res = await fetch(`${API_URL}/buy-clicks`, {
@@ -32,6 +33,60 @@ const token = await getAuthToken();
   if (!res.ok) throw new Error(data.error || "Purchase failed");
   return data;
 }
+*/
+
+export async function buyClicks(amount) {
+const token = await getAuthToken();
+  const FREE_CLICKS = 5; // or import this from your config if available
+  if (amount === FREE_CLICKS) {
+    const res = await fetch("/buy-clicks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ amount }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    return data;
+  }
+
+  // 💳 Redirect to Stripe Checkout for paid clicks
+  let packageType;
+  switch (amount) {
+    case Number(process.env.REACT_APP_BUY_CLICKS_PACKAGE_ONE):
+      packageType = "small";
+      break;
+    case Number(process.env.REACT_APP_BUY_CLICKS_PACKAGE_TWO):
+      packageType = "medium";
+      break;
+    case Number(process.env.REACT_APP_BUY_CLICKS_PACKAGE_THREE):
+      packageType = "large";
+      break;
+    default:
+      throw new Error("Invalid click package");
+  }
+
+  const response = await fetch("/create-checkout-session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ packageType }),
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+
+  // 🏁 Redirect to Stripe hosted payment page
+  window.location.href = result.url;
+
+  return {}; 
+}
+
 
 export async function upgradeSuperClick() {
 const token = await getAuthToken();
