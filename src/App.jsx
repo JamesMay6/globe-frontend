@@ -15,7 +15,7 @@ import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
 //css
-import "./styles/aboutMenu";
+import "./styles/aboutMenu.css";
 
 
 export default function App() {
