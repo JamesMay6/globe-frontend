@@ -56,6 +56,11 @@ export function useAuth() {
           setUser(data.session.user);
 
         } catch {
+          const { error: deleteUserError } = await SUPABASE.auth.admin.deleteUser(authData.user.id);
+        if (deleteUserError) {
+            console.error("Failed to delete user after profile creation error:", deleteUserError);
+            onError?.("Failed to create profile and could not clean up account. Please contact support.");
+        }
           await SUPABASE.auth.signOut(); 
           setUser(null);          
           return onError?.("Failed to create profile.");
