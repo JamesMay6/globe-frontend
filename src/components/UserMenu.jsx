@@ -91,7 +91,10 @@ export default function UserMenu({
               </button>
               <button 
                 className="upgrade-info-button" 
-                onClick={() => setShowUpgradeOverlay(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowUpgradeOverlay(true);
+                }}
                 aria-label="Upgrade information"
               >
                 i

@@ -43,7 +43,9 @@
   margin-top: 10px;
 }
 
+
 .superClickButton {
+  flex: 1;
   background-color: #ff5722;
   color: white;
   font-weight: bold;
@@ -67,8 +69,9 @@
 .upgrade-button-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin-bottom: 0.5rem;
+  flex-wrap: nowrap;
 }
 
 .upgrade-info-button {
@@ -76,18 +79,19 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  min-height: 18px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   transition: background-color 0.2s ease;
   flex-shrink: 0;
+  margin-left: 3px;
 }
 
 .upgrade-info-button:hover {
@@ -131,3 +135,4 @@
 .upgradeOverlay-content button:hover {
   background: #0056b3;
 }
+
