@@ -56,6 +56,8 @@ export function useAuth() {
           setUser(data.session.user);
 
         } catch {
+          await SUPABASE.auth.signOut(); 
+          setUser(null);          
           return onError?.("Failed to create profile.");
         }
 
