@@ -1,4 +1,4 @@
-/* Hide Cesium UI Elements (keeping for context) */
+/* Hide Cesium UI Elements (No change needed here for responsiveness, just keeping them for context) */
 .cesium-widget-credits,
 .cesium-infoBox-title,
 .cesium-selection-wrapper-visible,
@@ -6,7 +6,7 @@
 button.cesium-infoBox-camera,
 button.cesium-infoBox-close,
 .cesium-svgPath-svg,
-.cesium-geocoder-searchButton,
+.cesium-geocoder-searchButton, /* This will be hidden, so its hover effect below won't apply */
 .cesium-geocoder-searchButton svg,
 .cesium-button.cesium-fullscreenButton,
 .cesium-button.cesium-vrButton {
@@ -17,44 +17,30 @@ button.cesium-infoBox-close,
   visibility: hidden;
 }
 
-/* --- NEW CONTAINER FOR CONTROLS --- */
-.cesium-top-right-controls {
-  position: absolute; /* Position this container */
-  top: 50px; /* Adjust vertical position */
-  right: 5px; /* Adjust horizontal position */
-  z-index: 999;
-  display: flex; /* Make it a flex container */
-  align-items: center; /* Vertically align items */
-  gap: 8px; /* Space between the button and geocoder */
-  font-family: sans-serif;
-  width: 200px; /* Default width for the entire control row */
-  box-sizing: border-box;
-  transition: width 0.4s ease, gap 0.4s ease;
-}
-
-/* Cesium Geocoder Container - now a flex item */
+/* Create a background container effect using the existing geocoder container */
 .cesium-viewer-geocoderContainer {
-  /* Removed position: absolute, top, right as it's now a flex item */
+  position: absolute; /* Remains absolute */
+  top: 58px;
+  right: 5px;
+  z-index: 999;
+  font-family: sans-serif;
   background: #222;
-  color: white;
   border-radius: 8px;
-  padding: 3px 5px;
+  padding: 3px 5px; /* Default padding */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  flex-grow: 1; /* Allow it to grow and take available space */
-  flex-basis: 80%; /* Target 80% of the parent's width */
-  max-width: 80%; /* Ensure it doesn't exceed 80% if flex-grow makes it too big */
-  box-sizing: border-box;
-  transition: padding 0.4s ease; /* Keep padding transition */
+  width: 140px; /* Default width */
+  box-sizing: border-box; /* Crucial for consistent sizing */
+  transition: width 0.4s ease, padding 0.4s ease; /* Add width to transition */
 }
 
-/* Input Box - fits within the container */
+/* Input Box - now fits within the container */
 .cesium-geocoder-input {
   background: #444 !important;
   color: white !important;
   border: none !important;
   border-radius: 4px !important;
-  padding: 3px 5px !important;
-  font-size: 16px !important;
+  padding: 3px 5px !important; /* Default input padding */
+  font-size: 16px !important; /* Default input font size */
   width: 100% !important;
   box-shadow: none !important;
   box-sizing: border-box !important;
@@ -76,23 +62,22 @@ button.cesium-infoBox-close,
   display: none;
 }
 
-/* Zoom Out Button - now a flex item */
+/* Zoom Out Button */
 .zoom-out-button {
-  /* Removed position: absolute, top, right as it's now a flex item */
+  position: absolute;
+  top: 67px; /* Slightly below geocoder (adjust as needed) */
+  right: 160px;
+  z-index: 999;
   background: #366ac9;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 5px 8px; /* Adjusted padding for better tap target */
-  font-size: 11px; /* Keep font size as is */
+  padding: 2px;
+  font-size: 11px;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   font-family: sans-serif;
-  transition: background 0.2s ease, padding 0.2s ease, font-size 0.2s ease;
-  flex-shrink: 0; /* Prevent it from shrinking */
-  /* If you want it to take 20% of the space, you could do: */
-  /* flex-basis: 20%; */
-  /* max-width: 20%; */
+  transition: background 0.2s ease;
 }
 
 .zoom-out-button:hover {
@@ -101,70 +86,15 @@ button.cesium-infoBox-close,
 
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
-  .cesium-top-right-controls {
-    width: 160px; /* Smaller width for tablets/larger phones */
-    top: 40px; /* Adjust vertical position slightly */
-    right: 5px;
-    gap: 6px; /* Slightly reduced gap */
-  }
-
   .cesium-viewer-geocoderContainer {
-    padding: 5px 7px; /* Adjusted padding */
+    width: 30vw; /* Smaller width for tablets/larger phones */
+    padding: 6px; /* Slightly more padding for better touch input */
+    top: 58px; /* Adjust vertical position slightly */
+    right: 5px; /* Keep right position, but ensure it doesn't get cut off */
   }
 
   .cesium-geocoder-input {
-    padding: 6px 8px !important; /* Larger tap target for input */
-    font-size: 15px !important; /* Slightly smaller font */
-  }
-
-  .zoom-out-button {
-    padding: 6px 10px; /* Larger tap target */
-    font-size: 12px; /* Slightly larger font */
-  }
-}
-
-@media (max-width: 480px) {
-  .cesium-top-right-controls {
-    width: 140px; /* Even smaller width */
-    top: 30px; /* Further adjust vertical position */
-    right: 5px;
-    gap: 4px; /* Further reduced gap */
-  }
-
-  .cesium-viewer-geocoderContainer {
-    padding: 4px 6px; /* Further reduced padding */
-  }
-
-  .cesium-geocoder-input {
-    padding: 5px 7px !important; /* Further reduced input padding */
-    font-size: 14px !important; /* Even smaller font */
-  }
-
-  .zoom-out-button {
-    padding: 5px 8px; /* Further adjusted tap target */
-    font-size: 11px; /* Smallest font size */
-  }
-}
-
-@media (max-width: 320px) {
-  .cesium-top-right-controls {
-    width: 120px; /* Potentially even smaller */
-    top: 20px;
-    right: 3px;
-    gap: 3px;
-  }
-
-  .cesium-viewer-geocoderContainer {
-    padding: 3px 5px;
-  }
-
-  .cesium-geocoder-input {
-    padding: 4px 6px !important;
-    font-size: 13px !important;
-  }
-
-  .zoom-out-button {
-    padding: 4px 6px;
-    font-size: 10px;
+    padding: 7px !important; /* Larger tap target for input */
+    font-size: 16px !important; /* Slightly smaller font */
   }
 }
