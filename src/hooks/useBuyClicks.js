@@ -1,6 +1,5 @@
 import { buyClicks } from "../services/api";
 import { showMessage } from "../utils/showMessage";
-import { logEvent } from "../utils/logger";
 
 export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
   const handleBuyClicks = async (amount, free = false) => {
@@ -10,7 +9,7 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
       if (free) {
         showMessage("Free clicks claimed!");
       } else {
-        showMessage(`Purchased ${amount} clicks!`);
+        showMessage(`Purchasing ${amount} clicks!`, "warn");
       }
 
       if (fetchUserProfile) await fetchUserProfile();
@@ -24,13 +23,10 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
       };
 
       if (err.message === "Daily Free Clicks Used") {
-        logEvent("Attempted free clicks but limit reached", logDetails);
         showMessage("Daily free clicks already claimed", "error");
       } else if (err.message.includes("429")) {
-        logEvent("Rate limit or cooldown error", logDetails);
         if (setCooldownMessage) setCooldownMessage(err.message);
       } else {
-        logEvent("Unexpected error during click purchase", logDetails);
         showMessage(err.message || "Buy clicks failed", "error");
       }
     }
