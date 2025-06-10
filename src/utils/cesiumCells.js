@@ -88,15 +88,26 @@ export const fetchDeletedCells = async (viewer) => {
     return;
   }
 
-  // Mark as cached before starting to prevent re-entrant fetches
   fetchedBounds.add(cacheKey);
 
   const batchSize = 1000;
-  let offset = 0;
+  let lastLat = null;
+  let lastLon = null;
   let totalFetched = 0;
 
   while (true) {
-    const url = `${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}&limit=${batchSize}&offset=${offset}`;
+    const url = new URL(`${API_URL}/deleted`);
+    url.searchParams.append("minLat", minLat);
+    url.searchParams.append("maxLat", maxLat);
+    url.searchParams.append("minLon", minLon);
+    url.searchParams.append("maxLon", maxLon);
+    url.searchParams.append("limit", batchSize);
+
+    if (lastLat !== null && lastLon !== null) {
+      url.searchParams.append("lastLat", lastLat);
+      url.searchParams.append("lastLon", lastLon);
+    }
+
     const res = await fetch(url);
     const cells = await res.json();
 
@@ -104,8 +115,16 @@ export const fetchDeletedCells = async (viewer) => {
 
     drawDeletedCells(viewer, cells);
     totalFetched += cells.length;
-    offset += batchSize;
+
+    // Update lastLat and lastLon with the last item from this batch
+    const lastCell = cells[cells.length - 1];
+    lastLat = lastCell.lat;
+    lastLon = lastCell.lon;
+
+    // Optional: Break if fewer than batchSize returned, no more data
+    if (cells.length < batchSize) break;
   }
 
   console.log(`Fetched and rendered ${totalFetched} cells for box ${cacheKey}`);
 };
+
