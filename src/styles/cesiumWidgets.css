@@ -30,7 +30,7 @@ button.cesium-infoBox-close,
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   width: 200px;
   box-sizing: border-box;
-  height: 20px;
+  height: 32px;
 }
 
 /* Input Box - now fits within the container */
@@ -45,6 +45,8 @@ button.cesium-infoBox-close,
   box-shadow: none !important;
   box-sizing: border-box !important;
   margin: 0 !important;
+  height: 26px;
+
 }
 
 /* Optional: Style the placeholder text */
