@@ -1,4 +1,4 @@
-/* Hide Cesium UI Elements */
+/* Hide Cesium UI Elements (No change needed here for responsiveness, just keeping them for context) */
 .cesium-widget-credits,
 .cesium-infoBox-title,
 .cesium-selection-wrapper-visible,
@@ -6,7 +6,7 @@
 button.cesium-infoBox-camera,
 button.cesium-infoBox-close,
 .cesium-svgPath-svg,
-.cesium-geocoder-searchButton,
+.cesium-geocoder-searchButton, /* This will be hidden, so its hover effect below won't apply */
 .cesium-geocoder-searchButton svg,
 .cesium-button.cesium-fullscreenButton,
 .cesium-button.cesium-vrButton {
@@ -19,17 +19,18 @@ button.cesium-infoBox-close,
 
 /* Create a background container effect using the existing geocoder container */
 .cesium-viewer-geocoderContainer {
-  position: absolute;
+  position: absolute; /* Remains absolute */
   top: 50px;
   right: 5px;
   z-index: 999;
   font-family: sans-serif;
   background: #222;
   border-radius: 8px;
-  padding: 3px 5px;
+  padding: 3px 5px; /* Default padding */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  width: 200px;
-  box-sizing: border-box;
+  width: 200px; /* Default width */
+  box-sizing: border-box; /* Crucial for consistent sizing */
+  transition: width 0.4s ease, padding 0.4s ease; /* Add width to transition */
 }
 
 /* Input Box - now fits within the container */
@@ -38,8 +39,8 @@ button.cesium-infoBox-close,
   color: white !important;
   border: none !important;
   border-radius: 4px !important;
-  padding: 3px 5px !important;
-  font-size: 16px !important;
+  padding: 3px 5px !important; /* Default input padding */
+  font-size: 16px !important; /* Default input font size */
   width: 100% !important;
   box-shadow: none !important;
   box-sizing: border-box !important;
@@ -51,12 +52,57 @@ button.cesium-infoBox-close,
   color: #ccc !important;
 }
 
-/* Disable search hover effect */
+/* Disable search hover effect (no change, as button is hidden) */
 .cesium-geocoder-searchButton:hover {
   background: #555 !important;
 }
 
-/* Hide geocoder search results */
+/* Hide geocoder search results (no change) */
 .cesium-viewer-geocoderContainer .search-results {
   display: none;
+}
+
+/* --- Mobile-specific styles --- */
+@media (max-width: 768px) {
+  .cesium-viewer-geocoderContainer {
+    width: 160px; /* Smaller width for tablets/larger phones */
+    padding: 6px 8px; /* Slightly more padding for better touch input */
+    top: 40px; /* Adjust vertical position slightly */
+    right: 5px; /* Keep right position, but ensure it doesn't get cut off */
+  }
+
+  .cesium-geocoder-input {
+    padding: 6px 8px !important; /* Larger tap target for input */
+    font-size: 15px !important; /* Slightly smaller font */
+  }
+}
+
+/* --- Even smaller screens (e.g., small phones) --- */
+@media (max-width: 480px) {
+  .cesium-viewer-geocoderContainer {
+    width: 140px; /* Even smaller width */
+    padding: 5px 7px; /* Reduced padding */
+    top: 30px; /* Further adjust vertical position */
+    right: 5px; /* Keep right position */
+  }
+
+  .cesium-geocoder-input {
+    padding: 5px 7px !important; /* Further reduced input padding */
+    font-size: 14px !important; /* Even smaller font */
+  }
+}
+
+/* Optional: For very narrow screens */
+@media (max-width: 320px) {
+  .cesium-viewer-geocoderContainer {
+    width: 120px; /* Potentially even smaller */
+    padding: 4px 6px;
+    top: 20px; /* Closer to top */
+    right: 3px; /* Closer to right edge */
+  }
+
+  .cesium-geocoder-input {
+    padding: 4px 6px !important;
+    font-size: 13px !important;
+  }
 }

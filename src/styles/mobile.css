@@ -1,39 +1,3 @@
-@media (max-width: 600px) {
-  .topLeftMenu,
-  .statsMenu {
-    width: 45%;
-    left: 2%;
-    position: absolute;
-    box-sizing: border-box;
-  }
-
-  .authBox,
-  .authBox.loggedIn,
-  .buyContent,
-  .buyMenu {
-    width: 100%;
-  }
-
-  .leaderboardMenu,
-  .aboutMenu-container,
-  .cesium-viewer-geocoderContainer {
-    width: 45%;
-    right: 2%;
-    position: absolute;
-    box-sizing: border-box;
-  }
-
-  .buyMenu button,
-  .leaderboardMenu button,
-  .statsMenu button {
-      padding: 1vw; 
-  }
-
-  .zoom-out-button {
-    right: 2%;
-  }
-}
-
 /*for safari*/
 input,
 textarea,

@@ -1,39 +1,44 @@
+/* Base styles for larger screens (default) */
 .topLeftMenu {
-  position: fixed;
+  position: fixed; /* Remains fixed to viewport */
   top: 10px;
   left: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 10px; /* Default gap */
   z-index: 1000;
+  /* No width here as it's defined on children, but overall size will adapt */
 }
 
 .buyMenu {
-  width: 200px;
+  width: 200px; /* Default width */
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px;
+  padding: 5px; /* Default padding */
   font-family: sans-serif;
   z-index: 10;
+  box-sizing: border-box; /* Crucial for consistent sizing */
+  transition: width 0.4s ease, padding 0.4s ease; /* Add width to transition */
 }
 
 .buyMenu button {
   background: #444;
   color: white;
   border: none;
-  padding: 8px 5px;
+  padding: 8px 5px; /* Default button padding */
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
+  font-size: 16px; /* Ensure button font size is controlled */
 }
 
 .buyClicksButtons {
-  margin-bottom:5px;
+  margin-bottom: 5px;
 }
 
 .buyContent {
-  font-size: 14px;
+  font-size: 14px; /* Default content font size */
   line-height: 1.6;
   margin-top: 5px;
 }
@@ -44,19 +49,43 @@
 }
 
 .upgradesMenu {
-  margin-top: 10px;
+  margin-top: 10px; /* Default margin */
+  /* Inherits width/padding behavior from .buyMenu if applied to it,
+     or define its own width/padding for responsive behavior */
+  width: 200px; /* Assuming it should match buyMenu's width */
+  background: #222; /* Adding background for consistency with buyMenu */
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+  font-family: sans-serif;
+  z-index: 10;
+  box-sizing: border-box;
+  transition: width 0.4s ease, padding 0.4s ease;
+}
+
+/* Assuming upgradesMenu also has a button with similar styling to buyMenu button */
+.upgradesMenu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 8px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
 }
 
 .superClickButton {
   background-color: #ff5722;
   color: white;
   font-weight: bold;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1.2rem; /* Using rem for padding for better scaling */
   border: none;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: background-color 0.2s ease;
+  font-size: 16px; /* Ensure font size is controlled */
 }
 
 .superClickButton:hover {
@@ -64,6 +93,104 @@
 }
 
 .info-text {
-  font-size:10px;
+  font-size: 10px; /* Default info text font size */
   color: #bbb;
+}
+
+/* --- Mobile-specific styles --- */
+@media (max-width: 768px) {
+  .topLeftMenu {
+    gap: 8px; /* Slightly reduced gap */
+  }
+
+  .buyMenu,
+  .upgradesMenu { /* Apply to both main menu components */
+    width: 160px; /* Smaller width for tablets/larger phones */
+    padding: 8px; /* Slightly more padding for touch */
+  }
+
+  .buyMenu button,
+  .upgradesMenu button {
+    padding: 10px 8px; /* Larger tap target */
+    font-size: 15px;
+  }
+
+  .buyContent {
+    font-size: 13px; /* Smaller content font size */
+  }
+
+  .superClickButton {
+    padding: 0.5rem 1rem; /* Adjust padding */
+    font-size: 15px; /* Adjust font size */
+  }
+
+  .info-text {
+    font-size: 9px; /* Slightly smaller info text */
+  }
+}
+
+/* --- Even smaller screens (e.g., small phones) --- */
+@media (max-width: 480px) {
+  .topLeftMenu {
+    gap: 6px; /* Further reduced gap */
+  }
+
+  .buyMenu,
+  .upgradesMenu {
+    width: 140px; /* Even smaller width */
+    padding: 6px; /* Reduced padding */
+  }
+
+  .buyMenu button,
+  .upgradesMenu button {
+    padding: 8px 6px; /* Further adjusted tap target */
+    font-size: 14px;
+  }
+
+  .buyContent {
+    font-size: 12px; /* Even smaller content font size */
+  }
+
+  .superClickButton {
+    padding: 0.4rem 0.8rem; /* Further adjust padding */
+    font-size: 14px; /* Further adjust font size */
+  }
+
+  .info-text {
+    font-size: 8px; /* Even smaller info text */
+  }
+}
+
+/* Optional: For very narrow screens */
+@media (max-width: 320px) {
+  .topLeftMenu {
+    top: 5px; /* Pull closer to the edge */
+    left: 5px;
+    gap: 4px; /* Minimal gap */
+  }
+
+  .buyMenu,
+  .upgradesMenu {
+    width: 120px; /* Potentially even smaller */
+    padding: 4px;
+  }
+
+  .buyMenu button,
+  .upgradesMenu button {
+    padding: 6px 4px;
+    font-size: 13px;
+  }
+
+  .buyContent {
+    font-size: 11px;
+  }
+
+  .superClickButton {
+    padding: 0.3rem 0.6rem;
+    font-size: 13px;
+  }
+
+  .info-text {
+    font-size: 7px;
+  }
 }
