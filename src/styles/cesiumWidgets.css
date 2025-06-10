@@ -65,44 +65,14 @@ button.cesium-infoBox-close,
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .cesium-viewer-geocoderContainer {
-    width: 44vw; /* Smaller width for tablets/larger phones */
-    padding: 8px 6px; /* Slightly more padding for better touch input */
+    width: 30vw; /* Smaller width for tablets/larger phones */
+    padding: 6px; /* Slightly more padding for better touch input */
     top: 60px; /* Adjust vertical position slightly */
     right: 5px; /* Keep right position, but ensure it doesn't get cut off */
   }
 
   .cesium-geocoder-input {
-    padding: 6px 8px !important; /* Larger tap target for input */
-    font-size: 15px !important; /* Slightly smaller font */
-  }
-}
-
-/* --- Even smaller screens (e.g., small phones) --- */
-@media (max-width: 480px) {
-  .cesium-viewer-geocoderContainer {
-    width: 140px; /* Even smaller width */
-    padding: 5px 7px; /* Reduced padding */
-    top: 30px; /* Further adjust vertical position */
-    right: 5px; /* Keep right position */
-  }
-
-  .cesium-geocoder-input {
-    padding: 5px 7px !important; /* Further reduced input padding */
-    font-size: 14px !important; /* Even smaller font */
-  }
-}
-
-/* Optional: For very narrow screens */
-@media (max-width: 320px) {
-  .cesium-viewer-geocoderContainer {
-    width: 120px; /* Potentially even smaller */
-    padding: 4px 6px;
-    top: 20px; /* Closer to top */
-    right: 3px; /* Closer to right edge */
-  }
-
-  .cesium-geocoder-input {
-    padding: 4px 6px !important;
-    font-size: 13px !important;
+    padding: 7px !important; /* Larger tap target for input */
+    font-size: 16px !important; /* Slightly smaller font */
   }
 }

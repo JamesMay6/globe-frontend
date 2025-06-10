@@ -9,15 +9,15 @@ html, body, #cesiumContainer {
 /* Zoom Out Button */
 .zoom-out-button {
   position: absolute;
-  top: 102px; /* Slightly below geocoder (adjust as needed) */
+  top: 115px; /* Slightly below geocoder (adjust as needed) */
   right: 15px;
   z-index: 999;
   background: #444;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 5px;
-  font-size: 14px;
+  padding: 8px;
+  font-size: 13px;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   font-family: sans-serif;
@@ -25,6 +25,6 @@ html, body, #cesiumContainer {
 }
 
 .zoom-out-button:hover {
-  background: #333333;
+  background: #3568c0;
 }
 

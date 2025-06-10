@@ -26,7 +26,7 @@
   background: #444;
   color: white;
   border: none;
-  padding: 8px 5px; /* Default button padding */
+  padding: 6px;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
@@ -54,7 +54,6 @@
   background: #222; /* Adding background for consistency with buyMenu */
   color: white;
   border-radius: 8px;
-  padding: 5px;
   font-family: sans-serif;
   z-index: 10;
   box-sizing: border-box;
@@ -66,7 +65,7 @@
   background: #444;
   color: white;
   border: none;
-  padding: 8px 5px;
+  padding: 6px;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
@@ -104,12 +103,11 @@
   .buyMenu,
   .upgradesMenu { /* Apply to both main menu components */
     width: 100%; /* Smaller width for tablets/larger phones */
-    padding: 8px; /* Slightly more padding for touch */
   }
 
   .buyMenu button,
   .upgradesMenu button {
-    padding: 8px 6px; /* Larger tap target */
+    padding: 6px; /* Larger tap target */
     font-size: 15px;
   }
 
@@ -118,77 +116,11 @@
   }
 
   .superClickButton {
-    padding: 0.5rem 1rem; /* Adjust padding */
+    padding: 6px;
     font-size: 14px; /* Adjust font size */
   }
 
   .info-text {
     font-size: 9px; /* Slightly smaller info text */
-  }
-}
-
-/* --- Even smaller screens (e.g., small phones) --- */
-@media (max-width: 480px) {
-  .topLeftMenu {
-    gap: 6px; /* Further reduced gap */
-  }
-
-  .buyMenu,
-  .upgradesMenu {
-    width: 45%; /* Even smaller width */
-    padding: 6px; /* Reduced padding */
-  }
-
-  .buyMenu button,
-  .upgradesMenu button {
-    padding: 8px 6px; /* Further adjusted tap target */
-    font-size: 14px;
-  }
-
-  .buyContent {
-    font-size: 12px; /* Even smaller content font size */
-  }
-
-  .superClickButton {
-    padding: 0.4rem 0.8rem; /* Further adjust padding */
-    font-size: 14px; /* Further adjust font size */
-  }
-
-  .info-text {
-    font-size: 8px; /* Even smaller info text */
-  }
-}
-
-/* Optional: For very narrow screens */
-@media (max-width: 320px) {
-  .topLeftMenu {
-    top: 5px; /* Pull closer to the edge */
-    left: 5px;
-    gap: 4px; /* Minimal gap */
-  }
-
-  .buyMenu,
-  .upgradesMenu {
-    width: 120px; /* Potentially even smaller */
-    padding: 4px;
-  }
-
-  .buyMenu button,
-  .upgradesMenu button {
-    padding: 6px 4px;
-    font-size: 13px;
-  }
-
-  .buyContent {
-    font-size: 11px;
-  }
-
-  .superClickButton {
-    padding: 0.3rem 0.6rem;
-    font-size: 13px;
-  }
-
-  .info-text {
-    font-size: 7px;
   }
 }

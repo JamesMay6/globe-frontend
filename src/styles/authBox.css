@@ -111,10 +111,9 @@
 
 @media (max-width: 768px) {
   .authBox:not(.loggedIn) {
-    width: 160px;
+    width: 100%;
     padding: 6px;
     font-size: 14px;
-    height: 36px;
   }
   .authBox.expanded:not(.loggedIn) {
     max-height: 300px;
@@ -139,71 +138,5 @@
   .authBox.loggedIn > button.logout {
     padding: 6px 12px;
     font-size: 13px;
-  }
-}
-
-@media (max-width: 480px) {
-  .authBox:not(.loggedIn) {
-    width: 140px;
-    padding: 5px;
-    font-size: 13px;
-    height: 36px;
-  }
-  .authBox.expanded:not(.loggedIn) {
-    max-height: 250px;
-  }
-  .authBox:not(.loggedIn) > button:first-child {
-    padding: 7px;
-    font-size: 14px;
-  }
-
-  .authBoxloggedInWrapper {
-    width: 100%;
-    padding: 5px;
-    font-size: 13px;
-  }
-
-  .authBox.loggedIn {
-    gap: 6px;
-    padding: 3px 5px;
-    font-size: 12px;
-  }
-
-  .authBox.loggedIn > button.logout {
-    padding: 5px 10px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 320px) {
-  .authBox:not(.loggedIn) {
-    width: 120px;
-    padding: 4px;
-    font-size: 12px;
-    height: 36px;
-  }
-  .authBox.expanded:not(.loggedIn) {
-    max-height: 200px;
-  }
-  .authBox:not(.loggedIn) > button:first-child {
-    padding: 6px;
-    font-size: 13px;
-  }
-
-  .authBoxloggedInWrapper {
-    width: 120px;
-    padding: 4px;
-    font-size: 12px;
-  }
-
-  .authBox.loggedIn {
-    gap: 4px;
-    padding: 2px 4px;
-    font-size: 11px;
-  }
-
-  .authBox.loggedIn > button.logout {
-    padding: 4px 8px;
-    font-size: 11px;
   }
 }

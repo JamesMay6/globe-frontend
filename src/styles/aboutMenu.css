@@ -10,7 +10,7 @@
   overflow: hidden; /* Important for containing content */
   z-index: 999;
   font-family: sans-serif;
-  padding: 5px; /* Default padding */
+  padding: 6px; /* Default padding */
   font-size: 16px; /* Default font size for container text if any */
   box-sizing: border-box; /* Crucial for consistent sizing */
   transition: width 0.4s ease, padding 0.4s ease; /* Add width to transition */
@@ -25,7 +25,7 @@
   border-radius: 4px;
   width: 100%;
   background: #444;
-  padding: 6px 5px; /* Default header padding */
+  padding: 6px; /* Default header padding */
   box-sizing: border-box;
   font-size: 16px; /* Default header font size */
 }
@@ -114,12 +114,12 @@
 @media (max-width: 768px) {
   .aboutMenu-container {
     width: 45%; /* Smaller width for tablets/larger phones */
-    padding: 8px; /* Slightly more padding */
+    padding: 6px; /* Slightly more padding */
   }
 
   .aboutMenu-header {
-    font-size: 14px; /* Smaller header font */
-    padding: 8px 6px;
+    font-size: 16px; /* Smaller header font */
+    padding: 7px;
   }
 
   .info-button {
@@ -140,67 +140,4 @@
     padding: 8px 15px; /* Smaller button padding */
     font-size: 14px;
   }
-}
-
-/* --- Even smaller screens (e.g., small phones) --- */
-@media (max-width: 480px) {
-  .aboutMenu-container {
-    width: 45%; /* Even smaller width */
-    padding: 6px; /* Reduced padding */
-  }
-
-  .aboutMenu-header {
-    font-size: 13px; /* Even smaller header font */
-    padding: 6px 4px;
-  }
-
-  .info-button {
-    width: 22px; /* A bit larger for tiny screens to ensure tapability */
-    height: 22px;
-    min-width: 22px;
-    min-height: 22px;
-    font-size: 18px; /* Adjust font size to fit */
-  }
-
-  .aboutOverlay-content {
-    padding: 15px; /* Further reduced padding */
-    font-size: 13px; /* Even smaller font size for modal content */
-  }
-
-  .overlay-links {
-    margin: 15px 0; /* Adjust margin for links */
-  }
-
-  .aboutOverlay-content button {
-    padding: 6px 12px; /* Further reduced button padding */
-    font-size: 13px;
-  }
-}
-
-/* Optional: For very narrow screens, similar to the leaderboard */
-@media (max-width: 320px) {
-    .aboutMenu-container {
-        right: 5px; /* Pull it closer to the edge */
-        top: 5px; /* Pull it closer to the top */
-        width: 120px; /* Potentially even smaller */
-        padding: 4px;
-    }
-
-    .aboutMenu-header {
-        font-size: 12px;
-        padding: 5px 3px;
-    }
-
-    .info-button {
-        width: 24px; /* Ensure tapability on very small screens */
-        height: 24px;
-        min-width: 24px;
-        min-height: 24px;
-        font-size: 20px;
-    }
-
-    .aboutOverlay-content {
-        padding: 10px;
-        font-size: 12px;
-    }
 }
