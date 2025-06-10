@@ -1,5 +1,6 @@
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 //Hooks
 import { useAuth } from './hooks/useAuth';
 import { useUserProfile } from './hooks/useUserProfile';
@@ -61,6 +62,21 @@ export default function App() {
     const data = await fetchUserProfile();
     updateProfileFromData(data);
   };
+
+  const location = useLocation();
+
+  useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const paymentStatus = params.get("payment");
+
+  if (paymentStatus === "success") {
+    showMessage("Payment successful! Your clicks have been credited.");
+    window.history.replaceState({}, document.title, "/");
+  } else if (paymentStatus === "cancelled") {
+    showMessage("Payment was cancelled. No clicks were purchased.");
+    window.history.replaceState({}, document.title, "/");
+  }
+}, [location]);
 
   return (
     <>
