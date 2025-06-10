@@ -28,6 +28,10 @@
   width: 100%;
 }
 
+.buyClicksButtons {
+  margin-bottom:5px;
+}
+
 .buyContent {
   font-size: 14px;
   line-height: 1.6;

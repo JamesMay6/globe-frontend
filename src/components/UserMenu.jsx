@@ -68,7 +68,7 @@ export default function UserMenu({
             { clicks: BUY_CLICKS_PACKAGE_TWO, price: BUY_CLICKS_PACKAGE_TWO_COST }, 
             { clicks: BUY_CLICKS_PACKAGE_THREE, price: BUY_CLICKS_PACKAGE_THREE_COST }]
             .map(({ clicks, price }) => (
-              <button
+              <button className='buyClicksButtons'
                 key={clicks}
                 onClick={() => {handleBuyClicks(clicks)}}
                 disabled={!isPaymentEnabled}
