@@ -1,10 +1,7 @@
 import { useState } from "react";
 
-export default function AboutMenu({
-    aboutMenuOpen,
-    setAboutMenuOpen
-    }) {
-
+export default function AboutMenu() {
+  const [aboutMenuOpen, setAboutMenuOpen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
 
   return (

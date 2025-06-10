@@ -21,6 +21,9 @@ export default function UserMenu({
   buyMenuOpen,
   setBuyMenuOpen,
 }) {
+  
+  const [buyMenuOpen, setBuyMenuOpen] = useState(false);
+
   return (
     <div className="buyMenu">
       <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
