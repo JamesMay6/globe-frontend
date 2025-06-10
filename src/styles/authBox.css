@@ -11,7 +11,7 @@
   width: 200px;
   font-family: sans-serif;
   font-size: 16px;
-  max-height: 40px;
+  max-height: 400px;
   overflow: hidden;
   transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease;
   box-sizing: border-box;

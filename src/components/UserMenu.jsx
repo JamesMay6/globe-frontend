@@ -80,7 +80,7 @@ export default function UserMenu({
 
           <div className="upgradesMenu">
             <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-              Upgrade Clicks - Delete More!
+              Upgrade to Delete More!
             </div>
             <button onClick={handleUpgradeSuperClick} className="superClickButton">
               Upgrade to a Super Click

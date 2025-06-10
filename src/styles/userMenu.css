@@ -50,9 +50,7 @@
 
 .upgradesMenu {
   margin-top: 10px; /* Default margin */
-  /* Inherits width/padding behavior from .buyMenu if applied to it,
-     or define its own width/padding for responsive behavior */
-  width: 200px; /* Assuming it should match buyMenu's width */
+  width: 100%; /* Assuming it should match buyMenu's width */
   background: #222; /* Adding background for consistency with buyMenu */
   color: white;
   border-radius: 8px;
@@ -78,7 +76,6 @@
 .superClickButton {
   background-color: #ff5722;
   color: white;
-  font-weight: bold;
   padding: 0.6rem 1.2rem; /* Using rem for padding for better scaling */
   border: none;
   border-radius: 6px;
