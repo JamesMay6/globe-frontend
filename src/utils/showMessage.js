@@ -1,13 +1,13 @@
 // utils/showMessage.js
-export function showMessage(text, type = "success") {
+export function showMessage(text, type = "success", customDuration) {
   const durations = {
     success: 1000,
     error: 2500,
     info: 1000,
-    warning: 750,
+    warn: 1000,
   };
 
-  const duration = durations[type] || 1000;
+  const duration = customDuration ?? durations[type] ?? 1000;
 
   const message = document.createElement("div");
   message.textContent = text;

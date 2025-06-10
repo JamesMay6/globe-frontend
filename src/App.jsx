@@ -70,10 +70,10 @@ export default function App() {
   const paymentStatus = params.get("payment");
 
   if (paymentStatus === "success") {
-    showMessage("Payment successful! Your clicks have been credited.");
+    showMessage("Payment successful! Your clicks have been credited","success",5000);
     window.history.replaceState({}, document.title, "/");
   } else if (paymentStatus === "cancelled") {
-    showMessage("Payment was cancelled. No clicks were purchased.");
+    showMessage("Payment was cancelled. No clicks were purchased","warn",5000);
     window.history.replaceState({}, document.title, "/");
   }
 }, [location]);
