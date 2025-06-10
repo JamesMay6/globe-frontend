@@ -63,11 +63,10 @@
   width: 200px; /* Default width */
   font-family: sans-serif;
   font-size: 16px; /* Default font size */
-  overflow: hidden;
   transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease; /* Add width to transition */
   box-sizing: border-box; 
   max-height: none; /* Allow height to adapt to content */
-  overflow: visible; /* Prevent scrollbar if content fits */
+  overflow-y: auto; /* Allow scrolling if content exceeds height */
   flex-direction: row;
   gap: 10px; /* Default gap for logged-in state */
   padding: 5px 8px; /* Slightly more horizontal padding for logged-in state */
@@ -118,6 +117,10 @@
   .authBox > button:first-child {
     padding: 8px; /* Larger tap target */
     font-size: 14px;
+  }
+
+  .authBoxloggedInWrapper {
+    width: 100%;
   }
 
   .authBox.loggedIn {
