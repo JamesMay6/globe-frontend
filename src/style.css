@@ -19,7 +19,7 @@ html, body, #cesiumContainer {
 /* Zoom Out Button */
 .zoom-out-button {
   position: absolute;
-  top: 55px; /* Slightly below geocoder (adjust as needed) */
+  top: 95px; /* Slightly below geocoder (adjust as needed) */
   right: 13px;
   z-index: 10;
   background: #222;

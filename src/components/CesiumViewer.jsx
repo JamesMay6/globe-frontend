@@ -257,7 +257,7 @@ export default function CesiumViewer({
         style={{ width: "100vw", height: "100vh" }}
       />
       <button className="zoom-out-button" onClick={zoomOut}>
-        Show Full Earth
+        Zoom Out
       </button>
     </>
   );
