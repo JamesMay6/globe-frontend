@@ -20,7 +20,7 @@ button.cesium-infoBox-close,
 /* Create a background container effect using the existing geocoder container */
 .cesium-viewer-geocoderContainer {
   position: absolute; /* Remains absolute */
-  top: 50px;
+  top: 58px;
   right: 5px;
   z-index: 999;
   font-family: sans-serif;
@@ -28,7 +28,7 @@ button.cesium-infoBox-close,
   border-radius: 8px;
   padding: 3px 5px; /* Default padding */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  width: 200px; /* Default width */
+  width: 197px; /* Default width */
   box-sizing: border-box; /* Crucial for consistent sizing */
   transition: width 0.4s ease, padding 0.4s ease; /* Add width to transition */
 }
@@ -67,7 +67,7 @@ button.cesium-infoBox-close,
   .cesium-viewer-geocoderContainer {
     width: 30vw; /* Smaller width for tablets/larger phones */
     padding: 6px; /* Slightly more padding for better touch input */
-    top: 60px; /* Adjust vertical position slightly */
+    top: 58px; /* Adjust vertical position slightly */
     right: 5px; /* Keep right position, but ensure it doesn't get cut off */
   }
 

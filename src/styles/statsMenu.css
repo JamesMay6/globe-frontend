@@ -24,12 +24,12 @@
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
-  margin-bottom: 5px;
 }
 
 .statsMenu .statsContent {
   font-size: 14px; /* Default font size */
   line-height: 1.6;
+  margin-top: 5px;
 }
 
 /* --- Mobile-specific styles --- */
