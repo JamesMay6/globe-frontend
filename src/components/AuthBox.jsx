@@ -90,7 +90,7 @@ export default function AuthBox({
   if (user) {
     // ---------- Logged In State ----------
     return (
-      <div className="=authBoxloggedInWrapper">
+      <div className="authBoxloggedInWrapper">
       <div className="authBox loggedIn">
         <span>Hi {displayUsername}</span>
         <button className="logout" onClick={handleLogout}>
