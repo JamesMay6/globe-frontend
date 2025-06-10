@@ -19,15 +19,15 @@ export default function AboutMenu() {
       {showOverlay && (
         <div className="aboutOverlay" onClick={() => setShowOverlay(false)}>
           <div className="aboutOverlay-content" onClick={(e) => e.stopPropagation()}>
-            <h2>About "Delete The Earth"</h2>
+            <h3>About "Delete The Earth"</h3>
             <p>
-              This is an interactive globe-based experience where users can delete parts of the world map one grid cell at a time. Every action is stored and shared globally in real-time. Play responsibly.
+              An interactive globe-based experience where users can delete parts of the world map one grid cell at a time. Every action is stored and shared globally in real-time. Play responsibly.
             </p>
             
             <br />
-            <h3>Delete the Earth Coin</h3>
+            <h3>Delete the Earth Coin - Coming Soon</h3>
             <p>
-              As part of deleting the earth, you will be reward with DTE (Delete The Earth) coin so the more you delete, the more rewards you get!
+              As part of deleting the earth, you will be rewarded with DTE (Delete The Earth) coin so the more you delete, the more rewards you get!
             </p>
             <div className="overlay-links">
               <a href="/terms.html" target="_blank" rel="noopener noreferrer">
