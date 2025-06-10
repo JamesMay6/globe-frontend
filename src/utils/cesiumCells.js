@@ -69,12 +69,27 @@ export const drawDeletedCells = (viewer, cells) => {
 export const fetchDeletedCells = async (viewer) => {
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
+
   const minLat = Cesium.Math.toDegrees(rect.south);
   const maxLat = Cesium.Math.toDegrees(rect.north);
   const minLon = Cesium.Math.toDegrees(rect.west);
   const maxLon = Cesium.Math.toDegrees(rect.east);
 
-  const res = await fetch(`${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`);
-  const cells = await res.json();
-  drawDeletedCells(viewer, cells);
+  const batchSize = 1000;
+  let offset = 0;
+  let totalFetched = 0;
+
+  while (true) {
+    const url = `${API_URL}/deleted?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}&limit=${batchSize}&offset=${offset}`;
+    const res = await fetch(url);
+    const cells = await res.json();
+
+    if (!cells || cells.length === 0) break;
+
+    drawDeletedCells(viewer, cells);
+    totalFetched += cells.length;
+    offset += batchSize;
+  }
+
+  console.log(`Fetched and rendered ${totalFetched} deleted cells.`);
 };
