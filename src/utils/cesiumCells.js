@@ -2,6 +2,7 @@ import * as Cesium from "cesium";
 import {API_URL} from '../config/config';
 
 export const normalizeCoord = (val) => Math.floor(val * 1000) / 1000;
+const fetchedBounds = new Set();
 
 export const drawDeletedCell = (viewer, lat, lon) => {
   const cellWidth = 0.001;
@@ -66,6 +67,12 @@ export const drawDeletedCells = (viewer, cells) => {
   }
 };
 
+const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
+  const round = (x) => Math.floor(x * 1000) / 1000; // 3 decimal places
+  return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
+};
+
+
 export const fetchDeletedCells = async (viewer) => {
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
@@ -74,6 +81,15 @@ export const fetchDeletedCells = async (viewer) => {
   const maxLat = Cesium.Math.toDegrees(rect.north);
   const minLon = Cesium.Math.toDegrees(rect.west);
   const maxLon = Cesium.Math.toDegrees(rect.east);
+
+  const cacheKey = getCacheKey(minLat, maxLat, minLon, maxLon);
+  if (fetchedBounds.has(cacheKey)) {
+    console.log("Skipping fetch — already cached:", cacheKey);
+    return;
+  }
+
+  // Mark as cached before starting to prevent re-entrant fetches
+  fetchedBounds.add(cacheKey);
 
   const batchSize = 1000;
   let offset = 0;
@@ -91,5 +107,5 @@ export const fetchDeletedCells = async (viewer) => {
     offset += batchSize;
   }
 
-  console.log(`Fetched and rendered ${totalFetched} deleted cells.`);
+  console.log(`Fetched and rendered ${totalFetched} cells for box ${cacheKey}`);
 };
