@@ -105,7 +105,7 @@
 
   .buyMenu,
   .upgradesMenu { /* Apply to both main menu components */
-    width: 160px; /* Smaller width for tablets/larger phones */
+    width: 45%; /* Smaller width for tablets/larger phones */
     padding: 8px; /* Slightly more padding for touch */
   }
 
@@ -137,7 +137,7 @@
 
   .buyMenu,
   .upgradesMenu {
-    width: 140px; /* Even smaller width */
+    width: 45%; /* Even smaller width */
     padding: 6px; /* Reduced padding */
   }
 

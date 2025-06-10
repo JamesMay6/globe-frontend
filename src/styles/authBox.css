@@ -80,7 +80,7 @@
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .authBox {
-    width: 160px; /* Smaller width for tablets/larger phones */
+    width: 45%; /* Smaller width for tablets/larger phones */
     padding: 6px; /* Slightly more padding for touch */
     font-size: 14px; /* Smaller base font size */
   }
@@ -109,7 +109,7 @@
 /* --- Even smaller screens (e.g., small phones) --- */
 @media (max-width: 480px) {
   .authBox {
-    width: 140px; /* Even smaller width */
+    width: 45%; /* Even smaller width */
     padding: 5px; /* Reduced padding */
     font-size: 13px; /* Even smaller base font size */
   }

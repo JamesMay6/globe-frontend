@@ -6,16 +6,6 @@ html, body, #cesiumContainer {
   overflow: hidden;
 }
 
-/* Default (desktop): fixed width */
-.topMenu,
-.statsMenu,
-.leaderboardMenu,
-.buyMenu,
-.aboutMenu,
-.cesium-viewer-geocoderContainer {
-  width: 200px;
-}
-
 /* Zoom Out Button */
 .zoom-out-button {
   position: absolute;

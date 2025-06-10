@@ -113,7 +113,7 @@
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .aboutMenu-container {
-    width: 160px; /* Smaller width for tablets/larger phones */
+    width: 45%; /* Smaller width for tablets/larger phones */
     padding: 8px; /* Slightly more padding */
   }
 
@@ -145,7 +145,7 @@
 /* --- Even smaller screens (e.g., small phones) --- */
 @media (max-width: 480px) {
   .aboutMenu-container {
-    width: 140px; /* Even smaller width */
+    width: 45%; /* Even smaller width */
     padding: 6px; /* Reduced padding */
   }
 
