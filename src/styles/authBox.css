@@ -1,36 +1,40 @@
+/* Base styles for larger screens (default) */
 .authBox {
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  padding: 5px; /* Default padding */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   gap: 6px;
   z-index: 1000;
-  width: 200px;
+  width: 200px; /* Default width */
   font-family: sans-serif;
-  font-size: 16px;
-  max-height: 40px;
+  font-size: 16px; /* Default font size */
+  max-height: 40px; /* Default collapsed height */
   overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.4s ease;
+  transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease; /* Add width to transition */
+  box-sizing: border-box; /* Crucial for consistent sizing */
 }
 
 /* Expanded state */
 .authBox.expanded {
-  max-height: 400px;
-  padding: 5px;
+  max-height: 400px; /* Default expanded height */
+  padding: 5px; /* Default padding in expanded state */
+  overflow-y: auto; /* Enable scrolling if content exceeds max-height when expanded */
 }
 
 .authBox > button:first-child {
   background: #444;
   color: white;
   border: none;
-  padding: 5px;
+  padding: 5px; /* Default button padding */
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
   transition: background 0.2s ease;
+  font-size: 16px; /* Ensure button font size is controlled */
 }
 
 .authBox > button:first-child:hover {
@@ -49,11 +53,12 @@
 }
 
 .authBox.loggedIn {
-  max-height: none;
-  overflow: visible;
+  max-height: none; /* Allow height to adapt to content */
+  overflow: visible; /* Prevent scrollbar if content fits */
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 10px; /* Default gap for logged-in state */
+  padding: 5px 8px; /* Slightly more horizontal padding for logged-in state */
 }
 
 .authBox.loggedIn > * {
@@ -64,9 +69,97 @@
 
 .authBox.loggedIn > button {
   width: auto;
-  padding: 2px 4px;
+  padding: 2px 4px; /* Default logged-in button padding */
+  font-size: 14px; /* Default logged-in button font size */
 }
 
 .authBox.loggedIn > button.logout {
   margin-left: auto;
+}
+
+/* --- Mobile-specific styles --- */
+@media (max-width: 768px) {
+  .authBox {
+    width: 160px; /* Smaller width for tablets/larger phones */
+    padding: 6px; /* Slightly more padding for touch */
+    font-size: 14px; /* Smaller base font size */
+  }
+
+  .authBox.expanded {
+    max-height: 300px; /* Adjust expanded height for smaller screens */
+  }
+
+  .authBox > button:first-child {
+    padding: 8px; /* Larger tap target */
+    font-size: 15px;
+  }
+
+  .authBox.loggedIn {
+    gap: 8px; /* Adjust gap for smaller screens */
+    padding: 4px 6px; /* Adjusted padding for logged-in state */
+    font-size: 13px; /* Smaller font for logged-in state */
+  }
+
+  .authBox.loggedIn > button {
+    padding: 3px 6px; /* Adjusted logged-in button padding */
+    font-size: 13px; /* Adjusted logged-in button font size */
+  }
+}
+
+/* --- Even smaller screens (e.g., small phones) --- */
+@media (max-width: 480px) {
+  .authBox {
+    width: 140px; /* Even smaller width */
+    padding: 5px; /* Reduced padding */
+    font-size: 13px; /* Even smaller base font size */
+  }
+
+  .authBox.expanded {
+    max-height: 250px; /* Further adjust expanded height */
+  }
+
+  .authBox > button:first-child {
+    padding: 7px; /* Slightly smaller tap target */
+    font-size: 14px;
+  }
+
+  .authBox.loggedIn {
+    gap: 6px; /* Further adjust gap */
+    padding: 3px 5px; /* Further adjusted padding for logged-in state */
+    font-size: 12px; /* Even smaller font for logged-in state */
+  }
+
+  .authBox.loggedIn > button {
+    padding: 2px 5px; /* Further adjusted logged-in button padding */
+    font-size: 12px; /* Further adjusted logged-in button font size */
+  }
+}
+
+/* Optional: For very narrow screens */
+@media (max-width: 320px) {
+    .authBox {
+        width: 120px; /* Potentially even smaller */
+        padding: 4px;
+        font-size: 12px;
+    }
+
+    .authBox.expanded {
+        max-height: 200px; /* Even smaller expanded height */
+    }
+
+    .authBox > button:first-child {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    .authBox.loggedIn {
+        gap: 4px;
+        padding: 2px 4px;
+        font-size: 11px;
+    }
+
+    .authBox.loggedIn > button {
+        padding: 1px 4px;
+        font-size: 11px;
+    }
 }
