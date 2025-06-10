@@ -112,7 +112,7 @@
 
   .buyMenu button,
   .upgradesMenu button {
-    padding: 10px 8px; /* Larger tap target */
+    padding: 8px 6px; /* Larger tap target */
     font-size: 15px;
   }
 
@@ -122,7 +122,7 @@
 
   .superClickButton {
     padding: 0.5rem 1rem; /* Adjust padding */
-    font-size: 15px; /* Adjust font size */
+    font-size: 14px; /* Adjust font size */
   }
 
   .info-text {
