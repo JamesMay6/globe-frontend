@@ -20,7 +20,7 @@ button.cesium-infoBox-close,
 /* --- NEW CONTAINER FOR CONTROLS --- */
 .cesium-top-right-controls {
   position: absolute; /* Position this container */
-  top: 58px; /* Adjust vertical position */
+  top: 50px; /* Adjust vertical position */
   right: 5px; /* Adjust horizontal position */
   z-index: 999;
   display: flex; /* Make it a flex container */
@@ -102,8 +102,8 @@ button.cesium-infoBox-close,
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .cesium-top-right-controls {
-    width: 45%; /* Smaller width for tablets/larger phones */
-    top: 58px; /* Adjust vertical position slightly */
+    width: 160px; /* Smaller width for tablets/larger phones */
+    top: 40px; /* Adjust vertical position slightly */
     right: 5px;
     gap: 6px; /* Slightly reduced gap */
   }
