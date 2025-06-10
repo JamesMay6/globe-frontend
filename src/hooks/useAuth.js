@@ -37,53 +37,59 @@ export function useAuth() {
   }, [user]); // Depend on user so it updates when user changes
 
   const handleAuth = async (form, authMode, onSuccess, onError) => {
-    const email = fakeEmail(form.username);
+  const email = fakeEmail(form.username);
 
-    try {
-      if (authMode === "register") {
-        setSkipProfileFetch(true);
+  try {
+    if (authMode === "register") {
+      const { data: authData, error: authError } = await SUPABASE.auth.signUp({
+        email,
+        password: form.password,
+      });
 
-        const { data, error } = await SUPABASE.auth.signUp({
-          email,
-          password: form.password,
-        });
+      if (authError || !authData.session) {
+        onError?.(authError?.message || "Registration failed: No session returned.");
+        setUser(null);
+        return;
+      }
+      try {
+        await createUserProfile(authData.user.id, form.username, authData.session.access_token);
+        setUser(authData.session.user);
+        onSuccess?.("Registration successful! Welcome.");
+      } catch (profileCreationError) {
+        console.error("Error creating user profile:", profileCreationError);
+        onError?.("Failed to create profile. Please try again.");
 
-        if (error || !data.session)
-          return onError?.(error?.message || "No session returned");
-
-        try {
-          await createUserProfile(data.user.id, form.username, data.session.access_token);
-          setUser(data.session.user);
-
-        } catch {
-          const { error: deleteUserError } = await SUPABASE.auth.admin.deleteUser(authData.user.id);
+        const { error: deleteUserError } = await SUPABASE.auth.admin.deleteUser(authData.user.id);
         if (deleteUserError) {
             console.error("Failed to delete user after profile creation error:", deleteUserError);
             onError?.("Failed to create profile and could not clean up account. Please contact support.");
         }
-          await SUPABASE.auth.signOut(); 
-          setUser(null);          
-          return onError?.("Failed to create profile.");
-        }
 
-        onSuccess?.("Registration successful!");
-        setSkipProfileFetch(false);
-      } else {
-        const { data, error } = await SUPABASE.auth.signInWithPassword({
-          email,
-          password: form.password,
-        });
-
-        if (error || !data.session)
-          return onError?.(error?.message || "No session returned");
-
-        setUser(data.session.user);
+        setUser(null);
+        return; // Exit the function after error handling
       }
-    } catch (err) {
-      console.error(err);
-      onError?.("Unexpected error during authentication.");
+
+    } else { 
+      const { data, error } = await SUPABASE.auth.signInWithPassword({
+        email,
+        password: form.password,
+      });
+
+      if (error || !data.session) {
+        onError?.(error?.message || "No session returned");
+        setUser(null);
+        return;
+      }
+
+      setUser(data.session.user);
+      onSuccess?.("Login successful!");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    onError?.("Unexpected error during authentication.");
+    setUser(null);
+  }
+};
 
   const handleLogout = async () => {
     await SUPABASE.auth.signOut();
