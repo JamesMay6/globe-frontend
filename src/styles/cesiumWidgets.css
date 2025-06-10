@@ -17,26 +17,34 @@ button.cesium-infoBox-close,
   visibility: hidden;
 }
 
-/* Geocoder Container */
+/* Create a background container effect using the existing geocoder container */
 .cesium-viewer-geocoderContainer {
   position: absolute;
   top: 55px;
-  right: 10px;
+  right: 5px;
   z-index: 999;
   font-family: sans-serif;
+  background: #222;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 200px;
+  box-sizing: border-box;
 }
 
-/* Input Box */
+/* Input Box - now fits within the container */
 .cesium-geocoder-input {
   background: #444 !important;
   color: white !important;
   border: none !important;
-  border-radius: 8px !important;
-  padding: 8px 10px !important;
+  border-radius: 4px !important;
+  padding: 5px !important;
   font-size: 16px !important;
-  width: 200px !important;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  width: 100% !important;
+  box-shadow: none !important;
   font-weight: bold !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
 }
 
 /* Optional: Style the placeholder text */
