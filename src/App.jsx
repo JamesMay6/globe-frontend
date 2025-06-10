@@ -28,6 +28,8 @@ export default function App() {
   const [authMode, setAuthMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "" });
   const [cooldownMessage, setCooldownMessage] = useState(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [buyMenuOpen, setBuyMenuOpen] = useState(false);
 
   // Honor Order of Hooks
     const {
@@ -79,6 +81,8 @@ export default function App() {
         <AuthBox
           user={user}
           username={username}
+          authOpen={authOpen}
+          setAuthOpen={setAuthOpen}
           authMode={authMode}
           setAuthMode={setAuthMode}
           form={form}
@@ -98,14 +102,15 @@ export default function App() {
             handleBuyClicks={handleBuyClicks}
             handleUpgradeSuperClick={upgrade}
             cooldownMessage={cooldownMessage}
+            buyMenuOpen={buyMenuOpen}
+            setBuyMenuOpen={setBuyMenuOpen}
             fetchUserProfile={refreshUserProfile}
           />
         )}
       </div>
 
         <StatsMenu />
-        <AboutMenu 
-          />
+        <AboutMenu />
         <Leaderboard />
 
     </>

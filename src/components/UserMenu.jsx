@@ -17,11 +17,11 @@ export default function UserMenu({
   setSuperClickEnabled,
   handleBuyClicks,
   handleUpgradeSuperClick,
-  cooldownMessage
+  cooldownMessage,
+  buyMenuOpen,
+  setBuyMenuOpen,
 }) {
   
-  const [buyMenuOpen, setBuyMenuOpen] = useState(false);
-
   return (
     <div className="buyMenu">
       <button onClick={() => setBuyMenuOpen(!buyMenuOpen)}>
