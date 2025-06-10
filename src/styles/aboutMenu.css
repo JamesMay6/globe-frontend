@@ -10,7 +10,7 @@
           z-index: 999;
           font-family: sans-serif;
           padding: 5px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
+          /*box-shadow: 0 0 10px rgba(0,0,0,0.5);*/
           font-size: 16px;
         }
 
