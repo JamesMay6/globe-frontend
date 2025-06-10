@@ -256,22 +256,13 @@ export default function CesiumViewer({
 
   return (
     <>
-    <div className="cesiumPlusZoom">
       <div
         ref={containerRef}
         style={{ width: "100vw", height: "100vh" }}
       />
-      {/* NEW CONTAINER FOR CONTROLS */}
-      <div className="cesium-top-right-controls">
-        <button className="zoom-out-button" onClick={zoomOut}>
-          Zoom Out
-        </button>
-        <div className="cesium-viewer-geocoderContainer">
-          {/* Your Cesium Geocoder input and any other content for the geocoder will go here */}
-        </div>
-      </div>
-    </div>
+      <button className="zoom-out-button" onClick={zoomOut}>
+        Zoom Out
+      </button>
     </>
-    
   );
 }
