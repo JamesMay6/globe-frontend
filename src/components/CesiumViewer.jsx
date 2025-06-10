@@ -261,7 +261,7 @@ export default function CesiumViewer({
         style={{ width: "100vw", height: "100vh" }}
       />
       <button className="zoom-out-button" onClick={zoomOut}>
-        Zoom Out
+        🌍
       </button>
     </>
   );
