@@ -65,6 +65,7 @@ export async function fetchUserProfile(token) {
   return res.json();
 }
 
+/*
 export async function createUserProfile(id, username, token) {
   const accessToken = token || (await getAuthToken());
   const res = await fetch(`${API_URL}/create-profile`, {
@@ -77,3 +78,4 @@ export async function createUserProfile(id, username, token) {
   });
   if (!res.ok) throw new Error("Failed to create profile");
 }
+*/

@@ -1,21 +1,21 @@
-// hooks/useAuth.js
 import { useEffect, useState, useCallback } from "react";
 import { SUPABASE } from "../config/config";
-import { createUserProfile } from "../services/api";
 import { fakeEmail } from "../utils/fakeEmail";
 import { logEvent } from "../utils/logger";
 
 export function useAuth() {
   const [user, setUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(false);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
 
-  // Use useCallback to ensure fetchUserProfile always has the latest user value
-  const fetchUserProfile = useCallback(async () => {   
+  const fetchUserProfile = useCallback(async () => {
     if (!user?.id) {
-      console.log("No user ID available");
+      setUserProfile(null);
       return null;
     }
+    setLoadingProfile(true);
     logEvent("Fetching profile for User ID: ", user.id);
     try {
       const { data, error } = await SUPABASE
@@ -27,97 +27,108 @@ export function useAuth() {
       if (error) {
         console.error("Error fetching user profile:", error);
         logEvent("Error fetching profile for User ID: ", user.id, " with error: ", error);
+        setUserProfile(null);
         return null;
       }
+      setUserProfile(data);
       return data;
     } catch (err) {
       console.error("Exception in fetchUserProfile:", err);
+      setUserProfile(null);
       return null;
+    } finally {
+      setLoadingProfile(false);
     }
-  }, [user]); // Depend on user so it updates when user changes
+  }, [user]);
 
   const handleAuth = async (form, authMode, onSuccess, onError) => {
-  const email = fakeEmail(form.username);
+    const email = fakeEmail(form.username);
 
-  try {
-    if (authMode === "register") {
-      const { data: authData, error: authError } = await SUPABASE.auth.signUp({
-        email,
-        password: form.password,
-      });
+    try {
+      if (authMode === "register") {
+        setSkipProfileFetch(true);
 
-      if (authError || !authData.session) {
-        onError?.(authError?.message || "Registration failed: No session returned.");
-        setUser(null);
-        return;
-      }
-      try {
-        await createUserProfile(authData.user.id, form.username, authData.session.access_token);
-        setUser(authData.session.user);
-        onSuccess?.("Registration successful! Welcome.");
-      } catch (profileCreationError) {
-        console.error("Error creating user profile:", profileCreationError);
-        onError?.("Failed to create profile. Please try again.");
+        const { data, error } = await SUPABASE.rpc('signup_and_create_profile', {
+            p_email: email,
+            p_password: form.password,
+            p_username: form.username
+        });
 
-        const { error: deleteUserError } = await SUPABASE.auth.admin.deleteUser(authData.user.id);
-        if (deleteUserError) {
-            console.error("Failed to delete user after profile creation error:", deleteUserError);
-            onError?.("Failed to create profile and could not clean up account. Please contact support.");
+        if (error) {
+            console.error("RPC signup_and_create_profile error:", error);
+            setUser(null);
+            setUserProfile(null);
+            onError?.(error.message || "Registration failed.");
+            setSkipProfileFetch(false);
+            return;
         }
 
-        setUser(null);
-        return; // Exit the function after error handling
+        const { error: setSessionError } = await SUPABASE.auth.setSession({
+            access_token: data.access_token,
+            refresh_token: data.refresh_token
+        });
+
+        if (setSessionError) {
+            console.error("Error setting session after RPC signup:", setSessionError);
+            onError?.("Registration successful but failed to log you in. Please try logging in manually.");
+            setUser(null);
+            setUserProfile(null);
+            return;
+        }
+
+        const { data: { user: currentUser } } = await SUPABASE.auth.getUser();
+        if (currentUser) {
+            setUser(currentUser);
+        }
+
+        onSuccess?.("Registration successful! Welcome.");
+        setSkipProfileFetch(false);
+
+      } else {
+        const { data, error } = await SUPABASE.auth.signInWithPassword({
+          email,
+          password: form.password,
+        });
+
+        if (error || !data.session) {
+          onError?.(error?.message || "No session returned");
+          setUser(null);
+          setUserProfile(null);
+          return;
+        }
+
+        setUser(data.session.user);
+        onSuccess?.("Login successful!");
       }
-
-    } else { 
-      const { data, error } = await SUPABASE.auth.signInWithPassword({
-        email,
-        password: form.password,
-      });
-
-      if (error || !data.session) {
-        onError?.(error?.message || "No session returned");
-        setUser(null);
-        return;
-      }
-
-      setUser(data.session.user);
-      onSuccess?.("Login successful!");
+    } catch (err) {
+      console.error("Unexpected error during authentication:", err);
+      onError?.("Unexpected error during authentication.");
+      setUser(null);
+      setUserProfile(null);
     }
-  } catch (err) {
-    console.error(err);
-    onError?.("Unexpected error during authentication.");
-    setUser(null);
-  }
-};
+  };
 
   const handleLogout = async () => {
     await SUPABASE.auth.signOut();
     setUser(null);
+    setUserProfile(null);
   };
 
   useEffect(() => {
     const initSession = async () => {
       setLoadingSession(true);
-
-      const {
-        data: { session },
-        error: sessionError,
-      } = await SUPABASE.auth.getSession();
-
+      const { data: { session }, error: sessionError } = await SUPABASE.auth.getSession();
       if (session?.user) {
         setUser(session.user);
       } else {
-        const {
-          data: { user: fallbackUser },
-          error: userError
-        } = await SUPABASE.auth.getUser();
-
+        const { data: { user: fallbackUser }, error: userError } = await SUPABASE.auth.getUser();
         if (fallbackUser) {
           setUser(fallbackUser);
+        } else {
+          setUser(null);
+          setUserProfile(null);
         }
       }
-
       setLoadingSession(false);
     };
     initSession();
@@ -130,6 +141,7 @@ export function useAuth() {
           setUser(session.user);
         } else if (!session) {
           setUser(null);
+          setUserProfile(null);
         }
       }
     );
@@ -139,5 +151,13 @@ export function useAuth() {
     };
   }, [skipProfileFetch]);
 
-  return { user, handleAuth, handleLogout, loadingSession, fetchUserProfile };
+  useEffect(() => {
+    if (user && !skipProfileFetch) {
+      fetchUserProfile();
+    } else if (!user) {
+      setUserProfile(null);
+    }
+  }, [user, fetchUserProfile, skipProfileFetch]);
+
+  return { user, userProfile, loadingSession, loadingProfile, handleAuth, handleLogout, fetchUserProfile };
 }
