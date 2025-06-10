@@ -56,13 +56,13 @@ const token = await getAuthToken();
   // 💳 Redirect to Stripe Checkout for paid clicks
   let packageType;
   switch (amount) {
-    case Number(process.env.REACT_APP_BUY_CLICKS_PACKAGE_ONE):
+    case Number(process.env.VITE_BUY_CLICKS_PACKAGE_ONE):
       packageType = "small";
       break;
-    case Number(process.env.REACT_APP_BUY_CLICKS_PACKAGE_TWO):
+    case Number(process.env.VITE_BUY_CLICKS_PACKAGE_TWO):
       packageType = "medium";
       break;
-    case Number(process.env.REACT_APP_BUY_CLICKS_PACKAGE_THREE):
+    case Number(process.env.VITE_BUY_CLICKS_PACKAGE_THREE):
       packageType = "large";
       break;
     default:
