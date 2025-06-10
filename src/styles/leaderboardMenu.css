@@ -1,3 +1,4 @@
+/* Base styles for larger screens (and as a default) */
 .leaderboardMenu {
   position: absolute;
   bottom: 10px;
@@ -11,6 +12,7 @@
   z-index: 10;
   max-height: 600px;
   transition: max-height 0.4s ease, padding 0.4s ease;
+  box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
 }
 
 .leaderboardMenu button {
@@ -70,4 +72,54 @@
 .score {
   margin-left: 10px;
   font-variant-numeric: tabular-nums;
+}
+
+/* --- Mobile-specific styles --- */
+@media (max-width: 768px) {
+  .leaderboardMenu {
+    /* Reposition to cover more of the screen or be easily accessible */
+    position: fixed; /* Stays in place when scrolling */
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Takes full width of the screen */
+    right: auto; /* Remove right positioning */
+    border-radius: 8px 8px 0 0; /* Rounded top corners, sharp bottom corners */
+    padding: 10px; /* Slightly more padding */
+    max-height: 80vh; /* Limits height to 80% of viewport height */
+    overflow-y: auto; /* Enables scrolling if content exceeds max-height */
+  }
+
+  .leaderboardMenu button {
+    padding: 12px 10px; /* Larger tap target */
+    font-size: 16px;
+  }
+
+  .leaderboardContent {
+    font-size: 13px; /* Slightly smaller font for readability on small screens */
+    line-height: 1.5;
+  }
+
+  .leaderboardContent li {
+    padding: 8px 10px; /* More padding for list items */
+  }
+}
+
+/* --- Even smaller screens (e.g., small phones) --- */
+@media (max-width: 480px) {
+  .leaderboardMenu {
+    padding: 8px; /* Slightly less padding for very small screens */
+  }
+
+  .leaderboardMenu button {
+    padding: 10px 8px;
+    font-size: 15px;
+  }
+
+  .leaderboardContent {
+    font-size: 12px;
+  }
+
+  .leaderboardContent li {
+    padding: 6px 8px;
+  }
 }
