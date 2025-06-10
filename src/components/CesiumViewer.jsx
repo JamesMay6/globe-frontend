@@ -171,15 +171,12 @@ export default function CesiumViewer({
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
       const terrainProvider = await Cesium.createWorldTerrainAsync();
+      const openTileImageryProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-      // Use OpenStreetMap as the base imagery (no Bing Maps usage)
-      const baseImagery = new Cesium.OpenStreetMapImageryProvider({
-        url: "https://a.tile.openstreetmap.org/",
-      });
-
+      // Initialize the Cesium Viewer
       viewer = new Cesium.Viewer(containerRef.current, {
-        terrainProvider,
-        imageryProvider: baseImagery,
+        terrainProvider: terrainProvider,
+        baseLayer: new Cesium.ImageryLayer(openTileImageryProvider),
         animation: false,
         timeline: false,
         baseLayerPicker: false,
