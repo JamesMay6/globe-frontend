@@ -43,7 +43,7 @@ button.cesium-infoBox-close,
   width: 100% !important;
   box-shadow: none !important;
   box-sizing: border-box !important;
-  margin: -4px !important;
+  margin: 2px !important;
 }
 
 /* Optional: Style the placeholder text */
