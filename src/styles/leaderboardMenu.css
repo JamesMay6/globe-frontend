@@ -78,7 +78,7 @@
 /* --- Mobile-specific styles (retaining position) --- */
 @media (max-width: 768px) {
   .leaderboardMenu {
-    width: 160px; /* Smaller width for tablets/larger phones */
+    width: 45%; /* Smaller width for tablets/larger phones */
     max-height: 70vh; /* Adjust max height relative to viewport */
     padding: 8px; /* Slightly more padding */
   }

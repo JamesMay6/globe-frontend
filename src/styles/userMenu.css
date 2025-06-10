@@ -101,11 +101,12 @@
 @media (max-width: 768px) {
   .topLeftMenu {
     gap: 8px; /* Slightly reduced gap */
+    width:45%;
   }
 
   .buyMenu,
   .upgradesMenu { /* Apply to both main menu components */
-    width: 45%; /* Smaller width for tablets/larger phones */
+    width: 100%; /* Smaller width for tablets/larger phones */
     padding: 8px; /* Slightly more padding for touch */
   }
 
