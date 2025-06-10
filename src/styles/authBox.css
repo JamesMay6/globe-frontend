@@ -1,88 +1,88 @@
-/* Base styles for larger screens (default) */
 .authBox {
   background: #222;
   color: white;
   border-radius: 8px;
-  padding: 5px; /* Default padding */
+  padding: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   gap: 6px;
   z-index: 1000;
-  width: 200px; /* Default width */
+  width: 200px;
   font-family: sans-serif;
-  font-size: 16px; /* Default font size */
-  max-height: 40px; /* Default collapsed height */
+  font-size: 16px;
+  max-height: 40px;
   overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease; /* Add width to transition */
-  box-sizing: border-box; /* Crucial for consistent sizing */
+  transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease;
+  box-sizing: border-box;
 }
 
-/* Expanded state */
 .authBox.expanded {
-  max-height: 400px; /* Default expanded height */
-  padding: 5px; /* Default padding in expanded state */
-  overflow-y: auto; /* Enable scrolling if content exceeds max-height when expanded */
+  max-height: 400px;
+  padding: 5px;
+  overflow-y: auto;
 }
 
-.authBox > button:first-child {
+.authBox:not(.loggedIn) > button:first-child {
   background: #444;
   color: white;
   border: none;
-  padding: 5px; /* Default button padding */
+  padding: 5px;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
   transition: background 0.2s ease;
-  font-size: 16px; /* Ensure button font size is controlled */
+  font-size: 16px;
 }
 
-.authBox > button:first-child:hover {
+.authBox:not(.loggedIn) > button:first-child:hover {
   background: #555;
 }
 
-.authBox > *:not(:first-child) {
+.authBox:not(.loggedIn) > *:not(:first-child) {
   opacity: 1;
   transition: opacity 0.3s ease;
 }
 
-.authBox:not(.expanded) > *:not(:first-child) {
+.authBox:not(.loggedIn):not(.expanded) > *:not(:first-child) {
   opacity: 0;
   pointer-events: none;
   user-select: none;
 }
 
-.authBoxloggedInWrapper {  
+.authBoxloggedInWrapper {
   background: #222;
   color: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  display: flex;
-  gap: 6px;
   z-index: 1000;
-  width: 200px; /* Default width */
+  width: 200px;
   font-family: sans-serif;
-  font-size: 16px; /* Default font size */
-  transition: max-height 0.4s ease, padding 0.4s ease, width 0.4s ease; /* Add width to transition */
-  box-sizing: border-box; 
-  max-height: none; /* Allow height to adapt to content */
-  overflow-y: auto; /* Allow scrolling if content exceeds height */
-  flex-direction: row;
-  gap: 10px; /* Default gap for logged-in state */
-  padding: 5px 8px; /* Slightly more horizontal padding for logged-in state */
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: width 0.4s ease;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
 }
 
 .authBox.loggedIn {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
-  font-weight: bold;
-  color: white;
-  border-radius: 4px;
+  gap: 10px;
   width: 100%;
   background: #444;
-  padding: 6px 5px; /* Default header padding */
+  border-radius: 4px;
+  padding: 6px 5px;
+  font-weight: bold;
+  color: white;
   box-sizing: border-box;
-  font-size: 16px; /* Default header font size */
+  max-height: none;
+  overflow: visible;
+  font-size: 16px;
 }
 
 .authBox.loggedIn > * {
@@ -91,106 +91,119 @@
   user-select: auto !important;
 }
 
-.authBox.loggedIn > button {
-  width: auto;
-  padding: 2px 4px; /* Default logged-in button padding */
-  font-size: 14px; /* Default logged-in button font size */
-}
-
 .authBox.loggedIn > button.logout {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: auto;
   margin-left: auto;
+  font-size: 14px;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
 }
 
-/* --- Mobile-specific styles --- */
+.authBox.loggedIn > button.logout:hover {
+  background: #c82333;
+}
+
 @media (max-width: 768px) {
-  .authBox {
-    width: 100%; /* Smaller width for tablets/larger phones */
-    padding: 6px; /* Slightly more padding for touch */
-    font-size: 14px; /* Smaller base font size */
+  .authBox:not(.loggedIn) {
+    width: 160px;
+    padding: 6px;
+    font-size: 14px;
     height: 36px;
   }
-
-  .authBox.expanded {
-    max-height: 300px; /* Adjust expanded height for smaller screens */
+  .authBox.expanded:not(.loggedIn) {
+    max-height: 300px;
+  }
+  .authBox:not(.loggedIn) > button:first-child {
+    padding: 8px;
+    font-size: 15px;
   }
 
-  .authBox > button:first-child {
-    padding: 8px; /* Larger tap target */
+  .authBoxloggedInWrapper {
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .authBox.loggedIn {
+    gap: 8px;
+    padding: 4px 6px;
+    font-size: 14px;
+  }
+
+  .authBox.loggedIn > button.logout {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .authBox:not(.loggedIn) {
+    width: 140px;
+    padding: 5px;
+    font-size: 13px;
+    height: 36px;
+  }
+  .authBox.expanded:not(.loggedIn) {
+    max-height: 250px;
+  }
+  .authBox:not(.loggedIn) > button:first-child {
+    padding: 7px;
     font-size: 14px;
   }
 
   .authBoxloggedInWrapper {
     width: 100%;
+    padding: 5px;
+    font-size: 13px;
   }
 
   .authBox.loggedIn {
-    gap: 8px; /* Adjust gap for smaller screens */
-    padding: 4px 6px; /* Adjusted padding for logged-in state */
-    font-size: 14px; /* Smaller font for logged-in state */
+    gap: 6px;
+    padding: 3px 5px;
+    font-size: 12px;
   }
 
-  .authBox.loggedIn > button {
-    padding: 3px 6px; /* Adjusted logged-in button padding */
-    font-size: 14px; /* Adjusted logged-in button font size */
-  }
-}
-
-/* --- Even smaller screens (e.g., small phones) --- */
-@media (max-width: 480px) {
-  .authBox {
-    width: 45%; /* Even smaller width */
-    padding: 5px; /* Reduced padding */
-    font-size: 13px; /* Even smaller base font size */
-    height: 36px; /*To align to about Menu */
-
-  }
-
-  .authBox.expanded {
-    max-height: 250px; /* Further adjust expanded height */
-  }
-
-  .authBox > button:first-child {
-    padding: 7px; /* Slightly smaller tap target */
-    font-size: 14px;
-  }
-
-  .authBox.loggedIn {
-    gap: 6px; /* Further adjust gap */
-    padding: 3px 5px; /* Further adjusted padding for logged-in state */
-    font-size: 12px; /* Even smaller font for logged-in state */
-  }
-
-  .authBox.loggedIn > button {
-    padding: 2px 5px; /* Further adjusted logged-in button padding */
-    font-size: 12px; /* Further adjusted logged-in button font size */
+  .authBox.loggedIn > button.logout {
+    padding: 5px 10px;
+    font-size: 12px;
   }
 }
 
-/* Optional: For very narrow screens */
 @media (max-width: 320px) {
-    .authBox {
-        width: 45%; /* Potentially even smaller */
-        padding: 4px;
-        font-size: 12px;
-    }
+  .authBox:not(.loggedIn) {
+    width: 120px;
+    padding: 4px;
+    font-size: 12px;
+    height: 36px;
+  }
+  .authBox.expanded:not(.loggedIn) {
+    max-height: 200px;
+  }
+  .authBox:not(.loggedIn) > button:first-child {
+    padding: 6px;
+    font-size: 13px;
+  }
 
-    .authBox.expanded {
-        max-height: 200px; /* Even smaller expanded height */
-    }
+  .authBoxloggedInWrapper {
+    width: 120px;
+    padding: 4px;
+    font-size: 12px;
+  }
 
-    .authBox > button:first-child {
-        padding: 6px;
-        font-size: 13px;
-    }
+  .authBox.loggedIn {
+    gap: 4px;
+    padding: 2px 4px;
+    font-size: 11px;
+  }
 
-    .authBox.loggedIn {
-        gap: 4px;
-        padding: 2px 4px;
-        font-size: 11px;
-    }
-
-    .authBox.loggedIn > button {
-        padding: 1px 4px;
-        font-size: 11px;
-    }
+  .authBox.loggedIn > button.logout {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
 }
