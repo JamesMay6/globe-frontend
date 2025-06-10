@@ -1,103 +1,206 @@
+/* Base styles for larger screens (default) */
 .aboutMenu-container {
-          position: absolute;
-          width: 200px;
-          top: 10px;
-          right: 10px;
-          background: #222;
-          color: white;
-          border-radius: 8px;
-          overflow: hidden;
-          z-index: 999;
-          font-family: sans-serif;
-          padding: 5px;
-          /*box-shadow: 0 0 10px rgba(0,0,0,0.5);*/
-          font-size: 16px;
-        }
+  position: absolute; /* Remains absolute */
+  width: 200px; /* Default width */
+  top: 10px;
+  right: 10px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  overflow: hidden; /* Important for containing content */
+  z-index: 999;
+  font-family: sans-serif;
+  padding: 5px; /* Default padding */
+  font-size: 16px; /* Default font size for container text if any */
+  box-sizing: border-box; /* Crucial for consistent sizing */
+  transition: width 0.4s ease, padding 0.4s ease; /* Add width to transition */
+}
 
-        .aboutMenu-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-weight: bold;
-          color: white;
-          border-radius: 4px;
-          width: 100%;
-          background: #444;
-          padding: 6px 5px;
-          box-sizing: border-box;
-        }
+.aboutMenu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  width: 100%;
+  background: #444;
+  padding: 6px 5px; /* Default header padding */
+  box-sizing: border-box;
+  font-size: 16px; /* Default header font size */
+}
 
-        .info-button {
-          background: #666;
-          color: white;
-          border: none;
-          border-radius: 50%;
-          width: 18px;
-          height: 18px;
-          min-width: 18px;
-          min-height: 18px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          font-size: 14px;
-          font-weight: bold;
-          transition: background-color 0.2s ease;
-          flex-shrink: 0;
-        }
+.info-button {
+  background: #666;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px; /* Default info button font size */
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
 
-        .info-button:hover {
-          background: #777;
-        }
+.info-button:hover {
+  background: #777;
+}
 
-        .aboutOverlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 1000;
-        }
+/* About Overlay (The modal itself) */
+.aboutOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-        .aboutOverlay-content {
-          background: #fff;
-          color: #000;
-          padding: 30px;
-          border-radius: 10px;
-          max-width: 600px;
-          width: 90%;
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
+.aboutOverlay-content {
+  background: #fff;
+  color: #000;
+  padding: 30px; /* Default padding for the modal content */
+  border-radius: 10px;
+  max-width: 600px; /* Max width for desktop */
+  width: 90%; /* Scales down for smaller screens */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box; /* Ensure padding is included in width */
+  max-height: 90vh; /* Prevent content from overflowing viewport */
+  overflow-y: auto; /* Enable scrolling for long content */
+  font-size: 16px; /* Default font size for modal content */
+}
 
-        .overlay-links {
-          margin: 20px 0;
-        }
+.overlay-links {
+  margin: 20px 0;
+}
 
-        .overlay-links a {
-          color: #007bff;
-          text-decoration: none;
-          font-weight: bold;
-        }
+.overlay-links a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
 
-        .overlay-links a:hover {
-          text-decoration: underline;
-        }
+.overlay-links a:hover {
+  text-decoration: underline;
+}
 
-        .aboutOverlay-content button {
-          background: #007bff;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 16px;
-          margin-top: 10px;
-        }
+.aboutOverlay-content button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
 
-        .aboutOverlay-content button:hover {
-          background: #0056b3;
-        }
+.aboutOverlay-content button:hover {
+  background: #0056b3;
+}
+
+/* --- Mobile-specific styles --- */
+@media (max-width: 768px) {
+  .aboutMenu-container {
+    width: 40%; /* Smaller width for tablets/larger phones */
+    padding: 8px; /* Slightly more padding */
+  }
+
+  .aboutMenu-header {
+    font-size: 14px; /* Smaller header font */
+    padding: 8px 6px;
+  }
+
+  .info-button {
+    width: 20px; /* Slightly larger tap target */
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    font-size: 16px; /* Adjust font size to fit */
+  }
+
+  .aboutOverlay-content {
+    padding: 20px; /* Less padding for smaller screens */
+    width: 95%; /* Take up more width on smaller screens */
+    font-size: 14px; /* Smaller font size for modal content */
+  }
+
+  .aboutOverlay-content button {
+    padding: 8px 15px; /* Smaller button padding */
+    font-size: 14px;
+  }
+}
+
+/* --- Even smaller screens (e.g., small phones) --- */
+@media (max-width: 480px) {
+  .aboutMenu-container {
+    width: 140px; /* Even smaller width */
+    padding: 6px; /* Reduced padding */
+  }
+
+  .aboutMenu-header {
+    font-size: 13px; /* Even smaller header font */
+    padding: 6px 4px;
+  }
+
+  .info-button {
+    width: 22px; /* A bit larger for tiny screens to ensure tapability */
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    font-size: 18px; /* Adjust font size to fit */
+  }
+
+  .aboutOverlay-content {
+    padding: 15px; /* Further reduced padding */
+    font-size: 13px; /* Even smaller font size for modal content */
+  }
+
+  .overlay-links {
+    margin: 15px 0; /* Adjust margin for links */
+  }
+
+  .aboutOverlay-content button {
+    padding: 6px 12px; /* Further reduced button padding */
+    font-size: 13px;
+  }
+}
+
+/* Optional: For very narrow screens, similar to the leaderboard */
+@media (max-width: 320px) {
+    .aboutMenu-container {
+        right: 5px; /* Pull it closer to the edge */
+        top: 5px; /* Pull it closer to the top */
+        width: 120px; /* Potentially even smaller */
+        padding: 4px;
+    }
+
+    .aboutMenu-header {
+        font-size: 12px;
+        padding: 5px 3px;
+    }
+
+    .info-button {
+        width: 24px; /* Ensure tapability on very small screens */
+        height: 24px;
+        min-width: 24px;
+        min-height: 24px;
+        font-size: 20px;
+    }
+
+    .aboutOverlay-content {
+        padding: 10px;
+        font-size: 12px;
+    }
+}
