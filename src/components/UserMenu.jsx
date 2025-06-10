@@ -17,9 +17,7 @@ export default function UserMenu({
   setSuperClickEnabled,
   handleBuyClicks,
   handleUpgradeSuperClick,
-  cooldownMessage,
-  buyMenuOpen,
-  setBuyMenuOpen,
+  cooldownMessage
 }) {
   
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
