@@ -39,7 +39,7 @@ export async function buyClicks(amount) {
 const token = await getAuthToken();
   const FREE_CLICKS = 5; // or import this from your config if available
   if (amount === FREE_CLICKS) {
-    const res = await fetch("/buy-clicks", {
+  const res = await fetch(`${API_URL}/buy-clicks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const token = await getAuthToken();
       throw new Error("Invalid click package");
   }
 
-  const response = await fetch("/create-checkout-session", {
+  const res = await fetch(`${API_URL}/create-checkout-session`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -78,8 +78,8 @@ const token = await getAuthToken();
     body: JSON.stringify({ packageType }),
   });
 
-  const result = await response.json();
-  if (!response.ok) throw new Error(result.error);
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.error);
 
   // 🏁 Redirect to Stripe hosted payment page
   window.location.href = result.url;
