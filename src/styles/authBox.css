@@ -109,10 +109,33 @@
   background: #c82333;
 }
 
-.authBox button {
+.auth-button {
   flex: 1;
-  padding: 5px;
+  background: #444;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
   font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.auth-button:hover {
+  background: #555;
+}
+
+.auth-button.active.login {
+  background: #007bff;
+}
+
+.auth-button.active.register {
+  background: #28a745;
+}
+
+.error {
+  color: #ff4d4f;
+  font-size: 12px;
 }
 
 @media (max-width: 768px) {

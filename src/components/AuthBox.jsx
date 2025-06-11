@@ -126,11 +126,24 @@ export default function AuthBox({
           />
             {errors.password && <small className="error">{errors.password}</small>}
 
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button onClick={() => { setAuthMode("login"); onSubmit(); }}>
+          <div className="auth-buttons">
+            <button
+              className={`auth-button login ${authMode === "login" ? "active" : ""}`}
+              onClick={() => {
+                setAuthMode("login");
+                onSubmit();
+              }}
+            >
               Log In
             </button>
-            <button onClick={() => { setAuthMode("register"); onSubmit(); }}>
+
+            <button
+              className={`auth-button register ${authMode === "register" ? "active" : ""}`}
+              onClick={() => {
+                setAuthMode("register");
+                onSubmit();
+              }}
+            >
               Register
             </button>
           </div>
