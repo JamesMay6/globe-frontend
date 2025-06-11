@@ -106,7 +106,7 @@ export function useAuth() {
           // Both authentication and profile creation succeeded.
           setUser(authData.session.user);
           setUserProfile(profileData); // Set the profile data returned by the RPC
-          onSuccess?.("Registration successful", resetKeyData.plaintext_key);
+          onSuccess?.("Registration successful!", resetKeyData);
           setSkipProfileFetch(false); // Reset on success
 
         } catch (profileCreationCatchError) {
