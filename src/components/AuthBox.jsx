@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { isProfaneUsername, isUsernameCleanServerSide } from "../utils/profanity";
+import "../styles/resetPassword.css";
 
 export default function AuthBox({
   user,
@@ -134,6 +135,20 @@ export default function AuthBox({
               Register
             </button>
           </div>
+          <button onClick={() => setShowResetForm(true)}>
+              Forgot Password? Reset Here
+            </button>
+
+            {showResetForm && (
+              <div className="modal-overlay" onClick={() => setShowResetForm(false)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <ResetPasswordForm
+                    onSuccess={() => setShowResetForm(false)}
+                    onCancel={() => setShowResetForm(false)}
+                  />
+                </div>
+              </div>
+            )}
         </>
       )}
     </div>
