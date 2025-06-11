@@ -109,6 +109,12 @@
   background: #c82333;
 }
 
+.authBox button {
+  flex: 1;
+  padding: 5px;
+  font-size: 14px;
+}
+
 @media (max-width: 768px) {
   .authBox:not(.loggedIn) {
     width: 100%;
