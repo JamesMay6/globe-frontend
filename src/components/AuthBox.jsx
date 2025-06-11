@@ -15,7 +15,6 @@ export default function AuthBox({
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [displayUsername, setDisplayUsername] = useState(username || "");
-  const [resetKey, setResetKey] = useState(null); // NEW
 
   useEffect(() => {
     if (username) setDisplayUsername(username);

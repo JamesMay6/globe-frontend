@@ -33,6 +33,7 @@ export default function App() {
   const [cooldownMessage, setCooldownMessage] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
+  const [resetKey, setResetKey] = useState(null); // NEW
 
   // Honor Order of Hooks
     const {
