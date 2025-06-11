@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadCustomProfanityList, isProfaneUsername } from "../utils/profanity";
+import { isProfaneUsername, isUsernameCleanServerSide } from "../utils/profanity";
 
 export default function AuthBox({
   user,
@@ -13,16 +13,6 @@ export default function AuthBox({
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [displayUsername, setDisplayUsername] = useState(username || "");
-  const [profanityReady, setProfanityReady] = useState(false);
-
-  useEffect(() => {
-    // Load the profanity list once when component mounts
-    async function loadProfanity() {
-      await loadCustomProfanityList();
-      setProfanityReady(true);
-    }
-    loadProfanity();
-  }, []);
 
   useEffect(() => {
     if (username) setDisplayUsername(username);
@@ -36,10 +26,10 @@ export default function AuthBox({
   }, [user, form.username]);
 
   useEffect(() => {
-    if (user) setAuthOpen(false); // close on login
+    if (user) setAuthOpen(false);
   }, [user]);
 
-  const validateForm = () => {
+  const validateForm = async () => {
     const newErrors = { username: "", password: "" };
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
     const usernameVal = form.username;
@@ -47,10 +37,13 @@ export default function AuthBox({
     if (!usernameRegex.test(usernameVal)) {
       newErrors.username =
         "Username must be 3–20 characters: letters, numbers, or underscores.";
-    } else if (profanityReady && isProfaneUsername(usernameVal)) {
+    } else if (isProfaneUsername(usernameVal)) {
       newErrors.username = "Please choose a more appropriate username.";
-    } else if (!profanityReady) {
-      newErrors.username = "Checking username, please wait...";
+    } else {
+      const isClean = await isUsernameCleanServerSide(usernameVal);
+      if (!isClean) {
+        newErrors.username = "This username is not allowed.";
+      }
     }
 
     if (form.mode === "register" && form.password.length < 6) {
@@ -61,11 +54,11 @@ export default function AuthBox({
     return !newErrors.username && !newErrors.password;
   };
 
-  const onSubmit = (mode) => {
-    // Update mode in form state so validation can check
+  const onSubmit = async (mode) => {
     setForm((f) => ({ ...f, mode }));
 
-    if (!validateForm()) return;
+    const isValid = await validateForm();
+    if (!isValid) return;
 
     handleAuth(
       form,
@@ -76,7 +69,6 @@ export default function AuthBox({
   };
 
   if (user) {
-    // Logged in UI
     return (
       <div className="authBoxloggedInWrapper">
         <div className="authBox loggedIn">
@@ -89,7 +81,6 @@ export default function AuthBox({
     );
   }
 
-  // Logged out UI
   return (
     <div className={`authBox ${authOpen ? "expanded" : ""}`}>
       <button onClick={() => setAuthOpen(!authOpen)}>
@@ -103,7 +94,6 @@ export default function AuthBox({
             placeholder="Username"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
-            disabled={!profanityReady}
           />
           {errors.username && <small className="error">{errors.username}</small>}
 
@@ -116,19 +106,10 @@ export default function AuthBox({
           {errors.password && <small className="error">{errors.password}</small>}
 
           <div className="auth-buttons">
-            <button
-              className="auth-button login"
-              onClick={() => onSubmit("login")}
-              disabled={!profanityReady}
-            >
+            <button className="auth-button login" onClick={() => onSubmit("login")}>
               Log In
             </button>
-
-            <button
-              className="auth-button register"
-              onClick={() => onSubmit("register")}
-              disabled={!profanityReady}
-            >
+            <button className="auth-button register" onClick={() => onSubmit("register")}>
               Register
             </button>
           </div>
