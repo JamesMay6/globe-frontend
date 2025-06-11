@@ -8,9 +8,13 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   const [username, setUsername] = useState("");
   const [isError, setIsError] = useState(false);
 
-const handleReset = async () => {
-  // ... your existing validation checks
+  const handleWordChange = (index, value) => {
+    const updated = [...keyWords];
+    updated[index] = value.replace(/[^a-zA-Z-]/g, "").toLowerCase();
+    setKeyWords(updated);
+  };
 
+const handleReset = async () => {
   if (!username) {
     setMessage("Please enter your username.");
     setIsError(true);
