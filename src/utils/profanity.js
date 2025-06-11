@@ -4,26 +4,7 @@ import { SUPABASE } from "../config/config";
 
 const filter = new Filter();
 
-let customWordsLoaded = false;
-
-export async function loadCustomProfanityList() {
-  if (customWordsLoaded) return; // Avoid reloading
-
-  const { data, error } = await SUPABASE.from("banned_words").select("word");
-
-  if (error) {
-    console.error("Failed to load custom profanity list:", error);
-    return;
-  }
-
-  const customWords = data.map((row) => row.word);
-  filter.addWords(...customWords);
-  customWordsLoaded = true;
-}
-
 export function isProfaneUsername(username) {
-  if (!customWordsLoaded) return false; // or true to block until loaded
-
   const lower = username.toLowerCase();
   const stripped = lower.replace(/[0-9_]+/g, "");
 
@@ -36,4 +17,15 @@ export function isProfaneUsername(username) {
   }
 
   return false;
+}
+
+export async function isUsernameCleanServerSide(username) {
+  const { data, error } = await SUPABASE.rpc("check_username_clean", { username });
+
+  if (error) {
+    console.error("Server profanity check failed:", error);
+    return false; // fallback to blocking if there's an issue
+  }
+
+  return data === true;
 }
