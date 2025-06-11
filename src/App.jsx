@@ -115,6 +115,7 @@ export default function App() {
           showMessage={showMessage}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
+          resetKey={resetKey}
           setResetKey={setResetKey}
         />
 

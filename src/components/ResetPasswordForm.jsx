@@ -58,11 +58,10 @@ const handleReset = async () => {
 
   return (
     <div>
-      <p>
-        Please enter your saved 5-word secret key and your new password below.
-        If the key is correct, your password will be updated.
-        3 incorrect attempts to reset your password and your account will be permanently locked out. 
-      </p>
+      <p>Please enter your saved 5-word secret key and your new password below.</p>
+      <p>If the key is correct, your password will be updated.</p>
+      <p>3 incorrect attempts to reset your password and your account will be permanently locked out. </p>
+      
       <input
         type="text"
         value={username}
