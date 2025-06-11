@@ -86,13 +86,13 @@ export function useAuth() {
           }
 
           // ✅ Call reset key generator after profile creation succeeds
-          const { data: resetKeyData, error: resetKeyError } = await SUPABASE.rpc('generate_reset_key_rpc', {
+          const { data: resetKeyData, error: resetKeyError } = await SUPABASE.rpc('generate_reset_key', {
             p_user_id: authData.user.id
           });
 
           if (resetKeyError) {
-            console.error("RPC generate_reset_key_rpc error:", resetKeyError);
-            onError?.("Profile created, but secret reset key generation failed. Contact support.");
+            console.error("RPC generate_reset_key error:", resetKeyError);
+            onError?.("Profile created, but secret reset key generation failed");
 
             // Sign the user out to avoid ghost accounts with no usable reset key
             const { error: signOutError } = await SUPABASE.auth.signOut();

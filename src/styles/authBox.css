@@ -164,21 +164,39 @@
     font-size: 8px;
 }
 
-.reset-key-display {
-  background-color: #fff5cc;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ffd700;
-  margin-top: 1rem;
-  font-size: 0.95rem;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  max-width: 90%;
+  width: 400px;
+  text-align: center;
 }
 
 .reset-key-value {
   font-family: monospace;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  background: #f4f4f4;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 1rem 0;
   word-break: break-word;
-  margin: 0.5rem 0;
 }
+
 
 @media (max-width: 768px) {
   .authBox:not(.loggedIn) {
