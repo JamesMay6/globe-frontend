@@ -214,7 +214,6 @@ export default function CesiumViewer({
           input.style.whiteSpace = "nowrap";
           input.style.overflow = "hidden";
           input.style.textOverflow = "ellipsis";
-          input.style.maxWidth = "200px"; // adjust as needed
         }
       }, 500); 
 
