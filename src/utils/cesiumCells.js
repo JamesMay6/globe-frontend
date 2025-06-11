@@ -6,7 +6,7 @@ const fetchedBounds = new Set();
 
 export const drawDeletedCell = (viewer, lat, lon) => {
   const cellWidth = 0.001;
-  const padding = 0.0001;
+  const padding = 0.00008;
   const rectangle = Cesium.Rectangle.fromDegrees(
     lon - padding,
     lat - padding,
@@ -25,6 +25,7 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
 const drawnCells = new Set();
 
+/*
 export const drawDeletedCells = (viewer, cells) => {
   const instances = [];
 
@@ -34,7 +35,7 @@ export const drawDeletedCells = (viewer, cells) => {
     drawnCells.add(key);
 
     const cellWidth = 0.001;
-    const padding = 0.0001;
+    const padding = 0.00008;
     const rectangle = Cesium.Rectangle.fromDegrees(
       lon - padding,
       lat - padding,
@@ -62,6 +63,65 @@ export const drawDeletedCells = (viewer, cells) => {
         geometryInstances: instances,
         appearance: new Cesium.PerInstanceColorAppearance(),
         classificationType: Cesium.ClassificationType.BOTH,
+      })
+    );
+  }
+};
+*/
+// Extruded Version
+export const drawDeletedCells = (viewer, cells) => {
+  const instances = [];
+
+  for (const { lat, lon } of cells) {
+    const key = `${lat}:${lon}`;
+    if (drawnCells.has(key)) continue;
+    drawnCells.add(key);
+
+    const cellWidth = 0.001;
+    const padding = 0.00008;
+
+    // Define rectangle corners as positions (Cartesian3 points)
+    const west = lon - padding;
+    const south = lat - padding;
+    const east = lon + cellWidth + padding;
+    const north = lat + cellWidth + padding;
+
+    // Convert to Cartesian3 coordinates (ground level)
+    const positions = Cesium.Cartesian3.fromDegreesArray([
+      west, south,
+      east, south,
+      east, north,
+      west, north,
+    ]);
+
+    // Height in meters for extrusion
+    const extrudeHeight = 100; // small extrusion of 100 meters
+
+    instances.push(
+      new Cesium.GeometryInstance({
+        geometry: new Cesium.PolygonGeometry({
+          polygonHierarchy: new Cesium.PolygonHierarchy(positions),
+          extrudedHeight: extrudeHeight,
+          vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+        }),
+        attributes: {
+          color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+            Cesium.Color.BLACK.withAlpha(1.0)
+          ),
+        },
+      })
+    );
+  }
+
+  if (instances.length > 0) {
+    viewer.scene.primitives.add(
+      new Cesium.Primitive({
+        geometryInstances: instances,
+        appearance: new Cesium.PerInstanceColorAppearance({
+          flat: true,
+          translucent: false,
+        }),
+        asynchronous: false,
       })
     );
   }
