@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { isProfaneUsername, isUsernameCleanServerSide } from "../utils/profanity";
 import "../styles/resetPassword.css";
+import ResetPasswordForm from './ResetPasswordForm';
 
 export default function AuthBox({
   user,
@@ -137,7 +138,7 @@ export default function AuthBox({
               Register
             </button>
           </div>
-          <button onClick={() => setShowResetForm(true)}>
+          <button className="resetPasswordButton" onClick={() => setShowResetForm(true)}>
               Forgot Password? Reset Here
             </button>
 
