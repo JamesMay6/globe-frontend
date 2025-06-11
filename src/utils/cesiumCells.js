@@ -90,7 +90,7 @@ export const fetchDeletedCells = async (viewer) => {
 
   fetchedBounds.add(cacheKey);
 
-  const batchSize = 10000;
+  const batchSize = 1000;
   let lastLat = null;
   let lastLon = null;
   let totalFetched = 0;
