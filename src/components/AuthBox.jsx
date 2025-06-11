@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadCustomProfanityList, isProfaneUsername } from "./profanity";
+import { loadCustomProfanityList, isProfaneUsername } from "../utils/profanity";
 
 export default function AuthBox({
   user,

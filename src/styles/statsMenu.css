@@ -41,7 +41,7 @@
   }
 
   .statsMenu button {
-    padding: 10px 8px; /* Larger tap target */
+    padding: 6px; /* Larger tap target */
     font-size: 15px;
   }
 
