@@ -15,6 +15,8 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   };
 
 const handleReset = async () => {
+  const resetKey = keyWords.join("-");
+
   if (!username) {
     setMessage("Please enter your username.");
     setIsError(true);
