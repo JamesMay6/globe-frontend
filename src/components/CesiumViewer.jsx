@@ -215,7 +215,7 @@ export default function CesiumViewer({
           input.style.overflow = "hidden";
           input.style.textOverflow = "ellipsis";
         }
-      }, 500); 
+      }, 300); 
 
       viewer.camera.moveEnd.addEventListener(() =>
         fetchDeletedCells(viewer)
