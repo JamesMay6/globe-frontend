@@ -200,8 +200,23 @@ export default function CesiumViewer({
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
 
-
       await fetchDeletedCells(viewer);
+
+      setTimeout(() => {
+        const input = document.querySelector(".cesium-geocoder-input");
+        if (input) {
+          input.addEventListener("focus", (e) => {
+            const val = e.target.value;
+            e.target.value = "";
+            e.target.value = val;
+          });
+
+          input.style.whiteSpace = "nowrap";
+          input.style.overflow = "hidden";
+          input.style.textOverflow = "ellipsis";
+          input.style.maxWidth = "200px"; // adjust as needed
+        }
+      }, 500); 
 
       viewer.camera.moveEnd.addEventListener(() =>
         fetchDeletedCells(viewer)
