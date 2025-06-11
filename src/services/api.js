@@ -28,20 +28,6 @@ async function getAuthToken() {
   return data.session.access_token;
 }
 
-/*
-export async function buyClicks(amount) {
-const token = await getAuthToken();
-  const res = await fetch(`${API_URL}/buy-clicks`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ amount }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Purchase failed");
-  return data;
-}
-*/
-
 export async function buyClicks(amount) {
 const token = await getAuthToken();
   if (amount === FREE_CLICKS) {
