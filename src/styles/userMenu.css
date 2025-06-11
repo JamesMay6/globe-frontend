@@ -73,7 +73,7 @@
 }
 
 .superClickButton {
-  background-color: #ff5722;
+  background-color: #9f8600 !important;
   color: white;
   padding: 0.6rem 1.2rem; /* Using rem for padding for better scaling */
   border: none;
@@ -107,8 +107,8 @@
 
   .buyMenu button,
   .upgradesMenu button {
-    padding: 6px; /* Larger tap target */
-    font-size: 15px;
+    padding: 5px; /* Larger tap target */
+    font-size: 14px;
   }
 
   .buyContent {
@@ -116,7 +116,7 @@
   }
 
   .superClickButton {
-    padding: 6px;
+    padding: 5px;
     font-size: 14px; /* Adjust font size */
   }
 
