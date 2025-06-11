@@ -28,7 +28,8 @@ export default function AboutMenu() {
             <br />
             <h3>Delete the Earth Coin - Coming Soon</h3>
             <p>
-              As part of deleting the earth, you will be rewarded with DTE (Delete The Earth) coin so the more you delete, the more rewards you get!
+              When you delete the Earth you will be rewarded with DTE (Delete The Earth) coin so the more you delete, the more rewards you get! 
+              Rewards will be issued out on a daily schedule into your linked DTE wallet. The reward value is ... TBC
             </p>
             <div className="overlay-links">
               <a href="/terms.html" target="_blank" rel="noopener noreferrer">
