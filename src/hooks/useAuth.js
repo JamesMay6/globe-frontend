@@ -43,7 +43,7 @@ export function useAuth() {
     }
   }, [user]);
 
-  const handleAuth = async (form, authMode, onSuccess, onError) => {
+  const handleAuth = async (form, authMode, onSuccess, onError, setResetKey) => {
     const email = fakeEmail(form.username);
 
     try {
@@ -106,7 +106,7 @@ export function useAuth() {
           // Both authentication and profile creation succeeded.
           setUser(authData.session.user);
           setUserProfile(profileData); // Set the profile data returned by the RPC
-          onSuccess?.("Registration successful!", resetKeyData.reset_key); // <-- pass it here
+          onSuccess?.("Registration successful", resetKeyData.plaintext_key);
           setSkipProfileFetch(false); // Reset on success
 
         } catch (profileCreationCatchError) {
