@@ -15,6 +15,7 @@ export default function AuthBox({
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [displayUsername, setDisplayUsername] = useState(username || "");
+  const [resetKey, setResetKey] = useState(null); // NEW
 
   useEffect(() => {
     if (username) setDisplayUsername(username);
@@ -56,6 +57,7 @@ export default function AuthBox({
     return !newErrors.username && !newErrors.password;
   };
 
+  
   const onSubmit = async (mode) => {
     setForm((f) => ({ ...f, mode }));
 
@@ -65,7 +67,13 @@ export default function AuthBox({
     handleAuth(
       form,
       mode,
-      (msg) => showMessage(msg, "success"),
+      (msg, resetKeyReturned) => {
+        showMessage(msg, "success");
+
+        if (resetKeyReturned) {
+          setResetKey(resetKeyReturned); // store it temporarily to show to the user
+        }
+      },
       (err) => showMessage(err, "error")
     );
   };
@@ -84,6 +92,7 @@ export default function AuthBox({
   }
 
   return (
+    <>
     <div className={`authBox ${authOpen ? "expanded" : ""}`}>
       <button onClick={() => setAuthOpen(!authOpen)}>
         {authOpen ? "Hide Login / Register ▲" : "Show Login / Register ▼"}
@@ -128,5 +137,16 @@ export default function AuthBox({
         </>
       )}
     </div>
+    {resetKey && (
+      <div className="reset-key-display">
+        <p className="reset-key-title">Your account recovery key:</p>
+        <p className="reset-key-value"><code>{resetKey}</code></p>
+        <p className="reset-key-note">
+          Save this key in a secure place — you’ll need it to reset your password.
+        </p>
+        <button onClick={() => setResetKey(null)}>Dismiss</button>
+      </div>
+    )}
+    </>
   );
 }
