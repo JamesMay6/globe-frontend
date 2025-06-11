@@ -95,7 +95,7 @@
   background: #dc3545;
   color: white;
   border: none;
-  padding: 5px 10px;
+  padding: 5px 8px;
   border-radius: 4px;
   cursor: pointer;
   width: auto;
@@ -137,11 +137,6 @@
 
 .auth-button.active.register {
   background: #28a745;
-}
-
-.error {
-  color: #ff4d4f;
-  font-size: 12px;
 }
 
 @media (max-width: 768px) {
