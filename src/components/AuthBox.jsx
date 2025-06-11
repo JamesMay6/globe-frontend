@@ -10,7 +10,8 @@ export default function AuthBox({
   handleLogout,
   showMessage,
   showPassword,
-  setShowPassword
+  setShowPassword,
+  setResetKey
 }) {
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
