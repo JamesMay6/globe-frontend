@@ -15,6 +15,8 @@ import AuthBox from "./components/AuthBox";
 import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
+import ResetKeyModal from './components/ResetKeyModal';
+
 //css
 import "./styles/aboutMenu.css";
 import "./styles/toast.css";
@@ -110,6 +112,7 @@ export default function App() {
           showMessage={showMessage}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
+          setResetKey={setResetKey}
         />
 
         {user && (
@@ -132,6 +135,7 @@ export default function App() {
         <StatsMenu />
         <AboutMenu />
         <Leaderboard />
+        <ResetKeyModal resetKey={resetKey} onClose={() => setResetKey(null)} />
 
     </>
   );

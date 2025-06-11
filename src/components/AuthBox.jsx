@@ -98,19 +98,6 @@ export default function AuthBox({
         {authOpen ? "Hide Login / Register ▲" : "Show Login / Register ▼"}
       </button>
 
-      {resetKey && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Your account recovery key</h2>
-            <p className="reset-key-value"><code>{resetKey}</code></p>
-            <p className="reset-key-note">
-              Please save this key in a secure place — you’ll need it to reset your password.
-            </p>
-            <button onClick={() => setResetKey(null)}>Got it</button>
-          </div>
-        </div>
-      )}
-
       {authOpen && (
         <>
           <input
