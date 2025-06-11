@@ -171,7 +171,7 @@ export default function CesiumViewer({
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
       const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Sentinal
+      const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
       //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954); //Sentinal
 
       // Initialize the Cesium Viewer

@@ -1,55 +1,50 @@
-// hooks/useUserProfile.js
-import { useState, useEffect, useCallback } from "react";
+// inside useUserProfile.js (likely a custom hook)
+import { useEffect, useState } from "react";
 
 export function useUserProfile(user, fetchUserProfile) {
   const [username, setUsername] = useState("");
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
-  const [superClickEnabled, setSuperClickEnabled] = useState(0);
+  const [superClickEnabled, setSuperClickEnabled] = useState(false);
 
-  const updateProfileFromData = useCallback((data) => {
-    if (data) {
-      setUsername(data.username || "");
-      setClicksTotal(data.clicks_total || 0);
-      setClicksUsed(data.clicks_used || 0);
-      setSuperClicks(data.super_clicks || 0);
-    }
-  }, []);
+  const updateProfileFromData = (data) => {
+    if (!data) return;
+    setUsername(data.username || "");
+    setClicksTotal(data.clicks_total || 0);
+    setClicksUsed(data.clicks_used || 0);
+    setSuperClicks(data.super_clicks || 0);
+  };
 
-  const loadProfile = useCallback(async () => {
-    if (user && fetchUserProfile) {
-      try {
-        const data = await fetchUserProfile();
-        updateProfileFromData(data);
-      } catch (err) {
-        console.error("❌ Error in profile fetch:", err);
-      }
-    }
-  }, [user, fetchUserProfile, updateProfileFromData]);
+  const loadProfile = async () => {
+    const data = await fetchUserProfile();
+    updateProfileFromData(data);
+  };
 
   useEffect(() => {
-    if (user && fetchUserProfile) {
-      loadProfile();
+    if (user?.id) {
+      loadProfile(); // re-fetch when user changes
     } else {
+      // clear state on logout
+      setUsername("");
+      setClicksTotal(0);
+      setClicksUsed(0);
+      setSuperClicks(0);
     }
-  }, [user, fetchUserProfile, loadProfile]);
-
-  useEffect(() => {
-  }, [user, username]);
+  }, [user]);
 
   return {
     username,
     clicksTotal,
     clicksUsed,
     superClicks,
+    superClickEnabled,
     setUsername,
     setClicksTotal,
     setClicksUsed,
     setSuperClicks,
-    superClickEnabled,
     setSuperClickEnabled,
     updateProfileFromData,
-    loadProfile, // Export this for manual refresh
+    loadProfile,
   };
 }

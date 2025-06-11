@@ -128,10 +128,15 @@ export function useAuth() {
   };
 
   const handleLogout = async () => {
+  try {
     await SUPABASE.auth.signOut();
-    setUser(null);
-    setUserProfile(null);
-  };
+  } catch (err) {
+    console.error("Logout error:", err);
+  }
+
+  setUser(null);
+  setUserProfile(null);
+};
 
   useEffect(() => {
     const initSession = async () => {
