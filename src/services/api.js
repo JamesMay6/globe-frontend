@@ -79,7 +79,6 @@ const token = await getAuthToken();
   return {}; 
 }
 
-
 export async function upgradeSuperClick() {
 const token = await getAuthToken();
   const res = await fetch(`${API_URL}/profile/upgrade-super-click`, {

@@ -15,7 +15,7 @@ export function useSuperClickUpgrade(fetchUserProfile, onSuccess) {
       }
     } catch (err) {
       console.error(err);
-      showMessage("Upgrade failed", "error");
+      showMessage(err.message || "Upgrade failed", "error");
     }
   }
 
