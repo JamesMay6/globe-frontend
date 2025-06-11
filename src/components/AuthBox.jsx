@@ -77,11 +77,11 @@ export default function AuthBox({
   };
 
 
-  const onSubmit = () => {
+  const onSubmit = (mode) => {
     if (!validateForm()) return;
     handleAuth(
       form,
-      authMode,
+      mode,
       (msg) => showMessage(msg, "success"),
       (err) => showMessage(err, "error")
     );
@@ -128,21 +128,15 @@ export default function AuthBox({
 
           <div className="auth-buttons">
             <button
-              className={`auth-button login ${authMode === "login" ? "active" : ""}`}
-              onClick={() => {
-                setAuthMode("login");
-                onSubmit();
-              }}
+              className={`auth-button login`}
+              onClick={() => onSubmit("login")}
             >
               Log In
             </button>
 
             <button
-              className={`auth-button register ${authMode === "register" ? "active" : ""}`}
-              onClick={() => {
-                setAuthMode("register");
-                onSubmit();
-              }}
+              className={`auth-button register`}
+              onClick={() => onSubmit("register")}
             >
               Register
             </button>

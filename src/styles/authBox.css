@@ -109,6 +109,12 @@
   background: #c82333;
 }
 
+.auth-buttons {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
 .auth-button {
   flex: 1;
   background: #444;
