@@ -139,7 +139,7 @@ export default function AuthBox({
             </button>
           </div>
           <button className="resetPasswordButton" onClick={() => setShowResetForm(true)}>
-              Forgot Password? Reset Here
+              Forgot Password?
             </button>
 
             {showResetForm && (

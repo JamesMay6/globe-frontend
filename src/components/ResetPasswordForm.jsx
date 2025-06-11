@@ -6,28 +6,26 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState(null);
   const [username, setUsername] = useState("");
+  const [isError, setIsError] = useState(false);
 
-  const handleWordChange = (index, value) => {
-    const updated = [...keyWords];
-    updated[index] = value.replace(/[^a-zA-Z-]/g, "").toLowerCase();
-    setKeyWords(updated);
-  };
-
-  const handleReset = async () => {
-  const resetKey = keyWords.join("-");
+const handleReset = async () => {
+  // ... your existing validation checks
 
   if (!username) {
     setMessage("Please enter your username.");
+    setIsError(true);
     return;
   }
 
   if (keyWords.some((word) => word.length === 0)) {
     setMessage("Please fill all 5 words of the reset key.");
+    setIsError(true);
     return;
   }
 
   if (newPassword.length < 6) {
     setMessage("Please enter a new password of at least 6 characters.");
+    setIsError(true);
     return;
   }
 
@@ -38,18 +36,28 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   });
 
   if (error) {
-    setMessage(error.message);
-  } else {
-    setMessage("Password reset successful!");
-    onSuccess?.();
-  }
-  };
+  // RPC/network error
+  setMessage(error.message);
+  setIsError(true);
+} else if (!data?.success) {
+  // RPC succeeded but logical failure (like invalid key)
+  setMessage(data.error || "Unknown error");
+  setIsError(true);
+} else {
+  // Actual success
+  setMessage("Password reset successful!");
+  setIsError(false);
+  onSuccess?.();
+}
+};
+
 
   return (
     <div>
       <p>
         Please enter your saved 5-word secret key and your new password below.
         If the key is correct, your password will be updated.
+        3 incorrect attempts to reset your password and your account will be permanently locked out. 
       </p>
       <input
         type="text"
@@ -77,7 +85,12 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
         placeholder="New Password"
       />
       <button onClick={handleReset}>Reset Password</button>
-      {message && <p>{message}</p>}
+      {message && (
+        <p style={{ color: isError ? "red" : "green", fontWeight: "bold" }}>
+          {message}
+        </p>
+      )}
+
     </div>
   );
 }
