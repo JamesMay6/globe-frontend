@@ -1,35 +1,9 @@
-// components/AuthBox.jsx
 import { useState, useEffect } from "react";
-import { Filter } from "bad-words";
-
-const filter = new Filter();
-
-function isProfaneUsername(username) {
-  const lower = username.toLowerCase();
-
-  // Remove digits and underscores
-  const stripped = lower.replace(/[0-9_]+/g, "");
-
-  // Direct whole username check
-  if (filter.isProfane(lower)) return true;
-
-  // Check stripped username (e.g. "jamescunt")
-  if (filter.isProfane(stripped)) return true;
-
-  // Check each substring split by digits/underscores
-  const parts = lower.split(/[\d_]+/);
-  for (const part of parts) {
-    if (filter.isProfane(part)) return true;
-  }
-
-  return false;
-}
+import { loadCustomProfanityList, isProfaneUsername } from "./profanity";
 
 export default function AuthBox({
   user,
   username,
-  setAuthMode,
-  authMode,
   form,
   setForm,
   handleAuth,
@@ -39,11 +13,19 @@ export default function AuthBox({
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [displayUsername, setDisplayUsername] = useState(username || "");
+  const [profanityReady, setProfanityReady] = useState(false);
 
   useEffect(() => {
-    if (username) {
-      setDisplayUsername(username);
+    // Load the profanity list once when component mounts
+    async function loadProfanity() {
+      await loadCustomProfanityList();
+      setProfanityReady(true);
     }
+    loadProfanity();
+  }, []);
+
+  useEffect(() => {
+    if (username) setDisplayUsername(username);
   }, [username]);
 
   useEffect(() => {
@@ -63,12 +45,15 @@ export default function AuthBox({
     const usernameVal = form.username;
 
     if (!usernameRegex.test(usernameVal)) {
-      newErrors.username = "Username must be 3–20 characters: letters, numbers, or underscores.";
-    } else if (isProfaneUsername(usernameVal)) {
+      newErrors.username =
+        "Username must be 3–20 characters: letters, numbers, or underscores.";
+    } else if (profanityReady && isProfaneUsername(usernameVal)) {
       newErrors.username = "Please choose a more appropriate username.";
+    } else if (!profanityReady) {
+      newErrors.username = "Checking username, please wait...";
     }
 
-    if (authMode === "register" && form.password.length < 6) {
+    if (form.mode === "register" && form.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters.";
     }
 
@@ -76,9 +61,12 @@ export default function AuthBox({
     return !newErrors.username && !newErrors.password;
   };
 
-
   const onSubmit = (mode) => {
+    // Update mode in form state so validation can check
+    setForm((f) => ({ ...f, mode }));
+
     if (!validateForm()) return;
+
     handleAuth(
       form,
       mode,
@@ -88,20 +76,20 @@ export default function AuthBox({
   };
 
   if (user) {
-    // ---------- Logged In State ----------
+    // Logged in UI
     return (
       <div className="authBoxloggedInWrapper">
-      <div className="authBox loggedIn">
-        <span>Hi {displayUsername}</span>
-        <button className="logout" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
+        <div className="authBox loggedIn">
+          <span>Hi {displayUsername}</span>
+          <button className="logout" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
     );
   }
 
-  // ---------- Unauthenticated State ----------
+  // Logged out UI
   return (
     <div className={`authBox ${authOpen ? "expanded" : ""}`}>
       <button onClick={() => setAuthOpen(!authOpen)}>
@@ -115,8 +103,9 @@ export default function AuthBox({
             placeholder="Username"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
+            disabled={!profanityReady}
           />
-            {errors.username && <small className="error">{errors.username}</small>}
+          {errors.username && <small className="error">{errors.username}</small>}
 
           <input
             type="password"
@@ -124,19 +113,21 @@ export default function AuthBox({
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
-            {errors.password && <small className="error">{errors.password}</small>}
+          {errors.password && <small className="error">{errors.password}</small>}
 
           <div className="auth-buttons">
             <button
-              className={`auth-button login`}
+              className="auth-button login"
               onClick={() => onSubmit("login")}
+              disabled={!profanityReady}
             >
               Log In
             </button>
 
             <button
-              className={`auth-button register`}
+              className="auth-button register"
               onClick={() => onSubmit("register")}
+              disabled={!profanityReady}
             >
               Register
             </button>
