@@ -154,10 +154,12 @@
 .password-toggle-icon {
   position: absolute;
   right: 0.5rem;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   cursor: pointer;
   user-select: none;
+  opacity: 0.6;
+  font-size: 8px;
 }
 
 @media (max-width: 768px) {

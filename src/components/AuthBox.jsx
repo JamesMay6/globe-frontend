@@ -107,14 +107,13 @@ export default function AuthBox({
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               className="password-input"
             />
-            {!showPassword && (
-              <span
-                className="password-toggle-icon"
-                onClick={() => setShowPassword(true)}
-              >
-                👁️
-              </span>
-            )}
+            <span
+              className="password-toggle-icon"
+              onClick={() => setShowPassword((prev) => !prev)}
+              title={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? "hide" : "show"}
+            </span>
           </div>
           {errors.password && <small className="error">{errors.password}</small>}
 
