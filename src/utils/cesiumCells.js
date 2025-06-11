@@ -25,6 +25,7 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
 const drawnCells = new Set();
 
+/* GROUND PRIMITIVE ONLY 
 export const drawDeletedCells = (viewer, cells) => {
   const instances = [];
 
@@ -66,6 +67,84 @@ export const drawDeletedCells = (viewer, cells) => {
     );
   }
 };
+*/
+
+/* GROUND PRIMITVE AND PRIMITVE */
+export const drawDeletedCells = (viewer, cells) => {
+  const groundInstances = [];
+  const floatingInstances = [];
+
+  for (const { lat, lon } of cells) {
+    const key = `${lat}:${lon}`;
+    if (drawnCells.has(key)) continue;
+    drawnCells.add(key);
+
+    const cellWidth = 0.001;
+    const padding = 0.00008;
+
+    const west = lon - padding;
+    const south = lat - padding;
+    const east = lon + cellWidth + padding;
+    const north = lat + cellWidth + padding;
+
+    const rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
+
+    // GroundPrimitive instance (clamped to terrain)
+    groundInstances.push(
+      new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle,
+          vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT,
+        }),
+        attributes: {
+          color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+            Cesium.Color.BLACK.withAlpha(0.8)
+          ),
+        },
+      })
+    );
+
+    // Floating Primitive instance (slightly above terrain)
+    floatingInstances.push(
+      new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle,
+          height: 2.0, // 2 meters above terrain
+          vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+        }),
+        attributes: {
+          color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+            Cesium.Color.BLACK.withAlpha(1.0)
+          ),
+        },
+      })
+    );
+  }
+
+  if (groundInstances.length > 0) {
+    viewer.scene.primitives.add(
+      new Cesium.GroundPrimitive({
+        geometryInstances: groundInstances,
+        appearance: new Cesium.PerInstanceColorAppearance(),
+        classificationType: Cesium.ClassificationType.BOTH,
+      })
+    );
+  }
+
+  if (floatingInstances.length > 0) {
+    viewer.scene.primitives.add(
+      new Cesium.Primitive({
+        geometryInstances: floatingInstances,
+        appearance: new Cesium.PerInstanceColorAppearance({
+          flat: true,
+          translucent: false,
+        }),
+        asynchronous: false,
+      })
+    );
+  }
+};
+
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
   const round = (x) => Math.floor(x * 100) / 100; // 3 decimal places
