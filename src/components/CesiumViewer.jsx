@@ -171,13 +171,13 @@ export default function CesiumViewer({
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
       const terrainProvider = await Cesium.createWorldTerrainAsync();
-      const sentinelImageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954);
-
+      const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Sentinal
+      //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954); //Sentinal
 
       // Initialize the Cesium Viewer
       viewer = new Cesium.Viewer(containerRef.current, {
         terrainProvider: terrainProvider,
-        baseLayer: new Cesium.ImageryLayer(sentinelImageryProvider),
+        baseLayer: new Cesium.ImageryLayer(imageryProvider),
         animation: false,
         timeline: false,
         baseLayerPicker: false,
