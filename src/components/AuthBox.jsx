@@ -126,13 +126,14 @@ export default function AuthBox({
           />
             {errors.password && <small className="error">{errors.password}</small>}
 
-          <button onClick={onSubmit}>
-            {authMode === "login" ? "Log In" : "Register"}
-          </button>
-
-          <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
-            Switch to {authMode === "login" ? "Register" : "Login"}
-          </button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button onClick={() => { setAuthMode("login"); onSubmit(); }}>
+              Log In
+            </button>
+            <button onClick={() => { setAuthMode("register"); onSubmit(); }}>
+              Register
+            </button>
+          </div>
         </>
       )}
     </div>
