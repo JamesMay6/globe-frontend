@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { SUPABASE } from "../config/config";
 
-export default function ResetPasswordForm({ onSuccess }) {
-  // store 5 words separately, initially empty strings
+export default function ResetPasswordForm({ userId, onSuccess }) {
   const [keyWords, setKeyWords] = useState(["", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState(null);
 
-  // update a single word at index
   const handleWordChange = (index, value) => {
     const updated = [...keyWords];
-    // sanitize input: only allow letters, lowercase recommended
     updated[index] = value.replace(/[^a-zA-Z-]/g, "").toLowerCase();
     setKeyWords(updated);
   };
 
   const handleReset = async () => {
-    // join with dashes before sending
     const resetKey = keyWords.join("-");
 
     if (keyWords.some((word) => word.length === 0)) {
@@ -29,7 +25,13 @@ export default function ResetPasswordForm({ onSuccess }) {
       return;
     }
 
+    if (!userId) {
+      setMessage("User ID is required.");
+      return;
+    }
+
     const { data, error } = await SUPABASE.rpc("verify_reset_key", {
+      user_id: userId,
       input_key: resetKey,
       new_password: newPassword,
     });
