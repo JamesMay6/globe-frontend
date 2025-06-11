@@ -5,6 +5,7 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   const [keyWords, setKeyWords] = useState(["", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState(null);
+  const [username, setUsername] = useState("");
 
   const handleWordChange = (index, value) => {
     const updated = [...keyWords];
@@ -13,35 +14,35 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   };
 
   const handleReset = async () => {
-    const resetKey = keyWords.join("-");
+  const resetKey = keyWords.join("-");
 
-    if (keyWords.some((word) => word.length === 0)) {
-      setMessage("Please fill all 5 words of the reset key.");
-      return;
-    }
+  if (!username) {
+    setMessage("Please enter your username.");
+    return;
+  }
 
-    if (newPassword.length < 6) {
-      setMessage("Please enter a new password of at least 6 characters.");
-      return;
-    }
+  if (keyWords.some((word) => word.length === 0)) {
+    setMessage("Please fill all 5 words of the reset key.");
+    return;
+  }
 
-    if (!userId) {
-      setMessage("User ID is required.");
-      return;
-    }
+  if (newPassword.length < 6) {
+    setMessage("Please enter a new password of at least 6 characters.");
+    return;
+  }
 
-    const { data, error } = await SUPABASE.rpc("verify_reset_key", {
-      user_id: userId,
-      input_key: resetKey,
-      new_password: newPassword,
-    });
+  const { data, error } = await SUPABASE.rpc("verify_reset_key", {
+    input_username: username,
+    input_key: resetKey,
+    new_password: newPassword,
+  });
 
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage("Password reset successful!");
-      onSuccess?.();
-    }
+  if (error) {
+    setMessage(error.message);
+  } else {
+    setMessage("Password reset successful!");
+    onSuccess?.();
+  }
   };
 
   return (
@@ -50,6 +51,12 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
         Please enter your saved 5-word secret key and your new password below.
         If the key is correct, your password will be updated.
       </p>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Username"
+      />
       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
         {keyWords.map((word, i) => (
           <input

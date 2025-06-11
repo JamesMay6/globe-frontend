@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 95vw;
+  width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6); /* semi-transparent dark backdrop */
   display: flex;
@@ -69,7 +69,7 @@
   width: 100%;
   margin: 0.5rem 0 1rem;
   padding: 0.6rem 0.8rem;
-  font-size: 1rem;
+  font-size: 0.7rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;

@@ -146,7 +146,6 @@ export default function AuthBox({
               <div className="modal-overlay" onClick={() => setShowResetForm(false)}>
                 <div className="modal" onClick={(e) => e.stopPropagation()}>
                   <ResetPasswordForm
-                    userId={user?.id} 
                     onSuccess={() => setShowResetForm(false)}
                     onCancel={() => setShowResetForm(false)}
                   />
