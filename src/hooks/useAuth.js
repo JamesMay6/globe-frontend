@@ -10,6 +10,7 @@ export function useAuth() {
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const fetchUserProfile = useCallback(async () => {
     if (!user?.id) {
@@ -49,7 +50,6 @@ export function useAuth() {
       if (authMode === "register") {
         setSkipProfileFetch(true);
 
-        // Step 1: Supabase Authentication
         const { data: authData, error: authError } = await SUPABASE.auth.signUp({
           email,
           password: form.password,
@@ -60,11 +60,10 @@ export function useAuth() {
           setUser(null);
           setUserProfile(null);
           setSkipProfileFetch(false); // Reset on auth error
+          setShowPassword(false); // reset on logout
           return;
         }
 
-        // User is now authenticated in Supabase, but profile might be missing.
-        // Step 2: Create User Profile using RPC
         try {
           const { data: profileData, error: rpcError } = await SUPABASE.rpc('create_user_profile_rpc', {
               p_user_id: authData.user.id,
@@ -113,6 +112,7 @@ export function useAuth() {
           onError?.(error?.message || "No session returned");
           setUser(null);
           setUserProfile(null);
+          setShowPassword(false); // reset on logout
           return;
         }
 
@@ -136,6 +136,8 @@ export function useAuth() {
 
   setUser(null);
   setUserProfile(null);
+  setShowPassword(false); // reset on logout
+
 };
 
   useEffect(() => {
@@ -183,5 +185,15 @@ export function useAuth() {
     }
   }, [user, fetchUserProfile, skipProfileFetch]);
 
-  return { user, userProfile, loadingSession, loadingProfile, handleAuth, handleLogout, fetchUserProfile };
+  return {
+  user,
+  userProfile,
+  loadingSession,
+  loadingProfile,
+  handleAuth,
+  handleLogout,
+  fetchUserProfile,
+  showPassword,
+  setShowPassword
+};
 }

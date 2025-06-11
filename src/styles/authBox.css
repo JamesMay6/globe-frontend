@@ -139,6 +139,27 @@
   background: #28a745;
 }
 
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input {
+  padding-right: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+}
+
 @media (max-width: 768px) {
   .authBox:not(.loggedIn) {
     width: 100%;
@@ -170,3 +191,5 @@
     font-size: 13px;
   }
 }
+
+

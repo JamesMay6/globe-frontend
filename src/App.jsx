@@ -37,7 +37,9 @@ export default function App() {
     user,
     handleAuth,
     handleLogout,
-    fetchUserProfile
+    fetchUserProfile,
+    showPassword,
+    setShowPassword
   } = useAuth();
 
   const {
@@ -106,6 +108,8 @@ export default function App() {
           handleAuth={handleAuth}
           handleLogout={handleLogout}
           showMessage={showMessage}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
         />
 
         {user && (

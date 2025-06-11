@@ -9,6 +9,8 @@ export default function AuthBox({
   handleAuth,
   handleLogout,
   showMessage,
+  showPassword,
+  setShowPassword
 }) {
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
@@ -97,12 +99,23 @@ export default function AuthBox({
           />
           {errors.username && <small className="error">{errors.username}</small>}
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
+          <div className="password-input-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              className="password-input"
+            />
+            {!showPassword && (
+              <span
+                className="password-toggle-icon"
+                onClick={() => setShowPassword(true)}
+              >
+                👁️
+              </span>
+            )}
+          </div>
           {errors.password && <small className="error">{errors.password}</small>}
 
           <div className="auth-buttons">
