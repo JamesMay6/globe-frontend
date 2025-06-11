@@ -1,0 +1,86 @@
+/* Modal overlay covers the entire viewport */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* semi-transparent dark backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ensure on top */
+}
+
+/* Modal content container */
+.modal {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 8px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  position: relative;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+/* Button styling consistent inside modals */
+.modal button {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal button:hover {
+  background-color: #0056b3;
+}
+
+/* Additional styles for reset key code block */
+.reset-key-value code {
+  background-color: #f3f4f6;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  font-family: monospace;
+  user-select: all;
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+/* Message text inside modals */
+.modal p {
+  line-height: 1.5;
+  margin-top: 0.8rem;
+}
+
+/* Form inputs inside modal */
+.modal input[type="text"],
+.modal input[type="password"] {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Links inside modal */
+.modal a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.modal a:hover {
+  text-decoration: none;
+}

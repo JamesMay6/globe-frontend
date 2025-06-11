@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { isProfaneUsername, isUsernameCleanServerSide } from "../utils/profanity";
-import "../styles/resetPassword.css";
+import "../styles/modalOverlay.css";
 import ResetPasswordForm from './ResetPasswordForm';
 
 export default function AuthBox({
@@ -144,7 +144,7 @@ export default function AuthBox({
 
             {showResetForm && (
               <div className="modal-overlay" onClick={() => setShowResetForm(false)}>
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal" onClick={(e) => e.stopPropagation()}>
                   <ResetPasswordForm
                     onSuccess={() => setShowResetForm(false)}
                     onCancel={() => setShowResetForm(false)}
