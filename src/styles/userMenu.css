@@ -147,6 +147,7 @@
   cursor: pointer !important;
   font-size: 16px !important;
   margin-top: 10px !important;
+  width: auto !important;
 }
 
 /* --- Mobile-specific styles --- */
