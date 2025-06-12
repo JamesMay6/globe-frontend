@@ -152,8 +152,8 @@ export default function App() {
         <AboutMenu />
         <Leaderboard />
         <ResetKeyModal resetKey={resetKey} onClose={() => setResetKey(null)} />
-        <ServiceDownModal>
-          {showErrorModal && (
+        
+        {showErrorModal && (
           <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
               <h2>Error</h2>
@@ -162,8 +162,6 @@ export default function App() {
             </div>
           </div>
           )}
-        </ServiceDownModal>
-
     </>
   );
 }
