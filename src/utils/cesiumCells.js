@@ -92,6 +92,8 @@ const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
 };
 
 
+
+/* SEQUENTIAL FETCH
 export const fetchDeletedCells = async (viewer) => {
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
@@ -145,5 +147,63 @@ export const fetchDeletedCells = async (viewer) => {
   }
 
   console.log(`Fetched and rendered ${totalFetched} cells for box ${cacheKey}`);
+
 };
+*/
+
+/* PARALLEL FETCH */
+export const fetchDeletedCells = async (viewer) => {
+  const rect = viewer.camera.computeViewRectangle();
+  if (!rect) return;
+
+  const minLat = Cesium.Math.toDegrees(rect.south);
+  const maxLat = Cesium.Math.toDegrees(rect.north);
+  const minLon = Cesium.Math.toDegrees(rect.west);
+  const maxLon = Cesium.Math.toDegrees(rect.east);
+
+  const latDivisions = 6; // Increase for finer granularity
+  const lonDivisions = 6;
+  const latStep = (maxLat - minLat) / latDivisions;
+  const lonStep = (maxLon - minLon) / lonDivisions;
+
+  const fetchTasks = [];
+
+  for (let i = 0; i < latDivisions; i++) {
+    for (let j = 0; j < lonDivisions; j++) {
+      const subMinLat = minLat + i * latStep;
+      const subMaxLat = subMinLat + latStep;
+      const subMinLon = minLon + j * lonStep;
+      const subMaxLon = subMinLon + lonStep;
+
+      const cacheKey = getCacheKey(subMinLat, subMaxLat, subMinLon, subMaxLon);
+      if (fetchedBounds.has(cacheKey)) continue;
+      fetchedBounds.add(cacheKey);
+
+      const url = new URL(`${API_URL}/deleted`);
+      url.searchParams.set("minLat", subMinLat);
+      url.searchParams.set("maxLat", subMaxLat);
+      url.searchParams.set("minLon", subMinLon);
+      url.searchParams.set("maxLon", subMaxLon);
+      url.searchParams.set("limit", 1000);
+
+      fetchTasks.push(
+        fetch(url)
+          .then((res) => res.json())
+          .then((cells) => ({ cacheKey, cells }))
+      );
+    }
+  }
+
+  const results = await Promise.all(fetchTasks);
+
+  let total = 0;
+  for (const { cacheKey, cells } of results) {
+    if (!cells || cells.length === 0) continue;
+    drawDeletedCells(viewer, cells);
+    total += cells.length;
+  }
+
+  console.log(`Parallel fetched ${total} cells.`);
+};
+
 
