@@ -2,7 +2,7 @@ import * as Cesium from "cesium";
 import {API_URL} from '../config/config';
 import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
 
-export const normalizeCoord = (val) => Math.floor(val * 1000) / 1000;
+export const normalizeCoord = (val) => Math.floor(val * 100) / 100;
 const fetchedBounds = new Set();
 
 export const drawDeletedCell = (viewer, lat, lon) => {
@@ -10,8 +10,8 @@ export const drawDeletedCell = (viewer, lat, lon) => {
   if (drawnCells.has(key)) return;
   drawnCells.add(key);
 
-  const cellWidth = 0.001;
-  const padding = 0.00008;
+  const cellWidth = 0.01;
+  const padding = 0.0001;
   const rectangle = Cesium.Rectangle.fromDegrees(
     lon - padding,
     lat - padding,
@@ -53,8 +53,8 @@ export const drawDeletedCells = (viewer, cells) => {
     if (drawnCells.has(key)) continue;
     drawnCells.add(key);
 
-    const cellWidth = 0.001;
-    const padding = 0.00008;
+    const cellWidth = 0.01;
+    const padding = 0.0001;
     const rectangle = Cesium.Rectangle.fromDegrees(
       lon - padding,
       lat - padding,
@@ -88,7 +88,7 @@ export const drawDeletedCells = (viewer, cells) => {
 };
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * 100) / 100; // 3 decimal places
+  const round = (x) => Math.floor(x * 10) / 10; // 2 decimal places
   return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
 };
 
