@@ -51,7 +51,7 @@ export default function UserMenu({
           </div>
 
           <button className="freeClicksButton" onClick={() => handleBuyClicks(FREE_CLICKS, true)}>
-            Claim {FREE_CLICKS} Free Clicks
+            Claim Daily Free Click
           </button>
 
           {cooldownMessage && (
