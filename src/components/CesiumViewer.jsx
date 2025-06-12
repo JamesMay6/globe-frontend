@@ -239,9 +239,8 @@ export default function CesiumViewer({
         if (movedEnough) {
           lastFetchedRef.current = {
             lat: latRounded,
-            lon: lonRounded,
-            zoom: zoomLevel,
-          };
+            lon: lonRounded
+           };
 
           fetchDeletedCells(viewer).catch((err) => {
             console.error("Failed to fetch deleted cells:", err);
