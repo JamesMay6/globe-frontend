@@ -211,7 +211,7 @@
   }
 
   .authBox.loggedIn > button.logout {
-    padding: 6px 12px;
+    padding: 6px;
     font-size: 13px;
   }
 
