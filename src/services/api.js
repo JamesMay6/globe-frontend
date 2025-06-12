@@ -101,12 +101,12 @@ const token = await getAuthToken();
   return data;
 }
 
-export async function deleteEarth(lat, lon, superClick) {
+export async function deleteEarth(lat, lon, superClick, ultraClick) {
 const token = await getAuthToken();
   const res = await fetch(`${API_URL}/delete`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ lat, lon, superClick }),
+    body: JSON.stringify({ lat, lon, superClick ,ultraClick}),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Failed to delete Earth");

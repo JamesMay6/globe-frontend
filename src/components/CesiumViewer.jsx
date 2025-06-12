@@ -26,7 +26,10 @@ export default function CesiumViewer({
   setClicksTotal,
   setClicksUsed,
   superClicksTotal,
-  setSuperClicksTotal
+  setSuperClicksTotal,
+  ultraClicksTotal,
+  setUltraClicksTotal,
+  ultraClickEnabled,
 }) {
   const viewerRef = useRef(null);
   const containerRef = useRef(null);
@@ -37,6 +40,8 @@ export default function CesiumViewer({
   const clicksUsedRef = useRef(0);
   const superClicksRef = useRef(0);
   const superClickEnabledRef = useRef(false);
+  const ultraClicksRef = useRef(0);
+  const ultraClickEnabledRef = useRef(false);
 
   const lastFetchedRef = useRef({ lat: null, lon: null, zoom: null });
 
@@ -60,6 +65,14 @@ export default function CesiumViewer({
   useEffect(() => {
     superClickEnabledRef.current = superClickEnabled;
   }, [superClickEnabled]);
+
+   useEffect(() => {
+    ultraClicksRef.current = ultraClicksTotal;
+  }, [ultraClicksTotal]);
+
+  useEffect(() => {
+    ultraClickEnabledRef.current = ultraClickEnabled;
+  }, [ultraClickEnabled]);
 
   const handleClick = async (viewer, movement) => {
     if (clickInProgressRef.current) return;
@@ -92,6 +105,15 @@ export default function CesiumViewer({
         return;
       }
 
+      if (
+        ultraClickEnabledRef.current &&
+        ultraClicksRef.current <= 0
+      ) {
+        showMessage("You're out of ultra clicks!", "error");
+        return;
+      }
+
+
       const positionCartographic = Cesium.Cartographic.fromCartesian(
         viewer.camera.position
       );
@@ -105,9 +127,11 @@ export default function CesiumViewer({
       }
 
       showMessage(
-        superClickEnabledRef.current
-          ? "Super Click deleting Earth"
-          : "Deleting Earth",
+        ultraClickEnabledRef.current
+          ? "Ultra Click deleting Earth"
+          : superClickEnabledRef.current
+            ? "Super Click deleting Earth"
+            : "Deleting Earth",
         "warn"
       );
 
@@ -119,7 +143,7 @@ export default function CesiumViewer({
       const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
       const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
 
-      const data = await deleteEarth(lat, lon, superClickEnabledRef.current);
+      const data = await deleteEarth(lat, lon, superClickEnabledRef.current, ultraClickEnabledRef.current);
 
       if (data.alreadyDeleted) {
       showMessage("Earth is already deleted here", "error");
@@ -127,7 +151,7 @@ export default function CesiumViewer({
       }
 
       if (
-        superClickEnabledRef.current &&
+        (superClickEnabledRef.current || ultraClickEnabledRef.current) &&
         Array.isArray(data.coordinates)
       ) {
         drawDeletedCells(viewer, data.coordinates);
@@ -135,22 +159,31 @@ export default function CesiumViewer({
         drawDeletedCell(viewer, lat, lon);
       }
 
-      if (superClickEnabledRef.current) {
+      if (ultraClickEnabledRef.current) {
+        const count = data.insertedCount ?? data.coordinates?.length ?? 0;
+        showMessage(`Ultra Click deleted ${count} Earth coordinate${count === 1 ? "" : "s"}`);
+      } else if (superClickEnabledRef.current) {
         const count = data.insertedCount ?? data.coordinates?.length ?? 0;
         showMessage(`Super Click deleted ${count} Earth coordinate${count === 1 ? "" : "s"}`);
       } else {
         showMessage("Earth deleted!");
       }
-     
+
       setClicksTotal((prev) =>
-        superClickEnabledRef.current ? prev : prev - 1
+        superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev - 1
       );
+
       setClicksUsed((prev) =>
-        superClickEnabledRef.current ? prev : prev + 1
+        superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev + 1
       );
-      setSuperClicksTotal((prev) =>
-        superClickEnabledRef.current ? prev - 1 : prev
-      );
+
+      if (superClickEnabledRef.current) {
+        setSuperClicksTotal((prev) => prev - 1);
+      }
+
+      if (ultraClickEnabledRef.current) {
+        setUltraClicksTotal((prev) => prev - 1);
+      }
 
        await fetchUserProfile();
 

@@ -21,6 +21,8 @@ export default function UserMenu({
   ultraClicksTotal,
   superClickEnabled,
   setSuperClickEnabled,
+  ultraClickEnabled,
+  setUltraClickEnabled,
   handleBuyClicks,
   handleUpgradeSuperClick,
   handleUpgradeUltraClick,
@@ -41,19 +43,38 @@ export default function UserMenu({
           <div className="clicksAvailable">
             <div><strong>Available Clicks:</strong> {clicksTotal}</div>
             <div><strong>Clicks Used:</strong> {clicksUsed}</div>
-            <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
-            <div><strong>Available Ultra Clicks:</strong> {ultraClicksTotal}</div>
           </div>
 
-          <div className="superClickToggle" style={{ marginTop: "1rem" }}>
-            <label>
-              <input
-                type="checkbox"
-                checked={superClickEnabled}
-                onChange={() => setSuperClickEnabled(!superClickEnabled)}
-              />
-              Enable Super Click
-            </label>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
+            <button
+              onClick={() => {
+                if (!superClickEnabled) {
+                  setSuperClickEnabled(true);
+                  setUltraClickEnabled(false);
+                } else {
+                  setSuperClickEnabled(false);
+                }
+              }}
+            >
+              {superClickEnabled ? "Disable" : "Enable"}
+            </button>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div><strong>Available Ultra Clicks:</strong> {ultraClicksTotal}</div>
+            <button
+              onClick={() => {
+                if (!ultraClickEnabled) {
+                  setUltraClickEnabled(true);
+                  setSuperClickEnabled(false);
+                } else {
+                  setUltraClickEnabled(false);
+                }
+              }}
+            >
+              {ultraClickEnabled ? "Disable" : "Enable"}
+            </button>
           </div>
 
           <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>

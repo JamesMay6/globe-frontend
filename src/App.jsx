@@ -59,7 +59,9 @@ export default function App() {
     setSuperClicks: setSuperClicksTotal,
     setUltraClicks: setUltraClicksTotal,
     superClickEnabled,
+    ultraClickEnabled,
     setSuperClickEnabled,
+    setUltraClickEnabled,
     updateProfileFromData,
     loadProfile
   } = useUserProfile(user, fetchUserProfile);
@@ -133,6 +135,8 @@ export default function App() {
             ultraClicksTotal={ultraClicksTotal}
             superClickEnabled={superClickEnabled}
             setSuperClickEnabled={setSuperClickEnabled}
+            ultraClickEnabled={ultraClickEnabled}
+            setUltraClickEnabled={setUltraClickEnabled}
             handleBuyClicks={handleBuyClicks}
             handleUpgradeSuperClick={upgrade}
             handleUpgradeUltraClick={ultraUpgrade}
