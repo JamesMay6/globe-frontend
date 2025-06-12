@@ -10,6 +10,7 @@ import {
 } from "../config/config";
 import {
   drawDeletedCell,
+  drawDeletedCells,
   fetchDeletedCells,
   normalizeCoord,
 } from "../utils/cesiumCells";
@@ -125,15 +126,13 @@ export default function CesiumViewer({
       return;
       }
 
-      drawDeletedCell(viewer, lat, lon);
-
       if (
         superClickEnabledRef.current &&
         Array.isArray(data.coordinates)
       ) {
-        data.coordinates.forEach(({ lat, lon }) =>
-          drawDeletedCell(viewer, lat, lon)
-        );
+        drawDeletedCells(viewer, data.coordinates);
+      } else {
+        drawDeletedCell(viewer, lat, lon);
       }
 
       if (superClickEnabledRef.current) {

@@ -90,6 +90,9 @@ export const drawDeletedCells = (viewer, cells) => {
       appearance: new Cesium.PerInstanceColorAppearance(),
       classificationType: Cesium.ClassificationType.BOTH,
     }));
+    
+    viewer.scene.requestRender(); 
+
   }
 };
 
