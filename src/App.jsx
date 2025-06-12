@@ -99,6 +99,8 @@ export default function App() {
         showMessage={showMessage}
         superClickEnabled={superClickEnabled}
         ultraClickEnabled={ultraClickEnabled}
+        setSuperClickEnabled={setSuperClickEnabled}
+        setUltraClickEnabled={setUltraClickEnabled}
         clicksTotal={clicksTotal}
         clicksUsed={clicksUsed} 
         superClicksTotal={superClicksTotal}
