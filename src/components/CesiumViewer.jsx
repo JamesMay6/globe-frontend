@@ -270,45 +270,33 @@ export default function CesiumViewer({
 
 
       viewer.camera.moveEnd.addEventListener(() => {
-        const rectangle = viewer.camera.computeViewRectangle();
-        if (!rectangle) return;
+        const camera = viewer.camera;
+        const positionCartographic = Cesium.Cartographic.fromCartesian(camera.position);
+        const lat = Cesium.Math.toDegrees(positionCartographic.latitude);
+        const lon = Cesium.Math.toDegrees(positionCartographic.longitude);
+        const height = positionCartographic.height;
 
-        // Convert to degrees
-        const bounds = {
-          west: Cesium.Math.toDegrees(rectangle.west),
-          south: Cesium.Math.toDegrees(rectangle.south),
-          east: Cesium.Math.toDegrees(rectangle.east),
-          north: Cesium.Math.toDegrees(rectangle.north),
-        };
-
-        // Add buffer (e.g., 0.05 degrees)
-        const buffer = 0.05;
-        const paddedBounds = {
-          west: bounds.west - buffer,
-          south: bounds.south - buffer,
-          east: bounds.east + buffer,
-          north: bounds.north + buffer,
-        };
+        const latRounded = parseFloat(lat.toFixed(3));
+        const lonRounded = parseFloat(lon.toFixed(3));
 
         const last = lastFetchedRef.current;
 
-        const movedOutOfLastFetched =
-          !last.bounds ||
-          paddedBounds.west < last.bounds.west ||
-          paddedBounds.south < last.bounds.south ||
-          paddedBounds.east > last.bounds.east ||
-          paddedBounds.north > last.bounds.north;
+        const movedEnough =
+          last.lat === null ||
+          last.lon === null ||
+          Math.abs(latRounded - last.lat) >= 0.001 ||
+          Math.abs(lonRounded - last.lon) >= 0.001;
 
-        if (movedOutOfLastFetched) {
+        if (movedEnough) {
           lastFetchedRef.current = {
-            bounds: paddedBounds,
-          };
+            lat: latRounded,
+            lon: lonRounded
+           };
 
-          fetchDeletedCells(viewer, paddedBounds).catch((err) => {
+          fetchDeletedCells(viewer).catch((err) => {
             console.error("Failed to fetch deleted cells:", err);
           });
         }
-
       });
 
 
