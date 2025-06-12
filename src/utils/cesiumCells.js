@@ -46,7 +46,7 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
 const drawnCells = new Set();
 
-/* GROUND PRIMITIVE ONLY */
+/* GROUND PRIMITIVE BATCHES ONLY */
 let primitiveBatch = null;
 
 export const initPrimitiveBatch = (viewer) => {
@@ -94,7 +94,7 @@ export const drawDeletedCells = (viewer, cells) => {
 };
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * precision) / precision; // 3 decimal places
+  const round = (x) => Math.floor(x * precision) / precision; 
   return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
 };
 
