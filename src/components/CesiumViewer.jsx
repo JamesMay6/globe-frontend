@@ -188,7 +188,7 @@ export default function CesiumViewer({
         superClickEnabledRef.current = false; 
         setTimeout(() => {
           showMessage("Super Click Disabled", "warn");
-        }, 500); // 500ms delay
+        }, 1500); // 500ms delay
       }
 
       // After decrementing ultra clicks:
@@ -200,7 +200,7 @@ export default function CesiumViewer({
         ultraClickEnabledRef.current = false;
         setTimeout(() => {
           showMessage("Super Click Disabled", "warn");
-        }, 500); // 500ms delay
+        }, 1500); // 500ms delay
         
       }
 
