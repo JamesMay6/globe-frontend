@@ -10,7 +10,7 @@ export const drawDeletedCell = (viewer, lat, lon) => {
   if (drawnCells.has(key)) return;
   drawnCells.add(key);
 
-  const cellWidth = 0.01;
+  const cellWidth = 0.005;
   const padding = 0.0001;
   const rectangle = Cesium.Rectangle.fromDegrees(
     lon - padding,
@@ -53,7 +53,7 @@ export const drawDeletedCells = (viewer, cells) => {
     if (drawnCells.has(key)) continue;
     drawnCells.add(key);
 
-    const cellWidth = 0.01;
+    const cellWidth = 0.005;
     const padding = 0.0001;
     const rectangle = Cesium.Rectangle.fromDegrees(
       lon - padding,
@@ -169,7 +169,7 @@ export const fetchDeletedCells = async (viewer) => {
 
   const fetchTasks = [];
 
-  const round = (val) => parseFloat(val.toFixed(2));
+  const round = (val) => Math.floor(val * 200) / 200;
 
   for (let i = 0; i < latDivisions; i++) {
     for (let j = 0; j < lonDivisions; j++) {
