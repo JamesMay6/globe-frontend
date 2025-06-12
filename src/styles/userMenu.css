@@ -75,7 +75,7 @@
 .superClickButton {
   background-color: #9f8600 !important;
   color: white;
-  padding: 0.6rem 1.2rem; /* Using rem for padding for better scaling */
+  padding: 0.7rem 1.2rem; /* Using rem for padding for better scaling */
   border: none;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -88,7 +88,7 @@
 .ultraClickButton {
   background-color: #b20606 !important;
   color: white;
-  padding: 0.6rem 1.2rem; /* Using rem for padding for better scaling */
+  padding: 0.7rem 1.2rem; /* Using rem for padding for better scaling */
   border: none;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -117,6 +117,7 @@
   padding-right: 8px; /* Default header padding */
   box-sizing: border-box;
   font-size: 13px; /* Default header font size */
+  margin-bottom: 0.5rem;
 }
 
 .info-button {
