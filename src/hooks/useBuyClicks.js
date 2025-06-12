@@ -7,7 +7,7 @@ export function useBuyClicks(fetchUserProfile, setCooldownMessage) {
       const data = await buyClicks(amount);
 
       if (free) {
-        showMessage("Free clicks claimed!");
+        showMessage("Daily free clicks claimed!");
       } else {
         showMessage(`Purchasing ${amount} clicks..`, "warn");
       }
