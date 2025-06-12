@@ -16,7 +16,6 @@ import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
 import ResetKeyModal from './components/ResetKeyModal';
-import { AuthProvider } from "./components/AuthProvider";
 
 //css
 import "./styles/aboutMenu.css";
@@ -37,8 +36,6 @@ export default function App() {
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [resetKey, setResetKey] = useState(null); // NEW
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   // Honor Order of Hooks
     const {
@@ -48,7 +45,7 @@ export default function App() {
     fetchUserProfile,
     showPassword,
     setShowPassword
-  } = useAuth(setErrorMessage, setShowErrorModal);
+  } = useAuth();
 
   const {
     username,
@@ -126,8 +123,6 @@ export default function App() {
           setShowPassword={setShowPassword}
           resetKey={resetKey}
           setResetKey={setResetKey}
-          errorMessage={errorMessage}
-          setShowErrorModal={setShowErrorModal}
         />
 
         {user && (
@@ -153,19 +148,7 @@ export default function App() {
         <AboutMenu />
         <Leaderboard />
         <ResetKeyModal resetKey={resetKey} onClose={() => setResetKey(null)} />
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-        
-        {showErrorModal && (
-          <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Error</h2>
-              <p>{errorMessage}</p>
-              <button onClick={() => setShowErrorModal(false)}>Close</button>
-            </div>
-          </div>
-          )}
+
     </>
   );
 }

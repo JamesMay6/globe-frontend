@@ -20,6 +20,7 @@ export default function AuthBox({
   const [displayUsername, setDisplayUsername] = useState(username || "");
   const [showResetForm, setShowResetForm] = useState(false);
 
+
   useEffect(() => {
     if (username) setDisplayUsername(username);
   }, [username]);
@@ -154,6 +155,7 @@ export default function AuthBox({
         </>
       )}
     </div>
+    
 
     </>
   );

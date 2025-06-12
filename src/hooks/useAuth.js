@@ -4,14 +4,13 @@ import { SUPABASE } from "../config/config";
 import { fakeEmail } from "../utils/fakeEmail";
 import { logEvent } from "../utils/logger";
 
-export function useAuth(setErrorMessage, setShowErrorModal) {
+export function useAuth() {
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
- 
 
   const fetchUserProfile = useCallback(async () => {
     if (!user?.id) {
@@ -31,12 +30,8 @@ export function useAuth(setErrorMessage, setShowErrorModal) {
         console.error("Error fetching user profile:", error);
         logEvent("Error fetching profile for User ID: ", user.id, " with error: ", error);
         setUserProfile(null);
-        setErrorMessage("There was an issue fetching your profile. Please try again later.");
-        setShowErrorModal(true);
-
         return null;
       }
-
       setUserProfile(data);
       return data;
     } catch (err) {
@@ -217,8 +212,6 @@ export function useAuth(setErrorMessage, setShowErrorModal) {
   handleLogout,
   fetchUserProfile,
   showPassword,
-  setShowPassword,
-  setShowErrorModal,
-  setErrorMessage
+  setShowPassword
 };
 }
