@@ -5,6 +5,7 @@ import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
 const precision = 1000 //1000 = 3dp
 const cellWidth = 0.001; //0.001 = 3dp
 const padding = 0.0001;
+const dpPrecision = 3
  
 export const normalizeCoord = (val) => Math.floor(val * precision) / precision;
 const fetchedBounds = new Set();
@@ -118,7 +119,7 @@ export const fetchDeletedCells = async (viewer) => {
 
   const fetchTasks = [];
 
-  const round = (val) => parseFloat(val.toFixed(2));
+  const round = (val) => parseFloat(val.toFixed(dpPrecision));
 
   for (let i = 0; i < latDivisions; i++) {
     for (let j = 0; j < lonDivisions; j++) {
