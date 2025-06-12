@@ -11,6 +11,8 @@ export function useAuth() {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchUserProfile = useCallback(async () => {
     if (!user?.id) {
@@ -30,8 +32,13 @@ export function useAuth() {
         console.error("Error fetching user profile:", error);
         logEvent("Error fetching profile for User ID: ", user.id, " with error: ", error);
         setUserProfile(null);
+
+        setErrorMessage("There was an issue fetching your profile. Please try again later.");
+        setShowErrorModal(true);
+
         return null;
       }
+
       setUserProfile(data);
       return data;
     } catch (err) {
@@ -212,6 +219,11 @@ export function useAuth() {
   handleLogout,
   fetchUserProfile,
   showPassword,
-  setShowPassword
+  setShowPassword,
+  showErrorModal,
+  setShowErrorModal,
+  errorMessage,
+  setErrorMessage
+
 };
 }

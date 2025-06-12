@@ -13,7 +13,10 @@ export default function AuthBox({
   showMessage,
   showPassword,
   setShowPassword,
-  setResetKey
+  setResetKey,
+  showErrorModal,
+  errorMessage,
+  setShowErrorModal
 }) {
   const [authOpen, setAuthOpen] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
@@ -155,6 +158,17 @@ export default function AuthBox({
         </>
       )}
     </div>
+          {showErrorModal && (
+        <Modal>
+          <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
+          <div className="modal">
+              <h2>Error</h2>
+              <p>{errorMessage}</p>
+            <button onClick={() => setShowErrorModal(false)}>Close</button>
+          </div>
+        </div>
+        </Modal>
+      )}
     
 
     </>
