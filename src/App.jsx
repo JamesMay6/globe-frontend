@@ -47,7 +47,7 @@ export default function App() {
     fetchUserProfile,
     showPassword,
     setShowPassword
-  } = useAuth();
+  } = useAuth(setErrorMessage, setShowErrorModal);
 
   const {
     username,

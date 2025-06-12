@@ -4,7 +4,7 @@ import { SUPABASE } from "../config/config";
 import { fakeEmail } from "../utils/fakeEmail";
 import { logEvent } from "../utils/logger";
 
-export function useAuth() {
+export function useAuth(setErrorMessage, setShowErrorModal) {
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
