@@ -111,14 +111,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
-  color: white;
+  color: rgb(153, 153, 153);
   border-radius: 4px;
   width: 100%;
-  background: #444;
-  padding: 6px; /* Default header padding */
+  padding-right: 8px; /* Default header padding */
   box-sizing: border-box;
-  font-size: 14px; /* Default header font size */
+  font-size: 13px; /* Default header font size */
 }
 
 .info-button {
