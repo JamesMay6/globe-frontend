@@ -32,7 +32,6 @@ export function useAuth() {
         console.error("Error fetching user profile:", error);
         logEvent("Error fetching profile for User ID: ", user.id, " with error: ", error);
         setUserProfile(null);
-
         setErrorMessage("There was an issue fetching your profile. Please try again later.");
         setShowErrorModal(true);
 

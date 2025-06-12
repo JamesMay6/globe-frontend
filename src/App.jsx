@@ -123,6 +123,8 @@ export default function App() {
           setShowPassword={setShowPassword}
           resetKey={resetKey}
           setResetKey={setResetKey}
+          errorMessage={errorMessage}
+          setShowErrorModal={setShowErrorModal}
         />
 
         {user && (
@@ -148,6 +150,17 @@ export default function App() {
         <AboutMenu />
         <Leaderboard />
         <ResetKeyModal resetKey={resetKey} onClose={() => setResetKey(null)} />
+        <ServiceDownModal>
+          {showErrorModal && (
+          <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+              <h2>Error</h2>
+              <p>{errorMessage}</p>
+              <button onClick={() => setShowErrorModal(false)}>Close</button>
+            </div>
+          </div>
+          )}
+        </ServiceDownModal>
 
     </>
   );
