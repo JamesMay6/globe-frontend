@@ -36,6 +36,8 @@ export default function App() {
   const [authOpen, setAuthOpen] = useState(false);
   const [buyMenuOpen, setBuyMenuOpen] = useState(false);
   const [resetKey, setResetKey] = useState(null); // NEW
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Honor Order of Hooks
     const {

@@ -11,8 +11,7 @@ export function useAuth() {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [skipProfileFetch, setSkipProfileFetch] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+ 
 
   const fetchUserProfile = useCallback(async () => {
     if (!user?.id) {
@@ -223,6 +222,5 @@ export function useAuth() {
   setShowErrorModal,
   errorMessage,
   setErrorMessage
-
 };
 }
