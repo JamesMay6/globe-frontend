@@ -22,7 +22,7 @@ export function useAuth() {
     try {
       const { data, error } = await SUPABASE
         .from("profiles")
-        .select("username, clicks_total, clicks_used, super_clicks")
+        .select("username, clicks_total, clicks_used, super_clicks, ultra_clicks")
         .eq("id", user.id)
         .single();
 
