@@ -37,6 +37,8 @@ export default function CesiumViewer({
   const superClicksRef = useRef(0);
   const superClickEnabledRef = useRef(false);
 
+  const lastFetchedRef = useRef({ lat: null, lon: null, zoom: null });
+
   // ---------- Sync Refs ----------
   useEffect(() => {
     userRef.current = user;
@@ -216,9 +218,37 @@ export default function CesiumViewer({
       }, 300); 
 
 
-      viewer.camera.moveEnd.addEventListener(() =>
-        fetchDeletedCells(viewer)
-      );
+      viewer.camera.moveEnd.addEventListener(() => {
+        const camera = viewer.camera;
+        const positionCartographic = Cesium.Cartographic.fromCartesian(camera.position);
+        const lat = Cesium.Math.toDegrees(positionCartographic.latitude);
+        const lon = Cesium.Math.toDegrees(positionCartographic.longitude);
+        const height = positionCartographic.height;
+
+        const latRounded = parseFloat(lat.toFixed(3));
+        const lonRounded = parseFloat(lon.toFixed(3));
+
+        const last = lastFetchedRef.current;
+
+        const movedEnough =
+          last.lat === null ||
+          last.lon === null ||
+          Math.abs(latRounded - last.lat) >= 0.01 ||
+          Math.abs(lonRounded - last.lon) >= 0.01;
+
+        if (movedEnough) {
+          lastFetchedRef.current = {
+            lat: latRounded,
+            lon: lonRounded,
+            zoom: zoomLevel,
+          };
+
+          fetchDeletedCells(viewer).catch((err) => {
+            console.error("Failed to fetch deleted cells:", err);
+          });
+        }
+      });
+
 
       handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((movement) => {

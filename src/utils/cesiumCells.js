@@ -88,7 +88,7 @@ export const drawDeletedCells = (viewer, cells) => {
 };
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * 10) / 10; // 2 decimal places
+  const round = (x) => Math.floor(x * 100) / 100; // 2 decimal places
   return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
 };
 
