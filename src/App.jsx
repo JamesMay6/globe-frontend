@@ -52,10 +52,12 @@ export default function App() {
     clicksTotal,
     clicksUsed,
     superClicks: superClicksTotal,
+    ultraClicks: ultraClicksTotal,
     setUsername,
     setClicksTotal,
     setClicksUsed,
     setSuperClicks: setSuperClicksTotal,
+    setUltraClicks: setUltraClicksTotal,
     superClickEnabled,
     setSuperClickEnabled,
     updateProfileFromData,
@@ -97,9 +99,11 @@ export default function App() {
         clicksTotal={clicksTotal}
         clicksUsed={clicksUsed} 
         superClicksTotal={superClicksTotal}
+        ultraClicksTotal={ultraClicksTotal}
         setClicksTotal={setClicksTotal}
         setClicksUsed={setClicksUsed} 
         setSuperClicksTotal={setSuperClicksTotal}
+        setUltraClicksTotal={setUltraClicksTotal}
       />
 
       <div className="topLeftMenu">
@@ -126,6 +130,7 @@ export default function App() {
             clicksTotal={clicksTotal}
             clicksUsed={clicksUsed} 
             superClicksTotal={superClicksTotal}
+            ultraClicksTotal={ultraClicksTotal}
             superClickEnabled={superClickEnabled}
             setSuperClickEnabled={setSuperClickEnabled}
             handleBuyClicks={handleBuyClicks}
