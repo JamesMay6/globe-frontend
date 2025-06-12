@@ -225,16 +225,16 @@ export default function CesiumViewer({
         const lon = Cesium.Math.toDegrees(positionCartographic.longitude);
         const height = positionCartographic.height;
 
-        const latRounded = Math.round(lat * 200) / 200;
-        const lonRounded = Math.round(lon * 200) / 200;
+        const latRounded = parseFloat(lat.toFixed(3));
+        const lonRounded = parseFloat(lon.toFixed(3));
 
         const last = lastFetchedRef.current;
 
         const movedEnough =
           last.lat === null ||
           last.lon === null ||
-          Math.abs(latRounded - last.lat) >= 0.005 ||
-          Math.abs(lonRounded - last.lon) >= 0.005;
+          Math.abs(latRounded - last.lat) >= 0.01 ||
+          Math.abs(lonRounded - last.lon) >= 0.01;
 
         if (movedEnough) {
           lastFetchedRef.current = {
