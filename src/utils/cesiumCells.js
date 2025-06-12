@@ -1,22 +1,46 @@
 import * as Cesium from "cesium";
-import {API_URL} from '../config/config';
+import { API_URL } from '../config/config';
 import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
 
-export const normalizeCoord = (val) => Math.floor(val * 100) / 100;
+// === CONFIGURABLE CELL SIZE ===
+// You can change these to tune precision/granularity:
+const CELL_WIDTH_LAT = 0.01;  // e.g., 0.01 degrees latitude per cell
+const CELL_WIDTH_LON = 0.01;  // e.g., 0.001 degrees longitude per cell
+
+// Size of each fetch tile (larger than cell width, for batching):
+const FETCH_TILE_SIZE_LAT = 0.12; // degrees
+const FETCH_TILE_SIZE_LON = 0.12; // degrees
+
 const fetchedBounds = new Set();
+const drawnCells = new Set();
+
+// Round coordinate down to nearest cell boundary for latitude:
+const roundLat = (val) => Math.floor(val / CELL_WIDTH_LAT) * CELL_WIDTH_LAT;
+
+// Round coordinate down to nearest cell boundary for longitude:
+const roundLon = (val) => Math.floor(val / CELL_WIDTH_LON) * CELL_WIDTH_LON;
+
+// Round for cache keys to multiples of FETCH_TILE_SIZE
+const roundFetchLat = (val) => Math.floor(val / FETCH_TILE_SIZE_LAT) * FETCH_TILE_SIZE_LAT;
+const roundFetchLon = (val) => Math.floor(val / FETCH_TILE_SIZE_LON) * FETCH_TILE_SIZE_LON;
+
+export const normalizeCoord = (val, isLat = true) => isLat ? roundLat(val) : roundLon(val);
 
 export const drawDeletedCell = (viewer, lat, lon) => {
-  const key = `${lat}:${lon}`;
+  const latRounded = roundLat(lat);
+  const lonRounded = roundLon(lon);
+  const key = `${latRounded}:${lonRounded}`;
   if (drawnCells.has(key)) return;
   drawnCells.add(key);
 
-  const cellWidth = 0.01;
-  const padding = 0.0001;
+  const paddingLat = CELL_WIDTH_LAT * 0.01; // 1% padding
+  const paddingLon = CELL_WIDTH_LON * 0.01;
+
   const rectangle = Cesium.Rectangle.fromDegrees(
-    lon - padding,
-    lat - padding,
-    lon + cellWidth + padding,
-    lat + cellWidth + padding
+    lonRounded - paddingLon,
+    latRounded - paddingLat,
+    lonRounded + CELL_WIDTH_LON + paddingLon,
+    latRounded + CELL_WIDTH_LAT + paddingLat
   );
 
   const instance = new Cesium.GeometryInstance({
@@ -42,25 +66,26 @@ export const drawDeletedCell = (viewer, lat, lon) => {
   viewer.scene.requestRender();
 };
 
-const drawnCells = new Set();
-
-/* GROUND PRIMITIVE ONLY */
 export const drawDeletedCells = (viewer, cells) => {
   const instances = [];
 
   for (const { lat, lon } of cells) {
-    const key = `${lat}:${lon}`;
+    const latRounded = roundLat(lat);
+    const lonRounded = roundLon(lon);
+    const key = `${latRounded}:${lonRounded}`;
     if (drawnCells.has(key)) continue;
     drawnCells.add(key);
 
-    const cellWidth = 0.01;
-    const padding = 0.0001;
+    const paddingLat = CELL_WIDTH_LAT * 0.01;
+    const paddingLon = CELL_WIDTH_LON * 0.01;
+
     const rectangle = Cesium.Rectangle.fromDegrees(
-      lon - padding,
-      lat - padding,
-      lon + cellWidth + padding,
-      lat + cellWidth + padding
+      lonRounded - paddingLon,
+      latRounded - paddingLat,
+      lonRounded + CELL_WIDTH_LON + paddingLon,
+      latRounded + CELL_WIDTH_LAT + paddingLat
     );
+
     instances.push(
       new Cesium.GeometryInstance({
         geometry: new Cesium.RectangleGeometry({
@@ -87,12 +112,11 @@ export const drawDeletedCells = (viewer, cells) => {
   }
 };
 
+// Cache key uses fetch tile boundaries rounded to multiples of fetch tile size
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * 100) / 100; // 3 decimal places
-  return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
+  return `${roundFetchLat(minLat)}:${roundFetchLat(maxLat)}:${roundFetchLon(minLon)}:${roundFetchLon(maxLon)}`;
 };
 
-/* PARALLEL FETCH */
 export const fetchDeletedCells = async (viewer) => {
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
@@ -102,21 +126,18 @@ export const fetchDeletedCells = async (viewer) => {
   const minLon = Cesium.Math.toDegrees(rect.west);
   const maxLon = Cesium.Math.toDegrees(rect.east);
 
-  const latDivisions = 6;
-  const lonDivisions = 6;
-  const latStep = (maxLat - minLat) / latDivisions;
-  const lonStep = (maxLon - minLon) / lonDivisions;
+  // Calculate how many fetch tiles fit in the viewport:
+  const latDivisions = Math.min(6, Math.ceil((maxLat - minLat) / FETCH_TILE_SIZE_LAT));
+  const lonDivisions = Math.min(6, Math.ceil((maxLon - minLon) / FETCH_TILE_SIZE_LON));
 
   const fetchTasks = [];
 
-  const round = (val) => parseFloat(val.toFixed(2));
-
   for (let i = 0; i < latDivisions; i++) {
     for (let j = 0; j < lonDivisions; j++) {
-      const subMinLat = round(minLat + i * latStep);
-      const subMaxLat = round(subMinLat + latStep);
-      const subMinLon = round(minLon + j * lonStep);
-      const subMaxLon = round(subMinLon + lonStep);
+      const subMinLat = minLat + i * FETCH_TILE_SIZE_LAT;
+      const subMaxLat = Math.min(maxLat, subMinLat + FETCH_TILE_SIZE_LAT);
+      const subMinLon = minLon + j * FETCH_TILE_SIZE_LON;
+      const subMaxLon = Math.min(maxLon, subMinLon + FETCH_TILE_SIZE_LON);
 
       const cacheKey = getCacheKey(subMinLat, subMaxLat, subMinLon, subMaxLon);
       if (fetchedBounds.has(cacheKey)) continue;
@@ -175,7 +196,3 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer) => {
   await saveTileToDisk(cacheKey, allCells);
   console.log(`Fetched from Supabase and cached: ${cacheKey}`);
 };
-
-
-
-
