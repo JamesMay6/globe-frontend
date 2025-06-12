@@ -8,7 +8,9 @@ import {
   BUY_CLICKS_PACKAGE_THREE_COST,
   FREE_CLICKS,
   SUPER_CLICK_UPGRADE_COST,
-  SUPER_CLICK_TOTAL_CELLS
+  SUPER_CLICK_TOTAL_CELLS,
+  ULTRA_CLICK_UPGRADE_COST,
+  ULTRA_CLICK_TOTAL_CELLS
 } from '../config/config';
 
 export default function UserMenu({
@@ -19,6 +21,7 @@ export default function UserMenu({
   setSuperClickEnabled,
   handleBuyClicks,
   handleUpgradeSuperClick,
+  handleUpgradeUltraClick,
   cooldownMessage,
   buyMenuOpen,
   setBuyMenuOpen,
@@ -87,9 +90,14 @@ export default function UserMenu({
             <button onClick={handleUpgradeSuperClick} className="superClickButton">
               Upgrade to a Super Click
             </button>
+            <button onClick={handleUpgradeUltraClick} className="ultraClickButton">
+              Upgrade to a Super Click
+            </button>
             <p className="info-text">
-              Use {SUPER_CLICK_UPGRADE_COST} clicks to get 1 Super Click which deletes up to {SUPER_CLICK_TOTAL_CELLS} coordinates at once
+              Delete more cordinates at once with Super and Ultra Clicks!
             </p>
+            <p>Super - Use {SUPER_CLICK_UPGRADE_COST} clicks to delete up to {SUPER_CLICK_TOTAL_CELLS}</p>
+            <p>Ultra - Use {ULTRA_CLICK_UPGRADE_COST} clicks to delete up to {ULTRA_CLICK_TOTAL_CELLS}</p>
           </div>
         </div>
       )}

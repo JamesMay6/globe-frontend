@@ -90,6 +90,17 @@ const token = await getAuthToken();
   return data;
 }
 
+export async function upgradeUltraClick() {
+const token = await getAuthToken();
+  const res = await fetch(`${API_URL}/profile/upgrade-ultra-click`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Upgrade failed");
+  return data;
+}
+
 export async function deleteEarth(lat, lon, superClick) {
 const token = await getAuthToken();
   const res = await fetch(`${API_URL}/delete`, {

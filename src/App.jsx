@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 //Hooks
 import { useAuth } from './hooks/useAuth';
 import { useUserProfile } from './hooks/useUserProfile';
-import { useSuperClickUpgrade } from './hooks/useSuperClickUpgrade';
+import { useSuperClickUpgrade, useUltraClickUpgrade} from './hooks/useSuperClickUpgrade';
 import { useBuyClicks } from "./hooks/useBuyClicks";
 //Utils
 import { showMessage } from "./utils/showMessage";
@@ -63,6 +63,8 @@ export default function App() {
   } = useUserProfile(user, fetchUserProfile);
 
   const { upgrade } = useSuperClickUpgrade(loadProfile);
+  const { ultraUpgrade } = useUltraClickUpgrade(loadProfile);
+
   const { handleBuyClicks } = useBuyClicks(loadProfile, setCooldownMessage);
 
   const refreshUserProfile = async () => {
@@ -128,6 +130,7 @@ export default function App() {
             setSuperClickEnabled={setSuperClickEnabled}
             handleBuyClicks={handleBuyClicks}
             handleUpgradeSuperClick={upgrade}
+            handleUpgradeUltraClick={ultraUpgrade}
             cooldownMessage={cooldownMessage}
             buyMenuOpen={buyMenuOpen}
             setBuyMenuOpen={setBuyMenuOpen}
