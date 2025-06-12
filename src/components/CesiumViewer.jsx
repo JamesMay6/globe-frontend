@@ -179,28 +179,25 @@ export default function CesiumViewer({
         superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev + 1
       );
 
+      // After decrementing super clicks:
       if (superClickEnabledRef.current) {
-        setSuperClicksTotal((prev) => prev - 1);
-      // Disable super click after successful use
-      if (setSuperClickEnabled) {
+        setSuperClicksTotal(prev => prev - 1);
+
+        // Disable super click after successful use
         setSuperClickEnabled(false);
-        showMessage('Super Click Disabled', "warn")
-      }
-      ultraClickEnabledRef.current = false;
-
+        superClickEnabledRef.current = false; 
+        showMessage('Super Click Disabled', "warn");
       }
 
+      // After decrementing ultra clicks:
       if (ultraClickEnabledRef.current) {
-      setUltraClicksTotal((prev) => prev - 1);
+        setUltraClicksTotal(prev => prev - 1);
 
-      // Disable ultra click after successful use
-      if (setUltraClickEnabled) {
+        // Disable ultra click after successful use
         setUltraClickEnabled(false);
-        showMessage('Ultra Click Disabled', "warn")
-
+        ultraClickEnabledRef.current = false;
+        showMessage('Ultra Click Disabled', "warn");
       }
-      ultraClickEnabledRef.current = false;
-    }
 
        await fetchUserProfile();
 
