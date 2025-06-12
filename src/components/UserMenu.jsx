@@ -116,7 +116,7 @@ export default function UserMenu({
 
           <div className="upgradesMenu">
             <div className="upgradesInfo" >
-              <span>Upgrade Your Clicks Delete More!</span>
+              <span>Upgrade Your Clicks <br/>Delete More Earth!</span>
               <button className="info-button" onClick={() => setShowModal(true)}>
                 i
               </button>
