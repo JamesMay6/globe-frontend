@@ -91,13 +91,15 @@ export default function UserMenu({
               Upgrade to a Super Click
             </button>
             <button onClick={handleUpgradeUltraClick} className="ultraClickButton">
-              Upgrade to a Super Click
+              Upgrade to an Ultra Click
             </button>
             <p className="info-text">
               Delete more cordinates at once with Super and Ultra Clicks!
             </p>
-            <p>Super - Use {SUPER_CLICK_UPGRADE_COST} clicks to delete up to {SUPER_CLICK_TOTAL_CELLS}</p>
-            <p>Ultra - Use {ULTRA_CLICK_UPGRADE_COST} clicks to delete up to {ULTRA_CLICK_TOTAL_CELLS}</p>
+            <p className="info-text">
+              Super: Use {SUPER_CLICK_UPGRADE_COST} clicks to delete up to {SUPER_CLICK_TOTAL_CELLS} coordinates</p>
+            <p className="info-text">
+              Ultra: Use {ULTRA_CLICK_UPGRADE_COST} clicks to delete up to {ULTRA_CLICK_TOTAL_CELLS} coordinates</p>
           </div>
         </div>
       )}
