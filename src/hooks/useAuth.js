@@ -218,9 +218,7 @@ export function useAuth(setErrorMessage, setShowErrorModal) {
   fetchUserProfile,
   showPassword,
   setShowPassword,
-  showErrorModal,
   setShowErrorModal,
-  errorMessage,
   setErrorMessage
 };
 }
