@@ -107,7 +107,7 @@
   color: #bbb;
 }
 
-.upgradesInfo-header {
+.upgradesInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
