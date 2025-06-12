@@ -90,7 +90,7 @@ export default function UserMenu({
 
           <div className="upgradesMenu">
             <div className="upgradesInfo" >
-              <span>Upgrade to Delete More!</span>
+              <span style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>Upgrade to Delete More!</span>
               <button className="info-button" onClick={() => setShowModal(true)}>
                 i
               </button>
