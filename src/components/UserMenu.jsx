@@ -6,7 +6,8 @@ import {
   BUY_CLICKS_PACKAGE_ONE_COST,
   BUY_CLICKS_PACKAGE_TWO_COST,
   BUY_CLICKS_PACKAGE_THREE_COST,
-  FREE_CLICKS
+  FREE_CLICKS,
+  SUPER_CLICK_UPGRADE_COST
 } from '../config/config';
 
 export default function UserMenu({
@@ -86,7 +87,7 @@ export default function UserMenu({
               Upgrade to a Super Click
             </button>
             <p className="info-text">
-              Use 75 clicks to get 1 Super Click which deletes up to 225 coordinates at once
+              Use {SUPER_CLICK_UPGRADE_COST} clicks to get 1 Super Click which deletes up to 225 coordinates at once
             </p>
           </div>
         </div>
