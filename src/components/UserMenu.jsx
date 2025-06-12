@@ -89,9 +89,9 @@ export default function UserMenu({
           }
 
           <div className="upgradesMenu">
-            <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999", display: "flex", alignItems: "center" }}>
-              <span style={{ marginRight: "0.5rem" }}>Upgrade to Delete More!</span>
-              <button onClick={() => setShowModal(true)}>
+            <div className="upgradesInfo" >
+              Upgrade to Delete More!
+              <button className="info-button" onClick={() => setShowModal(true)}>
                 i
               </button>
             </div>
