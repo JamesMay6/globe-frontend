@@ -17,6 +17,7 @@ export default function UserMenu({
   clicksTotal,
   clicksUsed,
   superClicksTotal,
+  ultraClicksTotal,
   superClickEnabled,
   setSuperClickEnabled,
   handleBuyClicks,
@@ -26,6 +27,8 @@ export default function UserMenu({
   buyMenuOpen,
   setBuyMenuOpen,
 }) {
+
+  const [showModal, setShowModal] = useState(false);
   
   return (
     <div className="buyMenu">
@@ -38,6 +41,7 @@ export default function UserMenu({
             <div><strong>Available Clicks:</strong> {clicksTotal}</div>
             <div><strong>Clicks Used:</strong> {clicksUsed}</div>
             <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
+            <div><strong>Available Ultra Clicks:</strong> {ultraClicksTotal}</div>
           </div>
 
           <div className="superClickToggle" style={{ marginTop: "1rem" }}>
@@ -84,22 +88,31 @@ export default function UserMenu({
           }
 
           <div className="upgradesMenu">
-            <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999" }}>
-              Upgrade to Delete More!
+            <div style={{ marginTop: "1rem", marginBottom: "0.5rem", color: "#999", display: "flex", alignItems: "center" }}>
+              <span style={{ marginRight: "0.5rem" }}>Upgrade to Delete More!</span>
+              <button onClick={() => setShowModal(true)}>
+                i
+              </button>
             </div>
+
             <button onClick={handleUpgradeSuperClick} className="superClickButton">
               Upgrade to a Super Click
             </button>
             <button onClick={handleUpgradeUltraClick} className="ultraClickButton">
               Upgrade to an Ultra Click
             </button>
-            <p className="info-text">
-              Delete more cordinates at once with Super and Ultra Clicks!
-            </p>
-            <p className="info-text">
-              Super: Use {SUPER_CLICK_UPGRADE_COST} clicks to delete up to {SUPER_CLICK_TOTAL_CELLS} coordinates</p>
-            <p className="info-text">
-              Ultra: Use {ULTRA_CLICK_UPGRADE_COST} clicks to delete up to {ULTRA_CLICK_TOTAL_CELLS} coordinates</p>
+
+            {showModal && (
+              <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                <div className="modal" onClick={(e) => e.stopPropagation()}>
+                  <h2>Click Upgrades Info</h2>
+                  <p><strong>Super Click:</strong> Spend {SUPER_CLICK_UPGRADE_COST} clicks to delete up to {SUPER_CLICK_TOTAL_CELLS} coordinates.</p>
+                  <p><strong>Ultra Click:</strong> Spend {ULTRA_CLICK_UPGRADE_COST} clicks to delete up to {ULTRA_CLICK_TOTAL_CELLS} coordinates.</p>
+                  <p>These powerful upgrades let you make a much bigger impact with fewer manual clicks.</p>
+                  <button onClick={() => setShowModal(false)} className="close-button">Close</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

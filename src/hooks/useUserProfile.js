@@ -6,6 +6,7 @@ export function useUserProfile(user, fetchUserProfile) {
   const [clicksTotal, setClicksTotal] = useState(0);
   const [clicksUsed, setClicksUsed] = useState(0);
   const [superClicks, setSuperClicks] = useState(0);
+  const [ultraClicks, setUltraClicks] = useState(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
 
   const updateProfileFromData = (data) => {
@@ -14,6 +15,7 @@ export function useUserProfile(user, fetchUserProfile) {
     setClicksTotal(data.clicks_total || 0);
     setClicksUsed(data.clicks_used || 0);
     setSuperClicks(data.super_clicks || 0);
+    setUltraClicks(data.ultra_clicks || 0);
   };
 
   const loadProfile = async () => {
@@ -30,6 +32,7 @@ export function useUserProfile(user, fetchUserProfile) {
       setClicksTotal(0);
       setClicksUsed(0);
       setSuperClicks(0);
+      setUltraClicks(0);
     }
   }, [user]);
 
@@ -38,11 +41,13 @@ export function useUserProfile(user, fetchUserProfile) {
     clicksTotal,
     clicksUsed,
     superClicks,
+    ultraClicks,
     superClickEnabled,
     setUsername,
     setClicksTotal,
     setClicksUsed,
     setSuperClicks,
+    setUltraClicks,
     setSuperClickEnabled,
     updateProfileFromData,
     loadProfile,

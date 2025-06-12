@@ -82,6 +82,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-size: 16px; /* Ensure font size is controlled */
+  margin-top:5px;
 }
 
 .ultraClickButton {
@@ -94,6 +95,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-size: 16px; /* Ensure font size is controlled */
+  margin-top:5px;
 }
 
 .superClickButton:hover {
