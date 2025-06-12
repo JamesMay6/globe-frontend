@@ -173,8 +173,9 @@
     font-size: 13px; /* Smaller content font size */
   }
 
-  .superClickButton {
-    padding: 5px;
+  .superClickButton,
+  .ultraClickButton {
+    padding: 7px 5px;
     font-size: 14px; /* Adjust font size */
   }
 
