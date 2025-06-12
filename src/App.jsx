@@ -16,6 +16,7 @@ import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
 import ResetKeyModal from './components/ResetKeyModal';
+import { AuthProvider } from "./components/AuthProvider";
 
 //css
 import "./styles/aboutMenu.css";
@@ -152,6 +153,9 @@ export default function App() {
         <AboutMenu />
         <Leaderboard />
         <ResetKeyModal resetKey={resetKey} onClose={() => setResetKey(null)} />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
         
         {showErrorModal && (
           <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
