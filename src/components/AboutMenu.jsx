@@ -32,7 +32,7 @@ export default function AboutMenu() {
               When you delete the Earth you will be rewarded with DTE (Delete The Earth) token so the more you delete, the more rewards you get! 
               Rewards will be issued out on a daily schedule into your linked DTE wallet. 
             </p>
-            <p>Start deleting today and you will be rewarded with DTE Token when the service is integrated with deltetheearth.com </p>
+            <p>Start deleting today and you will be rewarded with DTE Token when the service is integrated with deletetheearth.com </p>
             <div>
               <a href="/terms.html" target="_blank" rel="noopener noreferrer">
                 Terms & Conditions
