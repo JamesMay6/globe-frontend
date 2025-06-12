@@ -21,4 +21,6 @@ export const BUY_CLICKS_PACKAGE_TWO_COST = Number(import.meta.env.VITE_BUY_CLICK
 export const BUY_CLICKS_PACKAGE_THREE_COST = Number(import.meta.env.VITE_BUY_CLICKS_PACKAGE_THREE_COST);
 export const FREE_CLICKS = Number(import.meta.env.VITE_FREE_CLICKS);
 export const SUPER_CLICK_UPGRADE_COST = Number(import.meta.env.VITE_SUPER_CLICK_UPGRADE_COST);
+export const SUPER_CLICK_TOTAL_CELLS = Number(import.meta.env.VITE_SUPER_CLICK_TOTAL_CELLS);
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+SUPER_CLICK_TOTAL_CELLS
