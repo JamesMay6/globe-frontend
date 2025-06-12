@@ -5,26 +5,27 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6); /* semi-transparent dark backdrop */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* ensure on top */
+  z-index: 2000; /* Higher than .topLeftMenu (which is 1000) */
 }
 
 /* Modal content container */
 .modal {
   background: #fff;
-  padding: 2rem 2.5rem;
+  padding: 1.5rem 2rem;
   border-radius: 8px;
   max-width: 480px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   position: relative;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #222;
+  font-size: 1rem;
 }
 
 /* Button styling consistent inside modals */
@@ -44,7 +45,7 @@
   background-color: #0056b3;
 }
 
-/* Additional styles for reset key code block */
+/* Reset key code block */
 .reset-key-value code {
   background-color: #f3f4f6;
   padding: 0.4rem 0.6rem;
@@ -56,13 +57,13 @@
   font-size: 1.1rem;
 }
 
-/* Message text inside modals */
+/* Message text */
 .modal p {
   line-height: 1.5;
   margin-top: 0.8rem;
 }
 
-/* Form inputs inside modal */
+/* Inputs */
 .modal input[type="text"],
 .modal input[type="password"] {
   display: block;
@@ -75,7 +76,7 @@
   box-sizing: border-box;
 }
 
-/* Links inside modal */
+/* Links */
 .modal a {
   color: #007bff;
   text-decoration: underline;
@@ -83,4 +84,29 @@
 
 .modal a:hover {
   text-decoration: none;
+}
+
+/* Smaller screen adjustments */
+@media (max-width: 768px) {
+  .modal {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .modal button {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .modal input[type="text"],
+  .modal input[type="password"] {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .reset-key-value code {
+    font-size: 1rem;
+  }
 }
