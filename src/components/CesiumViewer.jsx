@@ -186,7 +186,9 @@ export default function CesiumViewer({
         // Disable super click after successful use
         setSuperClickEnabled(false);
         superClickEnabledRef.current = false; 
-        showMessage('Super Click Disabled', "warn");
+        setTimeout(() => {
+          showMessage("Super Click Disabled", "warn");
+        }, 500); // 500ms delay
       }
 
       // After decrementing ultra clicks:
@@ -196,7 +198,10 @@ export default function CesiumViewer({
         // Disable ultra click after successful use
         setUltraClickEnabled(false);
         ultraClickEnabledRef.current = false;
-        showMessage('Ultra Click Disabled', "warn");
+        setTimeout(() => {
+          showMessage("Super Click Disabled", "warn");
+        }, 500); // 500ms delay
+        
       }
 
        await fetchUserProfile();
