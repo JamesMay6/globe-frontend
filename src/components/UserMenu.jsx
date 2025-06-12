@@ -116,17 +116,17 @@ export default function UserMenu({
 
           <div className="upgradesMenu">
             <div className="upgradesInfo" >
-              <span>Upgrade to Delete More!</span>
+              <span>Upgrade Your Clicks Delete More!</span>
               <button className="info-button" onClick={() => setShowModal(true)}>
                 i
               </button>
             </div>
 
             <button onClick={handleUpgradeSuperClick} className="superClickButton">
-              Upgrade to a Super Click
+              Super Click: Cost {SUPER_CLICK_UPGRADE_COST}
             </button>
             <button onClick={handleUpgradeUltraClick} className="ultraClickButton">
-              Upgrade to an Ultra Click
+              Ultra Click: Cost {ULTRA_CLICK_UPGRADE_COST}
             </button>
 
             {showModal && (
