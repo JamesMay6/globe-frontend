@@ -45,7 +45,16 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 const drawnCells = new Set();
 
 /* GROUND PRIMITIVE ONLY */
+let primitiveBatch = null;
+
+export const initPrimitiveBatch = (viewer) => {
+  primitiveBatch = new Cesium.PrimitiveCollection();
+  viewer.scene.primitives.add(primitiveBatch);
+};
+
 export const drawDeletedCells = (viewer, cells) => {
+  if (!primitiveBatch) initPrimitiveBatch(viewer);
+
   const instances = [];
 
   for (const { lat, lon } of cells) {
@@ -61,31 +70,29 @@ export const drawDeletedCells = (viewer, cells) => {
       lon + cellWidth + padding,
       lat + cellWidth + padding
     );
-    instances.push(
-      new Cesium.GeometryInstance({
-        geometry: new Cesium.RectangleGeometry({
-          rectangle,
-          vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT,
-        }),
-        attributes: {
-          color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-            Cesium.Color.BLACK.withAlpha(1.0)
-          ),
-        },
-      })
-    );
+
+    instances.push(new Cesium.GeometryInstance({
+      geometry: new Cesium.RectangleGeometry({
+        rectangle,
+        vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT,
+      }),
+      attributes: {
+        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+          Cesium.Color.BLACK.withAlpha(1.0)
+        ),
+      },
+    }));
   }
 
   if (instances.length > 0) {
-    viewer.scene.primitives.add(
-      new Cesium.GroundPrimitive({
-        geometryInstances: instances,
-        appearance: new Cesium.PerInstanceColorAppearance(),
-        classificationType: Cesium.ClassificationType.BOTH,
-      })
-    );
+    primitiveBatch.add(new Cesium.GroundPrimitive({
+      geometryInstances: instances,
+      appearance: new Cesium.PerInstanceColorAppearance(),
+      classificationType: Cesium.ClassificationType.BOTH,
+    }));
   }
 };
+
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
   const round = (x) => Math.floor(x * 100) / 100; // 3 decimal places
