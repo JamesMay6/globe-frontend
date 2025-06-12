@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   isPaymentEnabled,
   BUY_CLICKS_PACKAGE_ONE,
