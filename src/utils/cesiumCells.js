@@ -1,5 +1,6 @@
 import * as Cesium from "cesium";
 import {API_URL} from '../config/config';
+import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
 
 export const normalizeCoord = (val) => Math.floor(val * 1000) / 1000;
 const fetchedBounds = new Set();
@@ -161,7 +162,7 @@ export const fetchDeletedCells = async (viewer) => {
   const minLon = Cesium.Math.toDegrees(rect.west);
   const maxLon = Cesium.Math.toDegrees(rect.east);
 
-  const latDivisions = 6; // Increase for finer granularity
+  const latDivisions = 6;
   const lonDivisions = 6;
   const latStep = (maxLat - minLat) / latDivisions;
   const lonStep = (maxLon - minLon) / lonDivisions;
@@ -179,31 +180,60 @@ export const fetchDeletedCells = async (viewer) => {
       if (fetchedBounds.has(cacheKey)) continue;
       fetchedBounds.add(cacheKey);
 
-      const url = new URL(`${API_URL}/deleted`);
-      url.searchParams.set("minLat", subMinLat);
-      url.searchParams.set("maxLat", subMaxLat);
-      url.searchParams.set("minLon", subMinLon);
-      url.searchParams.set("maxLon", subMaxLon);
-      url.searchParams.set("limit", 1000);
-
-      fetchTasks.push(
-        fetch(url)
-          .then((res) => res.json())
-          .then((cells) => ({ cacheKey, cells }))
-      );
+      fetchTasks.push(fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer));
     }
   }
 
-  const results = await Promise.all(fetchTasks);
+  await Promise.all(fetchTasks);
+};
 
-  let total = 0;
-  for (const { cacheKey, cells } of results) {
-    if (!cells || cells.length === 0) continue;
-    drawDeletedCells(viewer, cells);
-    total += cells.length;
+const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer) => {
+  const cacheKey = getCacheKey(minLat, maxLat, minLon, maxLon);
+
+  const cached = await loadTileFromDisk(cacheKey);
+  if (cached) {
+    drawDeletedCells(viewer, cached);
+    console.log("Loaded from disk:", cacheKey);
+    return;
   }
 
-  console.log(`Parallel fetched ${total} cells.`);
+  const batchSize = 1000;
+  let lastLat = null;
+  let lastLon = null;
+  let allCells = [];
+
+  while (true) {
+    const url = new URL(`${API_URL}/deleted`);
+    url.searchParams.append("minLat", minLat);
+    url.searchParams.append("maxLat", maxLat);
+    url.searchParams.append("minLon", minLon);
+    url.searchParams.append("maxLon", maxLon);
+    url.searchParams.append("limit", batchSize);
+
+    if (lastLat !== null && lastLon !== null) {
+      url.searchParams.append("lastLat", lastLat);
+      url.searchParams.append("lastLon", lastLon);
+    }
+
+    const res = await fetch(url);
+    const cells = await res.json();
+
+    if (!cells || cells.length === 0) break;
+
+    drawDeletedCells(viewer, cells);
+    allCells.push(...cells);
+
+    const last = cells[cells.length - 1];
+    lastLat = last.lat;
+    lastLon = last.lon;
+
+    if (cells.length < batchSize) break;
+  }
+
+  await saveTileToDisk(cacheKey, allCells);
+  console.log(`Fetched from Supabase and cached: ${cacheKey}`);
 };
+
+
 
 
