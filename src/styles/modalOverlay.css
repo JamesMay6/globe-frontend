@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* Higher than .topLeftMenu (which is 1000) */
+  z-index: 2000 !important; /* Higher than .topLeftMenu (which is 1000) */
 }
 
 /* Modal content container */
@@ -93,6 +93,8 @@
     font-size: 0.9rem;
     width: 95%;
     max-height: 85vh;
+    z-index: 2000 !important; /* Higher than .topLeftMenu (which is 1000) */
+
   }
 
   .modal button {
