@@ -21,8 +21,6 @@
   max-height: 400px;
   padding: 5px;
   overflow-y: auto;
-  z-index: 1000;
-
 }
 
 .authBox:not(.loggedIn) > button:first-child {
@@ -35,8 +33,6 @@
   width: 100%;
   transition: background 0.2s ease;
   font-size: 16px;
-  z-index: 1000;
-
 }
 
 .authBox:not(.loggedIn) > button:first-child:hover {
@@ -87,8 +83,6 @@
   max-height: none;
   overflow: visible;
   font-size: 16px;
-  z-index: 1000;
-
 }
 
 .authBox.loggedIn > * {
