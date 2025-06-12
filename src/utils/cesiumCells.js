@@ -88,7 +88,7 @@ export const drawDeletedCells = (viewer, cells) => {
 };
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * 100) / 100; // 2 decimal places
+  const round = (x) => Math.floor(x * 100) / 100; // 3 decimal places
   return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
 };
 
@@ -169,12 +169,14 @@ export const fetchDeletedCells = async (viewer) => {
 
   const fetchTasks = [];
 
+  const round = (val) => parseFloat(val.toFixed(2));
+
   for (let i = 0; i < latDivisions; i++) {
     for (let j = 0; j < lonDivisions; j++) {
-      const subMinLat = minLat + i * latStep;
-      const subMaxLat = subMinLat + latStep;
-      const subMinLon = minLon + j * lonStep;
-      const subMaxLon = subMinLon + lonStep;
+      const subMinLat = round(minLat + i * latStep);
+      const subMaxLat = round(subMinLat + latStep);
+      const subMinLon = round(minLon + j * lonStep);
+      const subMaxLon = round(subMinLon + lonStep);
 
       const cacheKey = getCacheKey(subMinLat, subMaxLat, subMinLon, subMaxLon);
       if (fetchedBounds.has(cacheKey)) continue;
