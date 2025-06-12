@@ -98,6 +98,7 @@ export default function App() {
         fetchUserProfile={refreshUserProfile}
         showMessage={showMessage}
         superClickEnabled={superClickEnabled}
+        superUltraEnabled={superUltraEnabled}
         clicksTotal={clicksTotal}
         clicksUsed={clicksUsed} 
         superClicksTotal={superClicksTotal}
