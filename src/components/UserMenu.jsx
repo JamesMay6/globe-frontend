@@ -86,7 +86,7 @@ export default function UserMenu({
               Upgrade to a Super Click
             </button>
             <p className="info-text">
-              Use 75 clicks to get 1 Super Click which deletes up to 289 coordinates at once
+              Use 75 clicks to get 1 Super Click which deletes up to 225 coordinates at once
             </p>
           </div>
         </div>
