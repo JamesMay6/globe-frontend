@@ -30,6 +30,8 @@ export default function CesiumViewer({
   ultraClicksTotal,
   setUltraClicksTotal,
   ultraClickEnabled,
+  setSuperClickEnabled,
+  setUltraClickEnabled
 }) {
   const viewerRef = useRef(null);
   const containerRef = useRef(null);
