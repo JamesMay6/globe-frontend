@@ -5,7 +5,7 @@ import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
 // === CONFIGURABLE CELL SIZE ===
 // You can change these to tune precision/granularity:
 const CELL_WIDTH_LAT = 0.01;  // e.g., 0.01 degrees latitude per cell
-const CELL_WIDTH_LON = 0.001;  // e.g., 0.001 degrees longitude per cell
+const CELL_WIDTH_LON = 0.01;  // e.g., 0.001 degrees longitude per cell
 
 // Size of each fetch tile (larger than cell width, for batching):
 const FETCH_TILE_SIZE_LAT = 0.12; // degrees
