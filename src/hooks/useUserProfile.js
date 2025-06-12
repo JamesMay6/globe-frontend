@@ -8,6 +8,7 @@ export function useUserProfile(user, fetchUserProfile) {
   const [superClicks, setSuperClicks] = useState(0);
   const [ultraClicks, setUltraClicks] = useState(0);
   const [superClickEnabled, setSuperClickEnabled] = useState(false);
+  const [ultraClickEnabled, setUltraClickEnabled] = useState(false);
 
   const updateProfileFromData = (data) => {
     if (!data) return;
@@ -43,12 +44,14 @@ export function useUserProfile(user, fetchUserProfile) {
     superClicks,
     ultraClicks,
     superClickEnabled,
+    ultraClickEnabled,
     setUsername,
     setClicksTotal,
     setClicksUsed,
     setSuperClicks,
     setUltraClicks,
     setSuperClickEnabled,
+    setUltraClickEnabled,
     updateProfileFromData,
     loadProfile,
   };

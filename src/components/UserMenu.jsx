@@ -46,11 +46,11 @@ export default function UserMenu({
             <div style={{ marginTop: "0.5rem", marginBottom: "0.5rem", color: "#999" }}>
             Available Clicks
             </div>
-            <div><strong>Single:</strong> {clicksTotal}</div>
+            <div><strong>Single Clicks:</strong> {clicksTotal}</div>
             
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "5px" }}>
             <div><strong>Super Clicks:</strong> {superClicksTotal}</div>
             <button className="enableButtons"
               onClick={() => {
@@ -66,7 +66,7 @@ export default function UserMenu({
             </button>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "5px"  }}>
             <div><strong>Ultra Clicks:</strong> {ultraClicksTotal}</div>
             <button className="enableButtons"
               onClick={() => {
