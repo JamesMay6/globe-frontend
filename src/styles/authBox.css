@@ -180,6 +180,10 @@
   background: #555;
 }
 
+.enableButtons
+ {
+  width:auto !important
+ }
 @media (max-width: 768px) {
   .authBox:not(.loggedIn) {
     width: 100%;

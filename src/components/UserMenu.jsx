@@ -41,13 +41,18 @@ export default function UserMenu({
       {buyMenuOpen && (
         <div className="buyContent">
           <div className="clicksAvailable">
-            <div><strong>Available Clicks:</strong> {clicksTotal}</div>
             <div><strong>Clicks Used:</strong> {clicksUsed}</div>
+            
+            <div style={{ marginTop: "0.5rem", marginBottom: "0.5rem", color: "#999" }}>
+            Available Clicks
+            </div>
+            <div><strong>Single:</strong> {clicksTotal}</div>
+            
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div><strong>Available Super Clicks:</strong> {superClicksTotal}</div>
-            <button
+            <div><strong>Super Clicks:</strong> {superClicksTotal}</div>
+            <button className="enableButtons"
               onClick={() => {
                 if (!superClickEnabled) {
                   setSuperClickEnabled(true);
@@ -62,8 +67,8 @@ export default function UserMenu({
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div><strong>Available Ultra Clicks:</strong> {ultraClicksTotal}</div>
-            <button
+            <div><strong>Ultra Clicks:</strong> {ultraClicksTotal}</div>
+            <button className="enableButtons"
               onClick={() => {
                 if (!ultraClickEnabled) {
                   setUltraClickEnabled(true);
