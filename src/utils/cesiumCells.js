@@ -2,7 +2,7 @@ import * as Cesium from "cesium";
 import {API_URL} from '../config/config';
 import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
 
-export const normalizeCoord = (val) => Math.floor(val * 100) / 100;
+export const normalizeCoord = (val) => Math.floor(val * 200) / 200;
 const fetchedBounds = new Set();
 
 export const drawDeletedCell = (viewer, lat, lon) => {
@@ -88,7 +88,7 @@ export const drawDeletedCells = (viewer, cells) => {
 };
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * 100) / 100; // 3 decimal places
+  const round = (x) => Math.floor(x * 200) / 200; // 3 decimal places
   return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
 };
 
