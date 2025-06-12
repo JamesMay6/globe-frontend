@@ -232,8 +232,8 @@ export default function CesiumViewer({
         const movedEnough =
           last.lat === null ||
           last.lon === null ||
-          Math.abs(latRounded - last.lat) >= 0.01 ||
-          Math.abs(lonRounded - last.lon) >= 0.01;
+          Math.abs(latRounded - last.lat) >= 0.001 ||
+          Math.abs(lonRounded - last.lon) >= 0.001;
 
         if (movedEnough) {
           lastFetchedRef.current = {
