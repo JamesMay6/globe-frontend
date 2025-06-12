@@ -159,16 +159,14 @@ export default function AuthBox({
       )}
     </div>
           {showErrorModal && (
-        <Modal>
           <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
-          <div className="modal">
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
               <h2>Error</h2>
               <p>{errorMessage}</p>
-            <button onClick={() => setShowErrorModal(false)}>Close</button>
+              <button onClick={() => setShowErrorModal(false)}>Close</button>
+            </div>
           </div>
-        </div>
-        </Modal>
-      )}
+          )}
     
 
     </>
