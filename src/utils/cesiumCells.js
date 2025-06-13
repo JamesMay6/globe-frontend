@@ -140,9 +140,20 @@ export async function fetchDeletedCells(viewer, bounds) {
       const subMaxLon = round(subMinLon + lonStep);
 
       const cacheKey = getCacheKey(subMinLat, subMaxLat, subMinLon, subMaxLon);
-      if (fetchedBounds.has(cacheKey)) continue;
-      fetchedBounds.add(cacheKey);
 
+      // ✅ First check disk cache directly
+      const cached = await loadTileFromDisk(cacheKey);
+      if (cached && cached.length > 0) {
+        drawDeletedCells(viewer, cached);
+        console.log("Loaded from disk (early):", cacheKey);
+        fetchedBounds.add(cacheKey); // avoid reloading
+        continue;
+      }
+
+      // ✅ If already fetched in-memory, skip
+      if (fetchedBounds.has(cacheKey)) continue;
+
+      // 🔁 Otherwise fetch from server
       fetchTasks.push(fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer));
     }
   }
