@@ -128,20 +128,22 @@ export async function fetchDeletedCells(viewer, bounds) {
 
   const latDivisions = 6;
   const lonDivisions = 6;
+  const latStep = (maxLat - minLat) / latDivisions;
+  const lonStep = (maxLon - minLon) / lonDivisions;
 
-  const tileSize = tilePrecision; // 0.25
+  const round = (val) => parseFloat(val.toFixed(dpPrecision));
   const fetchTasks = [];
 
-  const startLat = Math.floor(minLat / tileSize) * tileSize;
-  const endLat   = Math.ceil(maxLat / tileSize) * tileSize;
-  const startLon = Math.floor(minLon / tileSize) * tileSize;
-  const endLon   = Math.ceil(maxLon / tileSize) * tileSize;
+  for (let i = 0; i < latDivisions; i++) {
+    for (let j = 0; j < lonDivisions; j++) {
+      const subMinLat = round(minLat + i * latStep);
+      const subMaxLat = round(subMinLat + latStep);
+      const subMinLon = round(minLon + j * lonStep);
+      const subMaxLon = round(subMinLon + lonStep);
 
-  for (let lat = startLat; lat < endLat; lat += tileSize) {
-    for (let lon = startLon; lon < endLon; lon += tileSize) {
-      const centerLat = lat + tileSize / 2;
-      const centerLon = lon + tileSize / 2;
-      const cacheKey = getCacheKey(centerLat, centerLon);
+      const tileLat = (subMinLat + subMaxLat) / 2;
+      const tileLon = (subMinLon + subMaxLon) / 2;
+      const cacheKey = getCacheKey(tileLat, tileLon);
 
       if (fetchedBounds.has(cacheKey)) continue;
 
@@ -153,17 +155,9 @@ export async function fetchDeletedCells(viewer, bounds) {
         continue;
       }
 
-      // Push fetch task for this tile
-      const queryPad = 0.001; // Or 0.002 for extra safety
-      const paddedMinLat = lat - queryPad;
-      const paddedMaxLat = lat + tileSize + queryPad;
-      const paddedMinLon = lon - queryPad;
-      const paddedMaxLon = lon + tileSize + queryPad;
-
       fetchTasks.push(
-        fetchSubBox(paddedMinLat, paddedMaxLat, paddedMinLon, paddedMaxLon, viewer, cacheKey)
+        fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer, cacheKey)
       );
-
     }
   }
 
