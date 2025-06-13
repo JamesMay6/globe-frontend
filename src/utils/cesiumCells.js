@@ -165,46 +165,29 @@ export async function fetchDeletedCells(viewer, bounds) {
 }
 
 const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => {
-  const cached = await loadTileFromDisk(cacheKey);
-  if (cached && cached.length > 0) {
-    drawDeletedCells(viewer, cached);
-    console.log("Loaded from disk:", cacheKey);
+  const limit = 10000; // or whatever you want, backend caps batches to 1000 internally
+  const url = new URL(`${API_URL}/deleted`);
+  url.searchParams.append("minLat", minLat);
+  url.searchParams.append("maxLat", maxLat);
+  url.searchParams.append("minLon", minLon);
+  url.searchParams.append("maxLon", maxLon);
+  url.searchParams.append("limit", limit);
+
+  // Don't send lastLat or lastLon because backend paginates internally for this single call
+
+  const res = await fetch(url);
+  const cells = await res.json();
+
+  if (cells && cells.length > 0) {
+    drawDeletedCells(viewer, cells);
+    await saveTileToDisk(cacheKey, cells);
     fetchedBounds.add(cacheKey);
-    return;
-  }
-
-const batchSize = 10000;
-let lastLat = null;
-let lastLon = null;
-const allCells = [];
-
-const url = new URL(`${API_URL}/deleted`);
-url.searchParams.append("minLat", minLat);
-url.searchParams.append("maxLat", maxLat);
-url.searchParams.append("minLon", minLon);
-url.searchParams.append("maxLon", maxLon);
-url.searchParams.append("limit", batchSize);
-
-if (lastLat !== null && lastLon !== null) {
-  url.searchParams.append("lastLat", lastLat);
-  url.searchParams.append("lastLon", lastLon);
-}
-
-const res = await fetch(url);
-const cells = await res.json();
-
-if (cells && cells.length > 0) {
-  drawDeletedCells(viewer, cells);
-}
-
-  if (allCells.length > 0) {
-    await saveTileToDisk(cacheKey, allCells);
     console.log(`Fetched and cached: ${cacheKey}`);
-    fetchedBounds.add(cacheKey);
   } else {
     console.log(`Fetched empty tile: ${cacheKey}`);
   }
 };
+
 
 /* Prune drawn cells outside view */
 export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
