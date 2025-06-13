@@ -201,7 +201,7 @@ export default function CesiumViewer({
         setUltraClickEnabled(false);
         ultraClickEnabledRef.current = false;
         setTimeout(() => {
-          showMessage("Ultra Click Disabled", "info");
+          showMessage("Ultra Click Disabled", "warn");
         }, 1500); // 500ms delay
         
       }
@@ -210,7 +210,7 @@ export default function CesiumViewer({
 
     } catch (err) {
       console.error(err);
-      showMessage("Error deleting Earth", "info");
+      showMessage("Error deleting Earth", "error");
     } finally {
       clickInProgressRef.current = false;
     }
