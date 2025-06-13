@@ -176,6 +176,8 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
 const batchSize = 5000;
 let lastLat = null;
 let lastLon = null;
+const allCells = [];
+
 const url = new URL(`${API_URL}/deleted`);
 url.searchParams.append("minLat", minLat);
 url.searchParams.append("maxLat", maxLat);
