@@ -4,6 +4,7 @@ import { SUPABASE_URL } from "../config/config";
 export default function ResetPasswordForm({ userId, onSuccess }) {
   const [keyWords, setKeyWords] = useState(["", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [isError, setIsError] = useState(false);
@@ -15,64 +16,69 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
     setKeyWords(updated);
   };
 
-const handleReset = async () => {
-  const resetKey = keyWords.join("-");
+  const handleReset = async () => {
+    const resetKey = keyWords.join("-");
 
-  if (!username) {
-    setMessage("Please enter your username.");
-    setIsError(true);
-    return;
-  }
-
-  if (keyWords.some((word) => word.length === 0)) {
-    setMessage("Please fill all 5 words of the reset key.");
-    setIsError(true);
-    return;
-  }
-
-  if (newPassword.length < 6) {
-    setMessage("Please enter a new password of at least 6 characters.");
-    setIsError(true);
-    return;
-  }
-
-  try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/reset-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username,
-        resetKey,
-        newPassword,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-      setMessage(data.error || "Failed to reset password.");
+    if (!username) {
+      setMessage("Please enter your username.");
       setIsError(true);
       return;
     }
 
-    setMessage("Password reset successful!");
-    setIsError(false);
-    setResetSuccessful(true);
+    if (keyWords.some((word) => word.length === 0)) {
+      setMessage("Please fill all 5 words of the reset key.");
+      setIsError(true);
+      return;
+    }
 
-  } catch (err) {
-    console.error(err);
-    setMessage("An error occurred. Please try again.");
-    setIsError(true);
-  }
-};
+    if (newPassword.length < 6) {
+      setMessage("Please enter a new password of at least 6 characters.");
+      setIsError(true);
+      return;
+    }
 
+    if (newPassword !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      setIsError(true);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          resetKey,
+          newPassword,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setMessage(data.error || "Failed to reset password.");
+        setIsError(true);
+        return;
+      }
+
+      setMessage("Password reset successful!");
+      setIsError(false);
+      setResetSuccessful(true);
+
+    } catch (err) {
+      console.error(err);
+      setMessage("An error occurred. Please try again.");
+      setIsError(true);
+    }
+  };
 
   return (
     <div>
       <p>Please enter your saved 5-word secret key and your new password below.</p>
       <p>If the key is correct, your password will be updated.</p>
-      <p>3 incorrect attempts to reset your password and your account will be permanently locked out. </p>
-      
+      <p>3 incorrect attempts to reset your password and your account will be permanently locked out.</p>
+
       <input
         type="text"
         value={username}
@@ -98,6 +104,14 @@ const handleReset = async () => {
         onChange={(e) => setNewPassword(e.target.value)}
         placeholder="New Password"
       />
+      <input
+        type="password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        placeholder="Confirm New Password"
+        style={{ marginTop: "0.5rem" }}
+      />
+
       {resetSuccessful ? (
         <button onClick={() => onSuccess?.()}>
           Close
@@ -107,14 +121,12 @@ const handleReset = async () => {
           Reset Password
         </button>
       )}
+
       {message && (
         <p style={{ color: isError ? "red" : "green", fontWeight: "bold" }}>
           {message}
         </p>
       )}
-
-      
-
     </div>
   );
 }
