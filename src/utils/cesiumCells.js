@@ -47,7 +47,7 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
 const drawnCells = new Set();
 
-/* GROUND PRIMITIVE BATCHES ONLY */
+/*primtives*/
 let primitiveBatch = null;
 
 export const initPrimitiveBatch = (viewer) => {
@@ -75,7 +75,8 @@ export const drawDeletedCells = (viewer, cells) => {
     instances.push(new Cesium.GeometryInstance({
       geometry: new Cesium.RectangleGeometry({
         rectangle,
-        vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT,
+        height: 0, // aligned to ellipsoid
+        vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
       }),
       attributes: {
         color: Cesium.ColorGeometryInstanceAttribute.fromColor(
@@ -86,16 +87,18 @@ export const drawDeletedCells = (viewer, cells) => {
   }
 
   if (instances.length > 0) {
-    primitiveBatch.add(new Cesium.GroundPrimitive({
+    primitiveBatch.add(new Cesium.Primitive({
       geometryInstances: instances,
-      appearance: new Cesium.PerInstanceColorAppearance(),
-      classificationType: Cesium.ClassificationType.BOTH,
+      appearance: new Cesium.PerInstanceColorAppearance({
+        translucent: false,
+        closed: true
+      }),
     }));
-    
-    viewer.scene.requestRender(); 
 
+    viewer.scene.requestRender();
   }
 };
+
 
 const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
   const round = (x) => Math.floor(x * precision) / precision; 
@@ -113,7 +116,7 @@ export const fetchDeletedCells = async (viewer) => {
   const maxLat = Cesium.Math.toDegrees(rect.north) + buffer;
   const minLon = Cesium.Math.toDegrees(rect.west) - buffer;
   const maxLon = Cesium.Math.toDegrees(rect.east) + buffer;
-  
+
   const latDivisions = 6;
   const lonDivisions = 6;
   const latStep = (maxLat - minLat) / latDivisions;
