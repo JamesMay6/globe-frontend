@@ -83,7 +83,6 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-size: 16px; /* Ensure font size is controlled */
-  margin-top:5px;
 }
 
 .ultraClickButton {
@@ -97,6 +96,7 @@
   transition: background-color 0.2s ease;
   font-size: 16px; /* Ensure font size is controlled */
   margin-top:5px;
+  margin-bottom:0.3rem;
 }
 
 .superClickButton:hover {
@@ -120,7 +120,7 @@
   padding-right: 8px; /* Default header padding */
   box-sizing: border-box;
   font-size: 13px; /* Default header font size */
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
 }
 .info-button {
   background: #666 !important;
