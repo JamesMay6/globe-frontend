@@ -257,22 +257,23 @@ export default function CesiumViewer({
       viewer.camera.flyTo({ 
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
-
+        
       setTimeout(() => {
         const input = document.querySelector(".cesium-geocoder-input");
         if (input) {
           input.addEventListener("focus", (e) => {
-            const val = e.target.value;
-            e.target.value = "";
-            e.target.value = val;
+            // Delay to allow native selection to occur, then override
+            requestAnimationFrame(() => {
+              input.setSelectionRange(input.value.length, input.value.length); // Cursor at end
+            });
           });
 
+          // Ensure text truncation
           input.style.whiteSpace = "nowrap";
           input.style.overflow = "hidden";
           input.style.textOverflow = "ellipsis";
         }
-      }, 300); 
-
+      }, 300);
 
       let pruneTimeout = null;
 
