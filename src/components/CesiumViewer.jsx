@@ -223,7 +223,8 @@ export default function CesiumViewer({
     async function initCesium() {
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
-      const terrainProvider = await Cesium.createWorldTerrainAsync();
+      //const terrainProvider = await Cesium.createWorldTerrainAsync(); //3d terrain
+      const terrainProvider = new Cesium.EllipsoidTerrainProvider(); // flat, no elevation
       const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
       //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954); //Sentinal
 
