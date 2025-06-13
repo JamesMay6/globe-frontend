@@ -262,16 +262,25 @@ export default function CesiumViewer({
         const input = document.querySelector(".cesium-geocoder-input");
         if (input) {
           input.addEventListener("focus", (e) => {
-            // Delay to allow native selection to occur, then override
+            // Put the cursor at the end
             requestAnimationFrame(() => {
-              input.setSelectionRange(input.value.length, input.value.length); // Cursor at end
+              input.setSelectionRange(input.value.length, input.value.length);
             });
           });
 
-          // Ensure text truncation
+          // Ensure it doesn't auto-focus on page load
+          input.blur();
+
+          // Optional styling to stop shifting
           input.style.whiteSpace = "nowrap";
           input.style.overflow = "hidden";
           input.style.textOverflow = "ellipsis";
+        }
+
+        // Remove focus from the whole geocoder container if needed
+        const geocoderContainer = document.querySelector(".cesium-geocoder");
+        if (geocoderContainer) {
+          geocoderContainer.setAttribute("tabindex", "-1");
         }
       }, 300);
 
