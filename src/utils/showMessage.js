@@ -1,9 +1,9 @@
 // utils/showMessage.js
 export function showMessage(text, type = "success", customDuration) {
   const durations = {
-    success: 1000,
+    success: 1500,
     error: 2500,
-    info: 1000,
+    info: 1500,
     warn: 1000,
   };
 

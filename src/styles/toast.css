@@ -31,3 +31,9 @@
   bottom: 115px !important;
 
 }
+
+.toastMessage.info {
+  background: #636363; /* yellow */
+  bottom: 115px !important;
+
+}
