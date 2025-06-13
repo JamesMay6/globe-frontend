@@ -146,7 +146,7 @@ export default function UserMenu({
           </div>
 
           <div className="walletLinkMenu">
-            <div className="walletLinkInfo">
+            <div className="walletLinkInfo" style={{ marginTop: "0.7rem"}}>
               <span>Link DTE Wallet</span>
               <button className="info-button" onClick={() => setWalletInfoModalOpen(true)}>i</button>
             </div>
