@@ -7,6 +7,7 @@ export default function ResetPasswordForm({ userId, onSuccess }) {
   const [message, setMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [isError, setIsError] = useState(false);
+  const [resetSuccessful, setResetSuccessful] = useState(false);
 
   const handleWordChange = (index, value) => {
     const updated = [...keyWords];
@@ -56,6 +57,7 @@ const handleReset = async () => {
 
     setMessage("Password reset successful!");
     setIsError(false);
+    setResetSuccessful(true);
 
   } catch (err) {
     console.error(err);
@@ -96,12 +98,22 @@ const handleReset = async () => {
         onChange={(e) => setNewPassword(e.target.value)}
         placeholder="New Password"
       />
-      <button onClick={handleReset}>Reset Password</button>
+      {resetSuccessful ? (
+        <button onClick={() => onSuccess?.()}>
+          Close
+        </button>
+      ) : (
+        <button onClick={handleReset}>
+          Reset Password
+        </button>
+      )}
       {message && (
         <p style={{ color: isError ? "red" : "green", fontWeight: "bold" }}>
           {message}
         </p>
       )}
+
+      
 
     </div>
   );
