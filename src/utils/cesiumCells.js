@@ -173,38 +173,25 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
     return;
   }
 
-  const batchSize = 1000;
-  let lastLat = null;
-  let lastLon = null;
-  let allCells = [];
+const batchSize = 5000;
+const url = new URL(`${API_URL}/deleted`);
+url.searchParams.append("minLat", minLat);
+url.searchParams.append("maxLat", maxLat);
+url.searchParams.append("minLon", minLon);
+url.searchParams.append("maxLon", maxLon);
+url.searchParams.append("limit", batchSize);
 
-  while (true) {
-    const url = new URL(`${API_URL}/deleted`);
-    url.searchParams.append("minLat", minLat);
-    url.searchParams.append("maxLat", maxLat);
-    url.searchParams.append("minLon", minLon);
-    url.searchParams.append("maxLon", maxLon);
-    url.searchParams.append("limit", batchSize);
+if (lastLat !== null && lastLon !== null) {
+  url.searchParams.append("lastLat", lastLat);
+  url.searchParams.append("lastLon", lastLon);
+}
 
-    if (lastLat !== null && lastLon !== null) {
-      url.searchParams.append("lastLat", lastLat);
-      url.searchParams.append("lastLon", lastLon);
-    }
+const res = await fetch(url);
+const cells = await res.json();
 
-    const res = await fetch(url);
-    const cells = await res.json();
-
-    if (!cells || cells.length === 0) break;
-
-    drawDeletedCells(viewer, cells);
-    allCells.push(...cells);
-
-    const last = cells[cells.length - 1];
-    lastLat = last.lat;
-    lastLon = last.lon;
-
-    if (cells.length < batchSize) break;
-  }
+if (cells && cells.length > 0) {
+  drawDeletedCells(viewer, cells);
+}
 
   if (allCells.length > 0) {
     await saveTileToDisk(cacheKey, allCells);
