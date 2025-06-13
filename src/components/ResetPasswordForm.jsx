@@ -56,7 +56,7 @@ const handleReset = async () => {
 
     setMessage("Password reset successful!");
     setIsError(false);
-    onSuccess?.();
+
   } catch (err) {
     console.error(err);
     setMessage("An error occurred. Please try again.");
