@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SUPABASE } from "../config/config";
+import { SUPABASE_URL } from "../config/config";
 
 export default function ResetPasswordForm({ userId, onSuccess }) {
   const [keyWords, setKeyWords] = useState(["", "", "", "", ""]);
@@ -36,7 +36,7 @@ const handleReset = async () => {
   }
 
   try {
-    const res = await fetch("/functions/v1/reset-password", {
+    const res = await fetch(`${API_URL}/functions/v1/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

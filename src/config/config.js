@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
 //SUPABASE CONFIG
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const SUPABASE = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 //APP CONFIG
@@ -25,4 +25,3 @@ export const SUPER_CLICK_TOTAL_CELLS = Number(import.meta.env.VITE_SUPER_CLICK_T
 export const ULTRA_CLICK_UPGRADE_COST = Number(import.meta.env.VITE_ULTRA_CLICK_UPGRADE_COST);
 export const ULTRA_CLICK_TOTAL_CELLS = Number(import.meta.env.VITE_ULTRA_CLICK_TOTAL_CELLS);
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-SUPER_CLICK_TOTAL_CELLS
