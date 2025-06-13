@@ -13,6 +13,8 @@ import {
   drawDeletedCells,
   fetchDeletedCells,
   normalizeCoord,
+  pruneDrawnCellsOutsideView,
+  pruneFetchedBounds
 } from "../utils/cesiumCells";
 import { deleteEarth } from "../services/api";
 
@@ -242,6 +244,8 @@ export default function CesiumViewer({
         requestRenderMode: true,
         maximumRenderTimeChange: 0,
       });
+
+      viewer._fetchedBounds = [];
       
       viewer.trackedEntity = undefined;
 
@@ -270,34 +274,28 @@ export default function CesiumViewer({
       }, 300); 
 
 
+      let pruneTimeout = null;
+
       viewer.camera.moveEnd.addEventListener(() => {
         const camera = viewer.camera;
         const scene = viewer.scene;
         const ellipsoid = scene.globe.ellipsoid;
 
-        // Get current view rectangle
-        const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+        // Compute viewport bounds as before...
+        const rect = camera.computeViewRectangle(ellipsoid);
         if (!rect) return;
 
-        // Convert radians to degrees
-        let west = Cesium.Math.toDegrees(rect.west);
-        let south = Cesium.Math.toDegrees(rect.south);
-        let east = Cesium.Math.toDegrees(rect.east);
-        let north = Cesium.Math.toDegrees(rect.north);
+        let west = Cesium.Math.toDegrees(rect.west) - 1;
+        let south = Cesium.Math.toDegrees(rect.south) - 1;
+        let east = Cesium.Math.toDegrees(rect.east) + 1;
+        let north = Cesium.Math.toDegrees(rect.north) + 1;
 
-        // Add buffer (e.g., 1 degree on each side)
-        const buffer = 1.0;
-        west -= buffer;
-        south -= buffer;
-        east += buffer;
-        north += buffer;
-
-        // Clamp to world bounds
         west = Math.max(-180, west);
         south = Math.max(-90, south);
         east = Math.min(180, east);
         north = Math.min(90, north);
 
+        // Existing fetch logic ...
         const last = lastFetchedRef.current;
         const centerLat = ((north + south) / 2).toFixed(3);
         const centerLon = ((east + west) / 2).toFixed(3);
@@ -314,10 +312,15 @@ export default function CesiumViewer({
             lon: parseFloat(centerLon),
           };
 
-          fetchDeletedCells(viewer, { west, south, east, north }).catch((err) => {
-            console.error("Failed to fetch deleted cells:", err);
-          });
+          fetchDeletedCells(viewer, { west, south, east, north }).catch(console.error);
         }
+
+        // Debounce pruning
+        if (pruneTimeout) clearTimeout(pruneTimeout);
+        pruneTimeout = setTimeout(() => {
+          pruneDrawnCellsOutsideView(viewer, 1);
+          pruneFetchedBounds(viewer, 1);
+        }, 500);
       });
 
 

@@ -106,7 +106,13 @@ const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
 };
 
 /* PARALLEL FETCH */
-export const fetchDeletedCells = async (viewer) => {
+export async function fetchDeletedCells(viewer, bounds) {
+    // After successfully fetching new bounds:
+  if (bounds) {
+    if (!viewer._fetchedBounds) viewer._fetchedBounds = [];
+    viewer._fetchedBounds.push(bounds);
+  }
+  
   const buffer = 1.0; // in degrees; you can make this dynamic if desired
 
   const rect = viewer.camera.computeViewRectangle();
@@ -193,4 +199,117 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer) => {
 
 
 
+/**
+ * Prune drawn deleted cells (primitives or entities) outside the current camera view + buffer.
+ * @param {Cesium.Viewer} viewer
+ * @param {number} bufferDegrees - degrees of buffer around view rectangle
+ */
+export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
+  if (!viewer || !viewer.scene || !viewer.camera) return;
+
+  const scene = viewer.scene;
+  const camera = viewer.camera;
+
+  // Compute current view rectangle in radians
+  const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+  if (!rect) return;
+
+  // Convert to degrees and add buffer
+  let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
+  let south = Cesium.Math.toDegrees(rect.south) - bufferDegrees;
+  let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
+  let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
+
+  // Clamp
+  west = Math.max(-180, west);
+  south = Math.max(-90, south);
+  east = Math.min(180, east);
+  north = Math.min(90, north);
+
+  // Helper to check if a cell is inside viewport+buffer
+  function inView(lat, lon) {
+    return lat >= south && lat <= north && lon >= west && lon <= east;
+  }
+
+  // Assume your deleted cells are stored in viewer.entities with a property like `isDeletedCell`
+  // Or if you store in primitives, adjust accordingly.
+
+  // Prune viewer.entities:
+  viewer.entities.values.forEach((entity) => {
+    if (!entity.isDeletedCell) return;
+
+    // Assuming each cell entity has a property 'cellLat' and 'cellLon'
+    const cellLat = entity.cellLat;
+    const cellLon = entity.cellLon;
+
+    if (!inView(cellLat, cellLon)) {
+      viewer.entities.remove(entity);
+    }
+  });
+
+  // If you store deleted cells as primitives (rectangle primitives), prune those too:
+  const primitivesToRemove = [];
+  scene.primitives._primitives.forEach((prim) => {
+    if (prim.isDeletedCell) {
+      // Extract rectangle coords in degrees from primitive.rectangle
+      // rectangle is Cesium.Rectangle in radians
+      const rect = prim.rectangle;
+      const primWest = Cesium.Math.toDegrees(rect.west);
+      const primSouth = Cesium.Math.toDegrees(rect.south);
+      const primEast = Cesium.Math.toDegrees(rect.east);
+      const primNorth = Cesium.Math.toDegrees(rect.north);
+
+      // Check if rectangle intersects the viewport + buffer
+      const intersects =
+        !(primEast < west || primWest > east || primNorth < south || primSouth > north);
+
+      if (!intersects) {
+        primitivesToRemove.push(prim);
+      }
+    }
+  });
+
+  primitivesToRemove.forEach((prim) => {
+    scene.primitives.remove(prim);
+  });
+}
+
+/**
+ * Prune your fetched bounds cache, removing any bounds completely outside viewport + buffer.
+ * 
+ * @param {Cesium.Viewer} viewer
+ * @param {number} bufferDegrees
+ */
+export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
+  if (!viewer) return;
+  if (!viewer._fetchedBounds) return; // you need to set this somewhere
+
+  const camera = viewer.camera;
+  const scene = viewer.scene;
+
+  const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+  if (!rect) return;
+
+  let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
+  let south = Cesium.Math.toDegrees(rect.south) - bufferDegrees;
+  let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
+  let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
+
+  west = Math.max(-180, west);
+  south = Math.max(-90, south);
+  east = Math.min(180, east);
+  north = Math.min(90, north);
+
+  // Remove fetched bounds that do not intersect current view rectangle + buffer
+  viewer._fetchedBounds = viewer._fetchedBounds.filter(bounds => {
+    // bounds: {west, south, east, north}
+    const noOverlap =
+      bounds.east < west ||
+      bounds.west > east ||
+      bounds.north < south ||
+      bounds.south > north;
+
+    return !noOverlap;
+  });
+}
 
