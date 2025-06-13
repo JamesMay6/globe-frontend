@@ -173,7 +173,7 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
     return;
   }
 
-const batchSize = 5000;
+const batchSize = 10000;
 let lastLat = null;
 let lastLon = null;
 const allCells = [];
