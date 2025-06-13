@@ -128,16 +128,20 @@ export async function fetchDeletedCells(viewer, bounds) {
 
   const latDivisions = 6;
   const lonDivisions = 6;
-    const tileSize = tilePrecision; // 0.25
 
-    const startLat = Math.floor(minLat / tileSize) * tileSize;
-    const endLat   = Math.ceil(maxLat / tileSize) * tileSize;
-    const startLon = Math.floor(minLon / tileSize) * tileSize;
-    const endLon   = Math.ceil(maxLon / tileSize) * tileSize;
+  const tileSize = tilePrecision; // 0.25
+  const fetchTasks = [];
 
-    for (let lat = startLat; lat < endLat; lat += tileSize) {
-      for (let lon = startLon; lon < endLon; lon += tileSize) {
-    const cacheKey = getCacheKey(lat + tileSize / 2, lon + tileSize / 2);
+  const startLat = Math.floor(minLat / tileSize) * tileSize;
+  const endLat   = Math.ceil(maxLat / tileSize) * tileSize;
+  const startLon = Math.floor(minLon / tileSize) * tileSize;
+  const endLon   = Math.ceil(maxLon / tileSize) * tileSize;
+
+  for (let lat = startLat; lat < endLat; lat += tileSize) {
+    for (let lon = startLon; lon < endLon; lon += tileSize) {
+      const centerLat = lat + tileSize / 2;
+      const centerLon = lon + tileSize / 2;
+      const cacheKey = getCacheKey(centerLat, centerLon);
 
       if (fetchedBounds.has(cacheKey)) continue;
 
@@ -149,8 +153,9 @@ export async function fetchDeletedCells(viewer, bounds) {
         continue;
       }
 
+      // Push fetch task for this tile
       fetchTasks.push(
-        fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer, cacheKey)
+        fetchSubBox(lat, lat + tileSize, lon, lon + tileSize, viewer, cacheKey)
       );
     }
   }
