@@ -104,14 +104,16 @@ const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
 
 /* PARALLEL FETCH */
 export const fetchDeletedCells = async (viewer) => {
+  const buffer = 1.0; // in degrees; you can make this dynamic if desired
+
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
 
-  const minLat = Cesium.Math.toDegrees(rect.south);
-  const maxLat = Cesium.Math.toDegrees(rect.north);
-  const minLon = Cesium.Math.toDegrees(rect.west);
-  const maxLon = Cesium.Math.toDegrees(rect.east);
-
+  const minLat = Cesium.Math.toDegrees(rect.south) - buffer;
+  const maxLat = Cesium.Math.toDegrees(rect.north) + buffer;
+  const minLon = Cesium.Math.toDegrees(rect.west) - buffer;
+  const maxLon = Cesium.Math.toDegrees(rect.east) + buffer;
+  
   const latDivisions = 6;
   const lonDivisions = 6;
   const latStep = (maxLat - minLat) / latDivisions;

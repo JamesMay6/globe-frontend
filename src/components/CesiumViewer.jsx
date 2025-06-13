@@ -271,33 +271,54 @@ export default function CesiumViewer({
 
       viewer.camera.moveEnd.addEventListener(() => {
         const camera = viewer.camera;
-        const positionCartographic = Cesium.Cartographic.fromCartesian(camera.position);
-        const lat = Cesium.Math.toDegrees(positionCartographic.latitude);
-        const lon = Cesium.Math.toDegrees(positionCartographic.longitude);
-        const height = positionCartographic.height;
+        const scene = viewer.scene;
+        const ellipsoid = scene.globe.ellipsoid;
 
-        const latRounded = parseFloat(lat.toFixed(3));
-        const lonRounded = parseFloat(lon.toFixed(3));
+        // Get current view rectangle
+        const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+        if (!rect) return;
+
+        // Convert radians to degrees
+        let west = Cesium.Math.toDegrees(rect.west);
+        let south = Cesium.Math.toDegrees(rect.south);
+        let east = Cesium.Math.toDegrees(rect.east);
+        let north = Cesium.Math.toDegrees(rect.north);
+
+        // Add buffer (e.g., 1 degree on each side)
+        const buffer = 1.0;
+        west -= buffer;
+        south -= buffer;
+        east += buffer;
+        north += buffer;
+
+        // Clamp to world bounds
+        west = Math.max(-180, west);
+        south = Math.max(-90, south);
+        east = Math.min(180, east);
+        north = Math.min(90, north);
 
         const last = lastFetchedRef.current;
+        const centerLat = ((north + south) / 2).toFixed(3);
+        const centerLon = ((east + west) / 2).toFixed(3);
 
         const movedEnough =
           last.lat === null ||
           last.lon === null ||
-          Math.abs(latRounded - last.lat) >= 0.001 ||
-          Math.abs(lonRounded - last.lon) >= 0.001;
+          Math.abs(centerLat - last.lat) >= 0.5 ||
+          Math.abs(centerLon - last.lon) >= 0.5;
 
         if (movedEnough) {
           lastFetchedRef.current = {
-            lat: latRounded,
-            lon: lonRounded
-           };
+            lat: parseFloat(centerLat),
+            lon: parseFloat(centerLon),
+          };
 
-          fetchDeletedCells(viewer).catch((err) => {
+          fetchDeletedCells(viewer, { west, south, east, north }).catch((err) => {
             console.error("Failed to fetch deleted cells:", err);
           });
         }
       });
+
 
 
       handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
