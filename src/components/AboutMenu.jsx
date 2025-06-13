@@ -30,7 +30,7 @@ export default function AboutMenu() {
             <h3>Delete the Earth Token - Coming Soon</h3>
             <p>
               When you delete the Earth you will be rewarded with DTE (Delete The Earth) token so the more you delete, the more rewards you get! 
-              Rewards will be issued out on a daily schedule into your linked DTE wallet. 
+              Rewards will be issued out on a schedule into your linked DTE wallet. 
             </p>
             <p>Start deleting today and you will be rewarded with DTE Token when the service is integrated with deletetheearth.com </p>
             <div>

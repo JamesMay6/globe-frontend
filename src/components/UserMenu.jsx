@@ -135,7 +135,7 @@ export default function UserMenu({
                   <h2>Click Upgrades Info</h2>
                   <p><strong>Super Click:</strong> Spend {SUPER_CLICK_UPGRADE_COST} clicks to delete up to {SUPER_CLICK_TOTAL_CELLS} coordinates.</p>
                   <p><strong>Ultra Click:</strong> Spend {ULTRA_CLICK_UPGRADE_COST} clicks to delete up to {ULTRA_CLICK_TOTAL_CELLS} coordinates.</p>
-                  <p>These powerful upgrades let you make a much bigger impact with fewer manual clicks.</p>
+                  <p>Once you have upgraded, enable them in the User Menu and these powerful upgrades let you make a much bigger impact with fewer manual clicks. </p>
                   <button onClick={() => setShowModal(false)} className="close-button">Close</button>
                 </div>
               </div>
