@@ -1,12 +1,12 @@
 import * as Cesium from "cesium";
-import {API_URL} from '../config/config';
-import { saveTileToDisk, loadTileFromDisk } from '../utils/deletedCellCache.js';
+import { API_URL } from "../config/config";
+import { saveTileToDisk, loadTileFromDisk } from "../utils/deletedCellCache.js";
 
-const precision = 1000 //1000 = 3dp
-const cellWidth = 0.001; //0.001 = 3dp
+const precision = 1000;
+const cellWidth = 0.001;
 const padding = 0.0001;
-const dpPrecision = 3
- 
+const dpPrecision = 3;
+
 export const normalizeCoord = (val) => Math.floor(val * precision) / precision;
 const fetchedBounds = new Set();
 
@@ -34,20 +34,20 @@ export const drawDeletedCell = (viewer, lat, lon) => {
     },
   });
 
-  viewer.scene.primitives.add(
-    new Cesium.GroundPrimitive({
-      geometryInstances: instance,
-      appearance: new Cesium.PerInstanceColorAppearance(),
-      classificationType: Cesium.ClassificationType.BOTH,
-    })
-  );
+  const primitive = new Cesium.GroundPrimitive({
+    geometryInstances: instance,
+    appearance: new Cesium.PerInstanceColorAppearance(),
+    classificationType: Cesium.ClassificationType.BOTH,
+  });
+  primitive.isDeletedCell = true;
 
+  viewer.scene.primitives.add(primitive);
   viewer.scene.requestRender();
 };
 
 const drawnCells = new Set();
 
-/*primtives*/
+/* Primitive batch */
 let primitiveBatch = null;
 
 export const initPrimitiveBatch = (viewer) => {
@@ -72,49 +72,52 @@ export const drawDeletedCells = (viewer, cells) => {
       lat + cellWidth + padding
     );
 
-    instances.push(new Cesium.GeometryInstance({
-      geometry: new Cesium.RectangleGeometry({
-        rectangle,
-        height: 0, // aligned to ellipsoid
-        vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
-      }),
-      attributes: {
-        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-          Cesium.Color.BLACK.withAlpha(1.0)
-        ),
-      },
-    }));
+    instances.push(
+      new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle,
+          height: 0,
+          vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+        }),
+        attributes: {
+          color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+            Cesium.Color.BLACK.withAlpha(1.0)
+          ),
+        },
+      })
+    );
   }
 
   if (instances.length > 0) {
-    primitiveBatch.add(new Cesium.Primitive({
+    const primitive = new Cesium.Primitive({
       geometryInstances: instances,
       appearance: new Cesium.PerInstanceColorAppearance({
         translucent: false,
-        closed: true
+        closed: true,
       }),
-    }));
+    });
+    primitive.isDeletedCell = true;
 
+    primitiveBatch.add(primitive);
     viewer.scene.requestRender();
   }
 };
 
-
-const getCacheKey = (minLat, maxLat, minLon, maxLon) => {
-  const round = (x) => Math.floor(x * precision) / precision; 
-  return `${round(minLat)}:${round(maxLat)}:${round(minLon)}:${round(maxLon)}`;
+/* Coarse tile cache key */
+const tilePrecision = 0.25;
+const getCacheKey = (lat, lon) => {
+  const snap = (x) => Math.floor(x / tilePrecision) * tilePrecision;
+  return `${snap(lat)}:${snap(lon)}`;
 };
 
-/* PARALLEL FETCH */
+/* Main tile fetch */
 export async function fetchDeletedCells(viewer, bounds) {
-    // After successfully fetching new bounds:
   if (bounds) {
     if (!viewer._fetchedBounds) viewer._fetchedBounds = [];
     viewer._fetchedBounds.push(bounds);
   }
-  
-  const buffer = 1.0; // in degrees; you can make this dynamic if desired
 
+  const buffer = 1.0;
   const rect = viewer.camera.computeViewRectangle();
   if (!rect) return;
 
@@ -128,9 +131,8 @@ export async function fetchDeletedCells(viewer, bounds) {
   const latStep = (maxLat - minLat) / latDivisions;
   const lonStep = (maxLon - minLon) / lonDivisions;
 
-  const fetchTasks = [];
-
   const round = (val) => parseFloat(val.toFixed(dpPrecision));
+  const fetchTasks = [];
 
   for (let i = 0; i < latDivisions; i++) {
     for (let j = 0; j < lonDivisions; j++) {
@@ -139,35 +141,35 @@ export async function fetchDeletedCells(viewer, bounds) {
       const subMinLon = round(minLon + j * lonStep);
       const subMaxLon = round(subMinLon + lonStep);
 
-      const cacheKey = getCacheKey(subMinLat, subMaxLat, subMinLon, subMaxLon);
+      const tileLat = (subMinLat + subMaxLat) / 2;
+      const tileLon = (subMinLon + subMaxLon) / 2;
+      const cacheKey = getCacheKey(tileLat, tileLon);
 
-      // ✅ First check disk cache directly
+      if (fetchedBounds.has(cacheKey)) continue;
+
       const cached = await loadTileFromDisk(cacheKey);
       if (cached && cached.length > 0) {
         drawDeletedCells(viewer, cached);
-        console.log("Loaded from disk (early):", cacheKey);
-        fetchedBounds.add(cacheKey); // avoid reloading
+        fetchedBounds.add(cacheKey);
+        console.log("Loaded from disk:", cacheKey);
         continue;
       }
 
-      // ✅ If already fetched in-memory, skip
-      if (fetchedBounds.has(cacheKey)) continue;
-
-      // 🔁 Otherwise fetch from server
-      fetchTasks.push(fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer));
+      fetchTasks.push(
+        fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer, cacheKey)
+      );
     }
   }
 
   await Promise.all(fetchTasks);
-};
+}
 
-const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer) => {
-  const cacheKey = getCacheKey(minLat, maxLat, minLon, maxLon);
-
+const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => {
   const cached = await loadTileFromDisk(cacheKey);
   if (cached && cached.length > 0) {
     drawDeletedCells(viewer, cached);
     console.log("Loaded from disk:", cacheKey);
+    fetchedBounds.add(cacheKey);
     return;
   }
 
@@ -206,75 +208,41 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer) => {
 
   if (allCells.length > 0) {
     await saveTileToDisk(cacheKey, allCells);
-    console.log(`Fetched from Supabase and cached: ${cacheKey}`);
-    fetchedBounds.add(cacheKey); // ✅ Only add if real data exists
+    console.log(`Fetched and cached: ${cacheKey}`);
+    fetchedBounds.add(cacheKey);
   } else {
-    console.log(`Fetched empty tile: ${cacheKey}, not caching`);
+    console.log(`Fetched empty tile: ${cacheKey}`);
   }
 };
 
-
-/**
- * Prune drawn deleted cells (primitives or entities) outside the current camera view + buffer.
- * @param {Cesium.Viewer} viewer
- * @param {number} bufferDegrees - degrees of buffer around view rectangle
- */
+/* Prune drawn cells outside view */
 export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
   if (!viewer || !viewer.scene || !viewer.camera) return;
 
   const scene = viewer.scene;
   const camera = viewer.camera;
-
-  // Compute current view rectangle in radians
   const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
   if (!rect) return;
 
-  // Convert to degrees and add buffer
   let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
   let south = Cesium.Math.toDegrees(rect.south) - bufferDegrees;
   let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
   let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
 
-  // Clamp
   west = Math.max(-180, west);
   south = Math.max(-90, south);
   east = Math.min(180, east);
   north = Math.min(90, north);
 
-  // Helper to check if a cell is inside viewport+buffer
-  function inView(lat, lon) {
-    return lat >= south && lat <= north && lon >= west && lon <= east;
-  }
-
-  // Assume your deleted cells are stored in viewer.entities with a property like `isDeletedCell`
-  // Or if you store in primitives, adjust accordingly.
-
-  // Prune viewer.entities:
-  viewer.entities.values.forEach((entity) => {
-    if (!entity.isDeletedCell) return;
-
-    // Assuming each cell entity has a property 'cellLat' and 'cellLon'
-    const cellLat = entity.cellLat;
-    const cellLon = entity.cellLon;
-
-    if (!inView(cellLat, cellLon)) {
-      viewer.entities.remove(entity);
-    }
-  });
-
-  // If you store deleted cells as primitives (rectangle primitives), prune those too:
   const primitivesToRemove = [];
   scene.primitives._primitives.forEach((prim) => {
-    if (prim.isDeletedCell) {
-      // Extract rectangle coords in degrees from primitive.rectangle
-      // rectangle is Cesium.Rectangle in radians
+    if (prim.isDeletedCell && prim.rectangle) {
       const rect = prim.rectangle;
       const primWest = Cesium.Math.toDegrees(rect.west);
       const primSouth = Cesium.Math.toDegrees(rect.south);
       const primEast = Cesium.Math.toDegrees(rect.east);
       const primNorth = Cesium.Math.toDegrees(rect.north);
 
-      // Check if rectangle intersects the viewport + buffer
       const intersects =
         !(primEast < west || primWest > east || primNorth < south || primSouth > north);
 
@@ -289,20 +257,11 @@ export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
   });
 }
 
-/**
- * Prune your fetched bounds cache, removing any bounds completely outside viewport + buffer.
- * 
- * @param {Cesium.Viewer} viewer
- * @param {number} bufferDegrees
- */
+/* Prune old fetched bounds */
 export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
-  if (!viewer) return;
-  if (!viewer._fetchedBounds) return; // you need to set this somewhere
+  if (!viewer || !viewer._fetchedBounds) return;
 
-  const camera = viewer.camera;
-  const scene = viewer.scene;
-
-  const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+  const rect = viewer.camera.computeViewRectangle(viewer.scene.globe.ellipsoid);
   if (!rect) return;
 
   let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
@@ -310,21 +269,12 @@ export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
   let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
   let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
 
-  west = Math.max(-180, west);
-  south = Math.max(-90, south);
-  east = Math.min(180, east);
-  north = Math.min(90, north);
-
-  // Remove fetched bounds that do not intersect current view rectangle + buffer
-  viewer._fetchedBounds = viewer._fetchedBounds.filter(bounds => {
-    // bounds: {west, south, east, north}
+  viewer._fetchedBounds = viewer._fetchedBounds.filter((b) => {
     const noOverlap =
-      bounds.east < west ||
-      bounds.west > east ||
-      bounds.north < south ||
-      bounds.south > north;
-
+      b.maxLon < west ||
+      b.minLon > east ||
+      b.maxLat < south ||
+      b.minLat > north;
     return !noOverlap;
   });
 }
-
