@@ -49,7 +49,7 @@
 }
 
 .upgradesMenu,
-.WalletLinkMenu {
+.walletLinkMenu {
   margin-top: 10px; /* Default margin */
   width: 100%; /* Assuming it should match buyMenu's width */
   background: #222; /* Adding background for consistency with buyMenu */
