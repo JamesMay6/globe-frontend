@@ -35,26 +35,33 @@ const handleReset = async () => {
     return;
   }
 
-  const { data, error } = await SUPABASE.rpc("verify_reset_key", {
-    input_username: username,
-    input_key: resetKey,
-    new_password: newPassword,
-  });
+  try {
+    const res = await fetch("/functions/v1/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        resetKey,
+        newPassword,
+      }),
+    });
 
-  if (error) {
-  // RPC/network error
-  setMessage(error.message);
-  setIsError(true);
-} else if (!data?.success) {
-  // RPC succeeded but logical failure (like invalid key)
-  setMessage(data.error || "Unknown error");
-  setIsError(true);
-} else {
-  // Actual success
-  setMessage("Password reset successful!");
-  setIsError(false);
-  onSuccess?.();
-}
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      setMessage(data.error || "Failed to reset password.");
+      setIsError(true);
+      return;
+    }
+
+    setMessage("Password reset successful!");
+    setIsError(false);
+    onSuccess?.();
+  } catch (err) {
+    console.error(err);
+    setMessage("An error occurred. Please try again.");
+    setIsError(true);
+  }
 };
 
 
