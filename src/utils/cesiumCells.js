@@ -154,9 +154,16 @@ export async function fetchDeletedCells(viewer, bounds) {
       }
 
       // Push fetch task for this tile
+      const queryPad = 0.001; // Or 0.002 for extra safety
+      const paddedMinLat = lat - queryPad;
+      const paddedMaxLat = lat + tileSize + queryPad;
+      const paddedMinLon = lon - queryPad;
+      const paddedMaxLon = lon + tileSize + queryPad;
+
       fetchTasks.push(
-        fetchSubBox(lat, lat + tileSize, lon, lon + tileSize, viewer, cacheKey)
+        fetchSubBox(paddedMinLat, paddedMaxLat, paddedMinLon, paddedMaxLon, viewer, cacheKey)
       );
+
     }
   }
 
