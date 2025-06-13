@@ -48,7 +48,8 @@
   margin-bottom: 5px;
 }
 
-.upgradesMenu {
+.upgradesMenu,
+.WalletLinkMenu {
   margin-top: 10px; /* Default margin */
   width: 100%; /* Assuming it should match buyMenu's width */
   background: #222; /* Adding background for consistency with buyMenu */
@@ -107,7 +108,9 @@
   color: #bbb;
 }
 
-.upgradesInfo {
+
+.upgradesInfo,
+.walletLinkInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -119,7 +122,6 @@
   font-size: 13px; /* Default header font size */
   margin-bottom: 0.5rem;
 }
-
 .info-button {
   background: #666 !important;
   color: white !important;

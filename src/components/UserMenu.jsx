@@ -32,6 +32,9 @@ export default function UserMenu({
 }) {
 
   const [showModal, setShowModal] = useState(false);
+  const [walletLinked, setWalletLinked] = useState(false);
+  const [walletInfoModalOpen, setWalletInfoModalOpen] = useState(false);
+  const [walletLinkingModalOpen, setWalletLinkingModalOpen] = useState(false);
   
   return (
     <div className="buyMenu">
@@ -141,6 +144,47 @@ export default function UserMenu({
               </div>
             )}
           </div>
+
+          <div className="walletLinkMenu">
+            <div className="walletLinkInfo">
+              <span>Link DTE Wallet</span>
+              <button className="info-button" onClick={() => setWalletInfoModalOpen(true)}>i</button>
+            </div>
+
+            <button
+              className={`walletLinkButton ${walletLinked ? 'linked' : ''}`}
+              onClick={() => {
+                if (!walletLinked) {
+                  setWalletLinkingModalOpen(true);
+                  // Future: setWalletLinked(true); once real linking logic succeeds
+                }
+              }}
+              disabled={walletLinked}
+            >
+              {walletLinked ? "Wallet Linked" : "Link Wallet"}
+            </button>
+          </div>
+
+          {walletInfoModalOpen && (
+            <div className="modal-overlay" onClick={() => setWalletInfoModalOpen(false)}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <h2>What is DTE Wallet?</h2>
+                <p>The DTE Wallet will let you store rewards and interact with Earth-based digital tokens. Linking support coming soon.</p>
+                <button onClick={() => setWalletInfoModalOpen(false)} className="close-button">Close</button>
+              </div>
+            </div>
+          )}
+
+          {walletLinkingModalOpen && (
+            <div className="modal-overlay" onClick={() => setWalletLinkingModalOpen(false)}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <h2>Linking Coming Soon</h2>
+                <p>You’ll soon be able to link your DTE Wallet to track rewards and achievements.</p>
+                <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Close</button>
+              </div>
+            </div>
+          )}
+
         </div>
       )}
     </div>
