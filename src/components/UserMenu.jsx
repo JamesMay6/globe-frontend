@@ -272,7 +272,7 @@ useEffect(() => {
                 <p style={{ fontFamily: "monospace", wordBreak: "break-word" }}>
                   {linkedWalletAddress || "Unknown"}
                 </p>
-                <p><strong>Note:</strong> Your secret key was only shown at wallet creation time and is not stored. Back it up securely.</p>
+                <p><strong>Note:</strong> Your secret key was only shown at wallet creation time and is not stored.</p>
                 <button onClick={() => setWalletViewModalOpen(false)} className="close-button">Close</button>
               </div>
             </div>
@@ -301,9 +301,9 @@ useEffect(() => {
                   <>
                     <h2>Create Your DTE Wallet</h2>
                     <p>This will generate your DTE Wallet running on the Solana network and show you the wallet address and secret key. You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
-                    <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Save it in a password manager or offline file.</p>
+                    <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Ensure you store this securely</p>
                     {linkError && <p style={{ fontWeight:"bold", color: "red" }}>{linkError}</p>} 
-                    {message && <p style={{ fontWeight:"bold", color: "green" }}>{message}</p>}
+                    {message && <p style={{ fontSize: "18px", fontWeight:"bold", color: "green" }}>{message}</p>}
                     {showWalletDetails && (
                       <p style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {showWalletDetails}
