@@ -54,7 +54,7 @@ export default function UserMenu({
       alert("You must be logged in to create a wallet.");
       return;
     }
-    console.log("userId at wallet creation:", userId);
+    //console.log("userId at wallet creation:", userId);
 
     try {
       const { publicKey, secretKey } = await createWallet(userId);
