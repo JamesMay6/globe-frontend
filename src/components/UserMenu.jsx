@@ -63,7 +63,7 @@ export default function UserMenu({
       setWalletLinked(true);
       setWalletLinkingModalOpen(false);
     } catch {
-      alert("Failed to create wallet. Please try again.");
+      setLinkError("Failed to create wallet. Please try again.");
     }
   };
 
@@ -235,7 +235,8 @@ useEffect(() => {
               <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <h2>What is DTE Wallet?</h2>
                 <p>Delete The Earth 'DTE' Token is the crypto token designed to reward you for your gaming.</p>
-                <p>The DTE Wallet will let you store the rewards you earn from your clicks. Linking support coming soon.</p>
+                <p>The DTE Wallet can store the rewards you earn from your clicks. </p>
+                <p>You can link your wallet now but rewards are coming soon </p>
                 <button onClick={() => setWalletInfoModalOpen(false)} className="close-button">Close</button>
               </div>
             </div>
@@ -261,9 +262,11 @@ useEffect(() => {
                 {walletLinkingMode === "choose" && (
                   <>
                     <h2>Link or Create Your DTE Wallet</h2>
+                    <p>The DTE Wallet can store the rewards you earn from your clicks. </p>
+                    <p>You can link your wallet now but rewards are coming soon </p>
                     <p>Please choose an option:</p>
-                    <button onClick={() => setWalletLinkingMode("create")}>Create New Wallet</button>
-                    <button onClick={() => setWalletLinkingMode("link")}>Link Existing Wallet</button>
+                    <button onClick={() => setWalletLinkingMode("create")} className="link-button">Create New Wallet</button>
+                    <button onClick={() => setWalletLinkingMode("link")} className="link-button">Link Existing Wallet</button>
                     <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Cancel</button>
                   </>
                 )}
@@ -271,10 +274,10 @@ useEffect(() => {
                 {walletLinkingMode === "create" && (
                   <>
                     <h2>Create Your DTE Wallet</h2>
-                    <p>This will generate a Solana wallet and show you the secret key.</p>
-                    <p><strong>Important:</strong> Your secret key will <u>only be shown once</u>. Save it in a password manager or offline file.</p>
+                    <p>This will generate your DTE Wallet running on the Solana network and show you the wallet address and secret key.</p>
+                    <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Save it in a password manager or offline file.</p>
                     <p>You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
-                    <button disabled={walletLinked} onClick={handleCreateWallet}>Create Wallet</button>
+                    <button disabled={walletLinked} onClick={handleCreateWallet} className="link-button">Create Wallet</button>
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
                 )}
@@ -291,7 +294,7 @@ useEffect(() => {
                       style={{ width: "100%" }}
                     />
                     {linkError && <p style={{ color: "red" }}>{linkError}</p>}
-                    <button disabled={walletLinked} onClick={() => handleLinkWallet()}>Link Wallet</button>
+                    <button disabled={walletLinked} onClick={() => handleLinkWallet()} className="link-button">Link Wallet</button>
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
                 )}
