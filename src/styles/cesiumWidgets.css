@@ -12,7 +12,8 @@ button.cesium-infoBox-close,
   display: none !important;
 }
 
-.cesium-.cesium-credit-textContainer *, .cesium-credit-logoContainer {
+.cesium-credit-textContainer *, 
+.cesium-credit-logoContainer * {
     display: none;
 }
 
@@ -44,7 +45,7 @@ button.cesium-infoBox-close,
 .mapboxlogo {
   height: 22px;
   opacity: 0.15;
-  margin: bottom 53px;
+  margin-bottom: 53px;
   margin-left: 5px;
   vertical-align: middle;
 
