@@ -15,10 +15,16 @@ import {
   fetchDeletedCells,
   normalizeCoord,
   pruneDrawnCellsOutsideView,
-  pruneFetchedBounds
+  pruneFetchedBounds,
+  getCacheKey, 
+  fetchedBounds,
+  resetDrawnCells 
 } from "../utils/cesiumCells";
-import { deleteEarth, tweetUpgradedDelete, fetchTotals } from "../services/api";
-import { getCacheKey, fetchedBounds } from "../utils/cesiumCells";
+import { 
+  deleteEarth, 
+  tweetUpgradedDelete, 
+  fetchTotals 
+} from "../services/api";
 import { clearTileFromDisk } from "../utils/deletedCellCache";
 
 export default function CesiumViewer({
@@ -268,6 +274,8 @@ export default function CesiumViewer({
     let handler;
 
     async function initCesium() {
+      resetDrawnCells(); // ← clears memory of previously drawn cells
+
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
       const terrainProvider = new Cesium.EllipsoidTerrainProvider(); 

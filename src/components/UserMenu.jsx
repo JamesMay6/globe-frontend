@@ -72,6 +72,7 @@ export default function UserMenu({
       setMessage("Wallet Created Succesfully. \n");
       setShowWalletDetails("Wallet Address:\n" + publicKey + "\n\nSecret Key:\n" + secretKey );
       setWalletLinked(true);
+      setLinkedWalletAddress(publicKey);
       //setWalletLinkingModalOpen(false);keep open
     } catch {
       setLinkError("Failed to create wallet. Please try again.");

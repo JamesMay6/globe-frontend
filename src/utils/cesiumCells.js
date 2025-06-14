@@ -278,3 +278,7 @@ export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
     return !noOverlap;
   });
 }
+
+export const resetDrawnCells = () => {
+  drawnCells.clear();
+};
