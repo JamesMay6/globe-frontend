@@ -12,13 +12,13 @@ button.cesium-infoBox-close,
   display: none !important;
 }
 
-.cesium-credit-logoContainer {
+.cesium-credit-logoContainer * {
     display: none;
 }
 
 .cesium-widget-credits {
   position: fixed !important;   /* Move credits up by 50px from the bottom */
-  bottom: 52px !important;   /* Move credits up by 50px from the bottom */
+  bottom: 54px !important;   /* Move credits up by 50px from the bottom */
   left: 40px !important;     /* Keep some left margin */
   right: auto !important;    /* Reset right if it was set */
   z-index: 9999999 !important;  /* Ensure it appears above other elements */
@@ -43,7 +43,7 @@ button.cesium-infoBox-close,
 
 .mapboxlogo {
   height: 22px;
-  opacity: 0.2;
+  opacity: 0.15;
   margin: bottom 53px;
   margin-left: 5px;
   vertical-align: middle;

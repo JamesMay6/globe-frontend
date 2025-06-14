@@ -322,7 +322,7 @@ export default function CesiumViewer({
       const mapboxLogoCredit = new Cesium.Credit(
         '<a href="https://www.mapbox.com/about/maps/" target="_blank" rel="noopener noreferrer">' +
         '<img src="https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png" ' +
-        'alt="Mapbox Logo" className="mapboxlogo">' +
+        'alt="Mapbox Logo" class="mapboxlogo">' +
         '</a>'
       );
 
