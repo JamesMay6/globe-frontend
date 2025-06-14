@@ -6,7 +6,8 @@ import {
   ZOOM_FACTOR,
   INERTIA_ZOOM,
   ZOOM_OUT_LEVEL,
-  MAPBOX_TOKEN
+  MAPBOX_TOKEN,
+  IMAGERY_PROVIDER_KEY
 } from "../config/config";
 import {
   drawDeletedCell,
@@ -251,18 +252,27 @@ export default function CesiumViewer({
     async function initCesium() {
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
-      //const terrainProvider = await Cesium.createWorldTerrainAsync(); //3d terrain
-      const terrainProvider = new Cesium.EllipsoidTerrainProvider(); // flat, no elevation
-      //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
-      //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954); //Sentinal
+      const terrainProvider = new Cesium.EllipsoidTerrainProvider(); 
+      
+      //Imagery Provide Switches
+      async function getImageryProvider(key) {
+        switch (key) {
+          case 1: // Bing Aerial
+            return await Cesium.IonImageryProvider.fromAssetId(2);
+          case 2: // Sentinel-2
+            return await Cesium.IonImageryProvider.fromAssetId(3954);
+          case 3: // Mapbox Satellite
+            return new Cesium.UrlTemplateImageryProvider({
+              url: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=${MAPBOX_TOKEN}`,
+              maximumLevel: 19,
+              credit: '© Mapbox © OpenStreetMap',
+            });
+          default:
+            throw new Error(`Unsupported IMAGERY_PROVIDER_KEY: ${key}`);
+        }
+      }
 
-        // Mapbox Satellite Imagery Provider
-      const mapboxToken = MAPBOX_TOKEN; // Add your Mapbox token here or import from config
-      const imageryProvider = new Cesium.UrlTemplateImageryProvider({
-        url: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=${mapboxToken}`,
-        maximumLevel: 19,
-        credit: '© Mapbox © OpenStreetMap © Cesium Ion contributors',
-      });
+      const imageryProvider = await getImageryProvider(IMAGERY_PROVIDER_KEY);
 
       // Initialize the Cesium Viewer
       viewer = new Cesium.Viewer(containerRef.current, {

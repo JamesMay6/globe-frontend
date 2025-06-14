@@ -26,3 +26,4 @@ export const ULTRA_CLICK_UPGRADE_COST = Number(import.meta.env.VITE_ULTRA_CLICK_
 export const ULTRA_CLICK_TOTAL_CELLS = Number(import.meta.env.VITE_ULTRA_CLICK_TOTAL_CELLS);
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+export const IMAGERY_PROVIDER_KEY = Number(import.meta.env.VITE_IMAGERY_PROVIDER_KEY); //1 BING /2 SENT /3MAPBOX
