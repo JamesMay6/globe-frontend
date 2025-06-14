@@ -54,6 +54,7 @@ export default function UserMenu({
       alert("You must be logged in to create a wallet.");
       return;
     }
+    console.log("userId at wallet creation:", userId);
 
     try {
       const { publicKey, secretKey } = await createWallet(userId);
@@ -277,6 +278,7 @@ useEffect(() => {
                     <p>This will generate your DTE Wallet running on the Solana network and show you the wallet address and secret key.</p>
                     <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Save it in a password manager or offline file.</p>
                     <p>You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
+                    {linkError && <p style={{ color: "red" }}>{linkError}</p>}
                     <button disabled={walletLinked} onClick={handleCreateWallet} className="link-button">Create Wallet</button>
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
