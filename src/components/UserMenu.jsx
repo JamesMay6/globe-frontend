@@ -43,6 +43,8 @@ export default function UserMenu({
   const [walletLinkingMode, setWalletLinkingMode] = useState("choose"); // 'choose' | 'create' | 'link'
   const [existingWalletKey, setExistingWalletKey] = useState("");
   const [linkError, setLinkError] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [showWalletDetails, setShowWalletDetails] = useState(null);
 
   
   const { createWallet, walletStatus } = useWallet();
@@ -51,16 +53,15 @@ export default function UserMenu({
 
   const handleCreateWallet = async () => {
     if (!userId) {
-      alert("You must be logged in to create a wallet.");
+      setLinkError("You must be logged in to create a wallet.");
       return;
     }
     //console.log("userId at wallet creation:", userId);
 
     try {
       const { publicKey, secretKey } = await createWallet(userId);
-      alert(
-        "Wallet Created!\nWallet Address:\n" + publicKey + "\n\nSecret Key (SAVE THIS!):\n" + secretKey
-      );
+      setMessage("Wallet Created Succesfully. \n");
+      setShowWalletDetails("Wallet Address: " + publicKey + "\nSecret Key (SAVE THIS!): " + secretKey );
       setWalletLinked(true);
       setWalletLinkingModalOpen(false);
     } catch {
@@ -79,7 +80,7 @@ const handleLinkWallet = async () => {
 
     await storeUserWallet(userId, publicKey.toString());  // store in backend
 
-    alert("Wallet linked successfully: " + publicKey.toString());
+    setMessage("Wallet linked successfully: " + publicKey.toString());
     setWalletLinked(true);
     setWalletLinkingModalOpen(false);
     setLinkError(null);
@@ -242,19 +243,6 @@ useEffect(() => {
               </div>
             </div>
           )}
-
-          {/*
-          {walletLinkingModalOpen && (
-            <div className="modal-overlay" onClick={() => setWalletLinkingModalOpen(false)}>
-              <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <h2>Linking Coming Soon</h2>
-                <p>You’ll soon be able to link your DTE Wallet to store the rewards you earn from your activity, so the more you click, the more Earth you delete, the more rewards you will earn!</p>
-                <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Close</button>
-              </div>
-            </div>
-          )}
-          */}
-
             
           {walletLinkingModalOpen && (
             <div className="modal-overlay" onClick={() => setWalletLinkingModalOpen(false)}>
@@ -278,7 +266,9 @@ useEffect(() => {
                     <p>This will generate your DTE Wallet running on the Solana network and show you the wallet address and secret key.</p>
                     <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Save it in a password manager or offline file.</p>
                     <p>You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
-                    {linkError && <p style={{ color: "red" }}>{linkError}</p>}
+                    {linkError && <p style={{ color: "red" }}>{linkError}</p>} 
+                    {message && <p style={{ color: "green" }}>{message}</p>}
+                    {showWalletDetails && <p>{showWalletDetails}</p>}
                     <button disabled={walletLinked} onClick={handleCreateWallet} className="link-button">Create Wallet</button>
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
@@ -296,6 +286,7 @@ useEffect(() => {
                       style={{ width: "100%" }}
                     />
                     {linkError && <p style={{ color: "red" }}>{linkError}</p>}
+                    {message && <p style={{ color: "green" }}>{message}</p>}
                     <button disabled={walletLinked} onClick={() => handleLinkWallet()} className="link-button">Link Wallet</button>
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
