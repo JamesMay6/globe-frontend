@@ -63,7 +63,7 @@ export default function UserMenu({
       setMessage("Wallet Created Succesfully. \n");
       setShowWalletDetails("Wallet Address: " + publicKey + "\nSecret Key (SAVE THIS!): " + secretKey );
       setWalletLinked(true);
-      setWalletLinkingModalOpen(false);
+      //setWalletLinkingModalOpen(false);keep open
     } catch {
       setLinkError("Failed to create wallet. Please try again.");
     }
@@ -82,7 +82,7 @@ const handleLinkWallet = async () => {
 
     setMessage("Wallet linked successfully: " + publicKey.toString());
     setWalletLinked(true);
-    setWalletLinkingModalOpen(false);
+    //setWalletLinkingModalOpen(false); keep open
     setLinkError(null);
   } catch (error) {
     setLinkError(error.message || "Invalid Solana wallet address");
