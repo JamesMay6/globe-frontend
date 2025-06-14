@@ -12,12 +12,6 @@ button.cesium-infoBox-close,
   display: none !important;
 }
 
-/* Show credits but make them small and less obtrusive */
-.cesium-viewer .cesium-widget-credits {
-  position: fixed !important;   /* Move credits up by 50px from the bottom */
-  z-index: 9999999 !important;  /* Ensure it appears above other elements */
-}
-
 .cesium-credit-textContainer *, .cesium-credit-logoContainer * {
     display: none;
 }
@@ -25,7 +19,7 @@ button.cesium-infoBox-close,
 .cesium-widget-credits {
   position: fixed !important;   /* Move credits up by 50px from the bottom */
   bottom: 52px !important;   /* Move credits up by 50px from the bottom */
-  left: 10px !important;     /* Keep some left margin */
+  left: 40px !important;     /* Keep some left margin */
   right: auto !important;    /* Reset right if it was set */
   z-index: 9999999 !important;  /* Ensure it appears above other elements */
   pointer-events: auto !important; /* Ensure it’s clickable if needed */
@@ -37,8 +31,23 @@ button.cesium-infoBox-close,
   opacity: 1;
 }
 
+.cesium-credit-lightbox.cesium-credit-lightbox-mobile {
+    height: auto;
+    width: 90%;
+    margin-top: 15rem;
+}
+
 .cesium-baseLayerPicker-selected {
   visibility: hidden;
+}
+
+.mapboxlogo {
+  height: 22px;
+  opacity: 0.2;
+  margin: bottom 53px;
+  margin-left: 5px;
+  vertical-align: middle;
+
 }
 
 /* Create a background container effect using the existing geocoder container */
