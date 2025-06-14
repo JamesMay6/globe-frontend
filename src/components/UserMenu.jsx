@@ -17,7 +17,7 @@ import {
   ULTRA_CLICK_UPGRADE_COST,
   ULTRA_CLICK_TOTAL_CELLS
 } from '../config/config';
-import { fetchLinkedWallet } from "../services/api";
+import { fetchLinkedWallet, storeUserWallet } from "../services/api";
 
 export default function UserMenu({
   clicksTotal,
