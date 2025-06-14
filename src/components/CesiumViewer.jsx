@@ -261,7 +261,7 @@ export default function CesiumViewer({
       const imageryProvider = new Cesium.UrlTemplateImageryProvider({
         url: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=${mapboxToken}`,
         maximumLevel: 19,
-        credit: '© Mapbox © OpenStreetMap contributors',
+        credit: '© Mapbox © OpenStreetMap © Cesium Ion contributors',
       });
 
       // Initialize the Cesium Viewer
