@@ -151,9 +151,9 @@ export async function fetchLinkedWallet(userId) {
     .from("wallet")
     .select("wallet_address")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
-  if (error) {
+  if (error && error.code !== "PGRST116") {  // ignore 'no rows returned'
     console.error("Error fetching wallet status:", error.message);
     return false;
   }
