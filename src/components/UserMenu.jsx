@@ -268,8 +268,14 @@ useEffect(() => {
                     <p>You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
                     {linkError && <p style={{ color: "red" }}>{linkError}</p>} 
                     {message && <p style={{ color: "green" }}>{message}</p>}
-                    {showWalletDetails && <p>{showWalletDetails}</p>}
-                    <button disabled={walletLinked} onClick={handleCreateWallet} className="link-button">Create Wallet</button>
+                    {showWalletDetails && (
+                      <p style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                        {showWalletDetails}
+                      </p>
+                    )}
+                     {!walletLinked && !showWalletDetails && (
+                        <button disabled={walletLinked} onClick={handleCreateWallet} className="link-button">Create Wallet</button>
+                      )}
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
                 )}
@@ -282,12 +288,14 @@ useEffect(() => {
                       type="text"
                       value={existingWalletKey}
                       onChange={(e) => setExistingWalletKey(e.target.value)}
-                      placeholder="Paste your public key here"
+                      placeholder="Enter your public key here"
                       style={{ width: "100%" }}
                     />
                     {linkError && <p style={{ color: "red" }}>{linkError}</p>}
                     {message && <p style={{ color: "green" }}>{message}</p>}
-                    <button disabled={walletLinked} onClick={() => handleLinkWallet()} className="link-button">Link Wallet</button>
+                    {!walletLinked && !message && (
+                      <button disabled={walletLinked} onClick={() => handleLinkWallet()} className="link-button">Link Wallet</button>
+                    )}
                     <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
                   </>
                 )}
