@@ -12,7 +12,7 @@ button.cesium-infoBox-close,
   display: none !important;
 }
 
-.cesium-credit-textContainer *, .cesium-credit-logoContainer * {
+.cesium-credit-logoContainer {
     display: none;
 }
 
