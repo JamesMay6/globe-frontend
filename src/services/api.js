@@ -134,3 +134,15 @@ export async function tweetUpgradedDelete(type, count, username, total, expected
     }
   });
 }
+
+export async function storeUserWallet(userId, walletAddress) {
+  const { error } = await SUPABASE.rpc("store_wallet_address", {
+    uid: userId,
+    wallet_address: walletAddress,
+  });
+
+  if (error) {
+    throw new Error("Failed to store wallet address: " + error.message);
+  }
+}
+
