@@ -14,18 +14,13 @@ button.cesium-infoBox-close,
 
 /* Show credits but make them small and less obtrusive */
 .cesium-widget-credits {
-  display: block !important;
-  font-size: 3px !important;
-  opacity: 0.5;
-  position: absolute;
-  bottom: 2px;
-  right: 5px;
-  pointer-events: auto; /* allow clicks on links */
-  background: transparent !important;
-  color: #888 !important;
-  user-select: none;
-  z-index: 1000;
-  transition: opacity 0.3s ease;
+  bottom: 50px !important;   /* Move credits up by 50px from the bottom */
+  left: 10px !important;     /* Keep some left margin */
+  right: auto !important;    /* Reset right if it was set */
+  z-index: 9999 !important;  /* Ensure it appears above other elements */
+  pointer-events: auto !important; /* Ensure it’s clickable if needed */
+  opacity: 1 !important;     /* Make sure it’s fully visible */
+  display: block !important; /* Force display in case something hides it */
 }
 
 .cesium-widget-credits:hover {
