@@ -17,6 +17,7 @@ import {
   ULTRA_CLICK_UPGRADE_COST,
   ULTRA_CLICK_TOTAL_CELLS
 } from '../config/config';
+import { fetchLinkedWallet } from "../services/api";
 
 export default function UserMenu({
   clicksTotal,
@@ -87,17 +88,17 @@ const handleLinkWallet = async () => {
 };
 
 useEffect(() => {
-  const fetchWalletStatus = async () => {
-    const { data, error } = await SUPABASE
-      .from('wallet')
-      .select('wallet_address')
-      .eq('user_id', userId)
-      .single();
+  const checkWallet = async () => {
+    if (!userId) {
+      setWalletLinked(false);
+      return;
+    }
 
-    if (data) setWalletLinked(true);
+    const linked = await fetchLinkedWallet(userId);
+    setWalletLinked(linked);
   };
 
-  if (userId) fetchWalletStatus();
+  checkWallet();
 }, [userId]);
 
   return (

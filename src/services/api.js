@@ -146,3 +146,17 @@ export async function storeUserWallet(userId, walletAddress) {
   }
 }
 
+export async function fetchLinkedWallet(userId) {
+  const { data, error } = await SUPABASE
+    .from("wallet")
+    .select("wallet_address")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching wallet status:", error.message);
+    return false;
+  }
+
+  return !!data;
+}
