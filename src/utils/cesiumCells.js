@@ -105,7 +105,7 @@ export const drawDeletedCells = (viewer, cells) => {
 
 /* Coarse tile cache key */
 const tilePrecision = 0.25;
-const getCacheKey = (lat, lon) => {
+export const getCacheKey = (lat, lon) => {
   const snap = (x) => Math.floor(x / tilePrecision) * tilePrecision;
   return `${snap(lat)}:${snap(lon)}`;
 };

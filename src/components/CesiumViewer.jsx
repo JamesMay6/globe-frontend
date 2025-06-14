@@ -18,6 +18,8 @@ import {
   pruneFetchedBounds
 } from "../utils/cesiumCells";
 import { deleteEarth, tweetUpgradedDelete, fetchTotals } from "../services/api";
+import { getCacheKey } from "../utils/cesiumCells";
+import { clearTileFromDisk } from "../utils/deletedCellCache";
 
 export default function CesiumViewer({
   user,
@@ -162,6 +164,19 @@ export default function CesiumViewer({
         drawDeletedCells(viewer, data.coordinates);
       } else {
         drawDeletedCell(viewer, lat, lon);
+      }
+
+      if (
+        (superClickEnabledRef.current || ultraClickEnabledRef.current) &&
+        Array.isArray(data.coordinates)
+      ) {
+        for (const { lat: delLat, lon: delLon } of data.coordinates) {
+          const cacheKey = getCacheKey(delLat, delLon);
+          await clearTileFromDisk(cacheKey);
+        }
+      } else {
+        const cacheKey = getCacheKey(lat, lon);
+        await clearTileFromDisk(cacheKey);
       }
 
       if (ultraClickEnabledRef.current) {

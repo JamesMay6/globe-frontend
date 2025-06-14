@@ -20,3 +20,8 @@ export const clearTileCache = async () => {
   const db = await dbPromise;
   await db.clear('tiles');
 };
+
+export const clearTileFromDisk = async (cacheKey) => {
+  const db = await dbPromise;
+  await db.delete('tiles', cacheKey);
+};

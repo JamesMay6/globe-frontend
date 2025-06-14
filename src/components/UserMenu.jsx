@@ -89,7 +89,7 @@ const handleLinkWallet = async () => {
 
     await storeUserWallet(userId, publicKey.toString());  // store in backend
 
-    setMessage("Wallet linked successfully: " + publicKey.toString());
+    setMessage("Wallet linked successfully");
     setWalletLinked(true);
     //setWalletLinkingModalOpen(false); keep open
     setLinkError(null);
@@ -301,8 +301,8 @@ useEffect(() => {
                     <h2>Create Your DTE Wallet</h2>
                     <p>This will generate your DTE Wallet running on the Solana network and show you the wallet address and secret key. You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
                     <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Save it in a password manager or offline file.</p>
-                    {linkError && <p style={{ weight:"bold", color: "red" }}>{linkError}</p>} 
-                    {message && <p style={{ weight:"bold", color: "green" }}>{message}</p>}
+                    {linkError && <p style={{ fontWeight:"bold", color: "red" }}>{linkError}</p>} 
+                    {message && <p style={{ fontWeight:"bold", color: "green" }}>{message}</p>}
                     {showWalletDetails && (
                       <p style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {showWalletDetails}
@@ -324,18 +324,23 @@ useEffect(() => {
                   <>
                     <h2>Link Existing Solana Wallet</h2>
                     <p>Enter your wallet's <strong>public key</strong> (wallet address):</p>
-                    <input
-                      type="text"
-                      value={existingWalletKey}
-                      onChange={(e) => setExistingWalletKey(e.target.value)}
-                      placeholder="Enter your public key here"
-                      style={{ width: "100%" }}
-                    />
-                    {linkError && <p style={{ weight:"bold", color: "red" }}>{linkError}</p>}
-                    {message && <p style={{ weight:"bold", color: "green" }}>{message}</p>}
+                        {/* Only show input and button if wallet NOT linked yet */}
                     {!walletLinked && !message && (
-                      <button disabled={walletLinked} onClick={() => handleLinkWallet()} className="link-button">Link Wallet</button>
+                      <>
+                        <input
+                          type="text"
+                          value={existingWalletKey}
+                          onChange={(e) => setExistingWalletKey(e.target.value)}
+                          placeholder="Enter your public key here"
+                          style={{ width: "100%" }}
+                        />
+                        <button disabled={walletLinked} onClick={handleLinkWallet} className="link-button">
+                          Link Wallet
+                        </button>
+                      </>
                     )}
+                    {linkError && <p style={{ fontWeight:"bold", color: "red" }}>{linkError}</p>}
+                    {message && <p style={{ fontWeight:"bold", color: "green" }}>{message}</p>}
                     {walletLinked ? (
                         <button onClick={() => {resetWalletLinkState();setWalletLinkingModalOpen(false);}} className="close-button">Close</button>
                       ) : (
