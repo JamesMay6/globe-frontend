@@ -173,6 +173,28 @@ export default function CesiumViewer({
         showMessage("Earth deleted!");
       }
 
+      /* DONT DO TWITTER YET
+
+      if (superClickEnabledRef.current || ultraClickEnabledRef.current) {
+        const type = ultraClickEnabledRef.current ? "Ultra" : "Super";
+        const count = data.insertedCount ?? data.coordinates?.length ?? 0;
+
+        try {
+          await fetch("/api/tweet-upgraded-delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type,
+              count,
+              username: userRef.current?.username || null,
+            }),
+          });
+        } catch (err) {
+          console.error("Twitter post failed:", err);
+        }
+      }
+        */
+
       setClicksTotal((prev) =>
         superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev - 1
       );

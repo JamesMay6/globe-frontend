@@ -169,7 +169,7 @@ export default function UserMenu({
             <div className="modal-overlay" onClick={() => setWalletInfoModalOpen(false)}>
               <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <h2>What is DTE Wallet?</h2>
-                <p>Delte The Earth 'DTE' Token is the crypto token designed to reward you for your gaming.</p>
+                <p>Delete The Earth 'DTE' Token is the crypto token designed to reward you for your gaming.</p>
                 <p>The DTE Wallet will let you store the rewards you earn from your clicks. Linking support coming soon.</p>
                 <button onClick={() => setWalletInfoModalOpen(false)} className="close-button">Close</button>
               </div>
@@ -180,7 +180,7 @@ export default function UserMenu({
             <div className="modal-overlay" onClick={() => setWalletLinkingModalOpen(false)}>
               <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <h2>Linking Coming Soon</h2>
-                <p>You’ll soon be able to link your DTE Wallet to store the rewards you earn from your free clicks</p>
+                <p>You’ll soon be able to link your DTE Wallet to store the rewards you earn from your activity, so the more you click, the more Earth you delete, the more rewards you will earn!</p>
                 <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Close</button>
               </div>
             </div>
