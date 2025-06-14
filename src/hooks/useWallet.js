@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Keypair } from "@solana/web3.js";
-import { storeUserWallet } from "../api";
+import { storeUserWallet } from "../services/api";
 
 export function useWallet() {
   const [walletStatus, setWalletStatus] = useState("idle"); // idle | creating | error
