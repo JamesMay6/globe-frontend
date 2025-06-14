@@ -18,9 +18,13 @@ button.cesium-infoBox-close,
   z-index: 9999999 !important;  /* Ensure it appears above other elements */
 }
 
+.cesium-credit-textContainer *, .cesium-credit-logoContainer * {
+    display: none;
+}
+
 .cesium-widget-credits {
   position: fixed !important;   /* Move credits up by 50px from the bottom */
-  bottom: 51px !important;   /* Move credits up by 50px from the bottom */
+  bottom: 52px !important;   /* Move credits up by 50px from the bottom */
   left: 10px !important;     /* Keep some left margin */
   right: auto !important;    /* Reset right if it was set */
   z-index: 9999999 !important;  /* Ensure it appears above other elements */
