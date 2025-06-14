@@ -45,11 +45,20 @@ export default function UserMenu({
   const [linkError, setLinkError] = useState(null);
   const [message, setMessage] = useState(null);
   const [showWalletDetails, setShowWalletDetails] = useState(null);
+  const [walletViewModalOpen, setWalletViewModalOpen] = useState(false);
+  const [linkedWalletAddress, setLinkedWalletAddress] = useState(null);
 
   
   const { createWallet, walletStatus } = useWallet();
   const { user } = useAuth();
   const userId = user?.id;
+
+  const resetWalletLinkState = () => {
+      setLinkError(null);
+      setMessage(null);
+      setShowWalletDetails(null);
+      setExistingWalletKey("");
+    };
 
   const handleCreateWallet = async () => {
     if (!userId) {
@@ -93,11 +102,18 @@ useEffect(() => {
   const checkWallet = async () => {
     if (!userId) {
       setWalletLinked(false);
+      setLinkedWalletAddress(null);
       return;
     }
 
     const linked = await fetchLinkedWallet(userId);
-    setWalletLinked(linked);
+    if (linked) {
+      setWalletLinked(true);
+      setLinkedWalletAddress(linked); // assuming `fetchLinkedWallet` returns public key string
+    } else {
+      setWalletLinked(false);
+      setLinkedWalletAddress(null);
+    }
   };
 
   checkWallet();
@@ -218,20 +234,21 @@ useEffect(() => {
               <button className="info-button" onClick={() => setWalletInfoModalOpen(true)}>i</button>
             </div>
 
-            <button
-              className={`walletLinkButton ${walletLinked ? 'linked' : ''}`}
-              onClick={() => {
-                if (!walletLinked) {
-                  setWalletLinkingModalOpen(true);
-                  // Future: setWalletLinked(true); once real linking logic succeeds
-                }
-              }}
-              disabled={walletLinked}
-            >
-              {walletLinked ? "Wallet Linked" : "Link Wallet"}
-            </button>
+           <button
+            className={`walletLinkButton ${walletLinked ? 'linked' : ''}`}
+            onClick={() => {
+              if (!walletLinked) {
+                setWalletLinkingModalOpen(true);
+              } else {
+                setWalletViewModalOpen(true); // <--- NEW BEHAVIOR
+              }
+            }}
+          >
+            {walletLinked ? "Wallet Linked" : "Link Wallet"}
+          </button>
           </div>
 
+          {/* Modal for showing infomration on DTE Wallet*/}
           {walletInfoModalOpen && (
             <div className="modal-overlay" onClick={() => setWalletInfoModalOpen(false)}>
               <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -243,9 +260,25 @@ useEffect(() => {
               </div>
             </div>
           )}
+
+          {/* Modal for showing Wallet Address when linked*/}
+          {walletViewModalOpen && (
+            <div className="modal-overlay" onClick={() => setWalletViewModalOpen(false)}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <h2>Wallet Linked</h2>
+                <p>This is your DTE wallet address:</p>
+                <p style={{ fontFamily: "monospace", wordBreak: "break-word" }}>
+                  {linkedWalletAddress || "Unknown"}
+                </p>
+                <p><strong>Note:</strong> Your secret key was only shown at wallet creation time and is not stored. Back it up securely.</p>
+                <button onClick={() => setWalletViewModalOpen(false)} className="close-button">Close</button>
+              </div>
+            </div>
+          )}
             
+          {/* Modal for showing options to choose to link or creatre walletd*/}
           {walletLinkingModalOpen && (
-            <div className="modal-overlay" onClick={() => setWalletLinkingModalOpen(false)}>
+            <div className="modal-overlay" onClick={() => {resetWalletLinkState();setWalletLinkingModalOpen(false);}}>
               <div className="modal" onClick={(e) => e.stopPropagation()}>
 
                 {walletLinkingMode === "choose" && (
@@ -254,12 +287,14 @@ useEffect(() => {
                     <p>The DTE Wallet can store the rewards you earn from your clicks. </p>
                     <p>You can link your wallet now but rewards are coming soon </p>
                     <p>Please choose an option:</p>
-                    <button onClick={() => setWalletLinkingMode("create")} className="link-button">Create New Wallet</button>
-                    <button onClick={() => setWalletLinkingMode("link")} className="link-button">Link Existing Wallet</button>
-                    <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Cancel</button>
+                    <button onClick={() => {resetWalletLinkState(); setWalletLinkingMode("create");}} className="link-button">Create New Wallet</button>
+                    <button onClick={() => {resetWalletLinkState(); setWalletLinkingMode("link");}} className="link-button">Link Existing Wallet</button>
+                    <button onClick={() => {resetWalletLinkState(); setWalletLinkingModalOpen(false)}} className="close-button">Cancel</button>
                   </>
                 )}
 
+          
+                {/* Modal for showing Create Wallet*/}
                 {walletLinkingMode === "create" && (
                   <>
                     <h2>Create Your DTE Wallet</h2>
@@ -276,13 +311,14 @@ useEffect(() => {
                         <button disabled={walletLinked} onClick={handleCreateWallet} className="link-button">Create Wallet</button>
                       )}
                     {walletLinked ? (
-                      <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Close</button>
+                      <button onClick={() => {resetWalletLinkState(); setWalletLinkingModalOpen(false);}} className="close-button">Close</button>
                     ) : (
-                      <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
+                      <button onClick={() => {resetWalletLinkState(); setWalletLinkingMode("choose")}} className="close-button">Back</button>
                     )}
                   </>
                 )}
 
+                {/* Modal for showing Link Wallet*/}
                 {walletLinkingMode === "link" && (
                   <>
                     <h2>Link Existing Solana Wallet</h2>
@@ -300,9 +336,9 @@ useEffect(() => {
                       <button disabled={walletLinked} onClick={() => handleLinkWallet()} className="link-button">Link Wallet</button>
                     )}
                     {walletLinked ? (
-                        <button onClick={() => setWalletLinkingModalOpen(false)} className="close-button">Close</button>
+                        <button onClick={() => {resetWalletLinkState();setWalletLinkingModalOpen(false);}} className="close-button">Close</button>
                       ) : (
-                        <button onClick={() => setWalletLinkingMode("choose")} className="close-button">Back</button>
+                        <button onClick={() => {resetWalletLinkState();setWalletLinkingMode("choose");}} className="close-button">Back</button>
                       )}
                   </>
                 )}

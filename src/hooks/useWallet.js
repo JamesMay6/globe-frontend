@@ -23,8 +23,6 @@ export function useWallet() {
 
       const secretKey = uint8ArrayToBase64(keypair.secretKey);
 
-    console.log("Storing wallet for user", userId, "publicKey", publicKey);
-
     await storeUserWallet(userId, publicKey);
     setWalletStatus("idle");
 
