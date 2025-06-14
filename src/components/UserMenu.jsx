@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWallet } from "../hooks/useWallet";
 import { useAuth } from "../hooks/useAuth";
 import { PublicKey } from "@solana/web3.js";
