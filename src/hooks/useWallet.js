@@ -11,7 +11,17 @@ export function useWallet() {
   try {
     const keypair = Keypair.generate();
     const publicKey = keypair.publicKey.toBase58();
-    const secretKey = Buffer.from(keypair.secretKey).toString("base64");
+    function uint8ArrayToBase64(uint8Array) {
+        // Browser-friendly base64 encoding
+        let binary = '';
+        const len = uint8Array.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(uint8Array[i]);
+        }
+        return window.btoa(binary);
+      }
+
+      const secretKey = uint8ArrayToBase64(keypair.secretKey);
 
     console.log("Storing wallet for user", userId, "publicKey", publicKey);
 
