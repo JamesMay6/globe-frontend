@@ -14,12 +14,13 @@ button.cesium-infoBox-close,
 
 /* Show credits but make them small and less obtrusive */
 .cesium-widget-credits {
+  position: absolute !important;   /* Move credits up by 50px from the bottom */
   bottom: 50px !important;   /* Move credits up by 50px from the bottom */
   left: 10px !important;     /* Keep some left margin */
   right: auto !important;    /* Reset right if it was set */
   z-index: 9999 !important;  /* Ensure it appears above other elements */
   pointer-events: auto !important; /* Ensure it’s clickable if needed */
-  opacity: 1 !important;     /* Make sure it’s fully visible */
+  opacity: 0.4 !important;     /* Make sure it’s fully visible */
   display: block !important; /* Force display in case something hides it */
 }
 
