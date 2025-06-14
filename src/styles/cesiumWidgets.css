@@ -19,7 +19,7 @@ button.cesium-infoBox-close,
 
 .cesium-widget-credits {
   position: fixed !important;   /* Move credits up by 50px from the bottom */
-  bottom: 56px !important;   /* Move credits up by 50px from the bottom */
+  bottom: 57px !important;   /* Move credits up by 50px from the bottom */
   left: 40px !important;     /* Keep some left margin */
   right: auto !important;    /* Reset right if it was set */
   z-index: 9999999 !important;  /* Ensure it appears above other elements */
@@ -33,9 +33,9 @@ button.cesium-infoBox-close,
 }
 
 .cesium-credit-lightbox.cesium-credit-lightbox-mobile {
-    height: auto;
-    width: 90%;
-    margin-top: 15rem;
+    height: auto !important;
+    width: 90% !important;
+    margin-top: 15rem !important;
 }
 
 .cesium-baseLayerPicker-selected {
@@ -43,11 +43,11 @@ button.cesium-infoBox-close,
 }
 
 .mapboxlogo {
-  height: 22px;
-  opacity: 0.19;
-  margin-bottom: 53px;
-  margin-left: 5px;
-  vertical-align: middle;
+  height: 22px !important;
+  opacity: 0.19 !important;
+  margin-bottom: 53px !important;
+  margin-left: 8px !important;
+  vertical-align: middle !important;
 
 }
 
