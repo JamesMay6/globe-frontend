@@ -106,10 +106,11 @@ useEffect(() => {
       return;
     }
 
-    const linked = await fetchLinkedWallet(userId);
-    if (linked) {
+    const walletAddress = await fetchLinkedWallet(userId);
+
+    if (walletAddress) {
       setWalletLinked(true);
-      setLinkedWalletAddress(linked); // assuming `fetchLinkedWallet` returns public key string
+      setLinkedWalletAddress(walletAddress);
     } else {
       setWalletLinked(false);
       setLinkedWalletAddress(null);

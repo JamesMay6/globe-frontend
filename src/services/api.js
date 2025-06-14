@@ -147,16 +147,14 @@ export async function storeUserWallet(userId, walletAddress) {
 }
 
 export async function fetchLinkedWallet(userId) {
-  const { data, error } = await SUPABASE
-    .from("wallet")
-    .select("wallet_address")
-    .eq("user_id", userId)
-    .maybeSingle();
+  const { data, error } = await SUPABASE.rpc("get_wallet_address", {
+    uid: userId,
+  });
 
-  if (error && error.code !== "PGRST116") {  // ignore 'no rows returned'
-    console.error("Error fetching wallet status:", error.message);
-    return false;
+  if (error) {
+    console.error("Error fetching wallet address:", error.message);
+    return null;  
   }
 
-  return !!data;
+  return data || null;
 }
