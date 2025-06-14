@@ -5,8 +5,7 @@ import {
   MIN_ZOOM_LEVEL,
   ZOOM_FACTOR,
   INERTIA_ZOOM,
-  ZOOM_OUT_LEVEL,
-  BACKEND_URL
+  ZOOM_OUT_LEVEL
 } from "../config/config";
 import {
   drawDeletedCell,
@@ -16,7 +15,7 @@ import {
   pruneDrawnCellsOutsideView,
   pruneFetchedBounds
 } from "../utils/cesiumCells";
-import { deleteEarth } from "../services/api";
+import { deleteEarth, tweetUpgradedDelete, fetchTotals } from "../services/api";
 
 export default function CesiumViewer({
   user,
@@ -173,27 +172,31 @@ export default function CesiumViewer({
         showMessage("Earth deleted!");
       }
 
-      /* DONT DO TWITTER YET
+       // DONT DO TWITTER YET
 
+       /*
       if (superClickEnabledRef.current || ultraClickEnabledRef.current) {
         const type = ultraClickEnabledRef.current ? "Ultra" : "Super";
         const count = data.insertedCount ?? data.coordinates?.length ?? 0;
 
         try {
-          await fetch("/api/tweet-upgraded-delete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              type,
-              count,
-              username: userRef.current?.username || null,
-            }),
-          });
+          const totals = await fetchTotals();
+          const { total, expected_total, percentage } = totals;
+
+          await tweetUpgradedDelete(
+            type,
+            count,
+            userRef.current?.username || null,
+            total,
+            expected_total,
+            percentage
+          );
         } catch (err) {
-          console.error("Twitter post failed:", err);
+          console.error("Tweeting failed:", err);
         }
       }
         */
+        
 
       setClicksTotal((prev) =>
         superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev - 1

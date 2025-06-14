@@ -121,3 +121,16 @@ export async function fetchUserProfile(token) {
   if (!res.ok) throw new Error("Failed to fetch user profile");
   return res.json();
 }
+
+export async function tweetUpgradedDelete(type, count, username, total, expected_total, percentage) {
+  const message = `${username || "Someone"} used one ${type} Click to delete ${count} Earth coordinates. 
+  \n\nTotal Earth Deleted now ${total} (${percentage?.toFixed(6) || "0"}%) #DeleteTheEarthGame #DTE 🌍`;
+
+  await fetch("/api/tweet", {
+    method: "POST",
+    body: JSON.stringify({ message }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
