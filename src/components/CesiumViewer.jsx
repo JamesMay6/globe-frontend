@@ -252,8 +252,13 @@ export default function CesiumViewer({
 
       //const terrainProvider = await Cesium.createWorldTerrainAsync(); //3d terrain
       const terrainProvider = new Cesium.EllipsoidTerrainProvider(); // flat, no elevation
-      const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
+      //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
       //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954); //Sentinal
+
+      // Use ESRI World Imagery as the base layer
+      const imageryProvider = new Cesium.ArcGisMapServerImageryProvider({
+        url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+      });
 
       // Initialize the Cesium Viewer
       viewer = new Cesium.Viewer(containerRef.current, {
