@@ -8,7 +8,7 @@ const padding = 0.0001;
 const dpPrecision = 3;
 
 export const normalizeCoord = (val) => Math.floor(val * precision) / precision;
-const fetchedBounds = new Set();
+export const fetchedBounds = new Set();
 
 export const drawDeletedCell = (viewer, lat, lon) => {
   const key = `${lat}:${lon}`;
