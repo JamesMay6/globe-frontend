@@ -15,10 +15,10 @@ button.cesium-infoBox-close,
 /* Show credits but make them small and less obtrusive */
 .cesium-widget-credits {
   display: block !important;
-  font-size: 2px !important;
+  font-size: 3px !important;
   opacity: 0.5;
   position: absolute;
-  bottom: 1px;
+  bottom: 2px;
   right: 5px;
   pointer-events: auto; /* allow clicks on links */
   background: transparent !important;
@@ -106,7 +106,7 @@ button.cesium-infoBox-close,
 /* --- Mobile-specific styles --- */
 @media (max-width: 768px) {
   .cesium-viewer-geocoderContainer {
-    width: 30vw; /* Smaller width for tablets/larger phones */
+    width: 35vw; /* Smaller width for tablets/larger phones */
     padding: 6px; /* Slightly more padding for better touch input */
     top: 58px; /* Adjust vertical position slightly */
     right: 5px; /* Keep right position, but ensure it doesn't get cut off */
