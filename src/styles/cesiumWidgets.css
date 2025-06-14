@@ -1,5 +1,4 @@
-/* Hide Cesium UI Elements (No change needed here for responsiveness, just keeping them for context) */
-.cesium-widget-credits,
+/* Hide Cesium UI Elements except credits */
 .cesium-infoBox-title,
 .cesium-selection-wrapper-visible,
 .cesium-infoBox-visible,
@@ -11,6 +10,26 @@ button.cesium-infoBox-close,
 .cesium-button.cesium-fullscreenButton,
 .cesium-button.cesium-vrButton {
   display: none !important;
+}
+
+/* Show credits but make them small and less obtrusive */
+.cesium-widget-credits {
+  display: block !important;
+  font-size: 2px !important;
+  opacity: 0.5;
+  position: absolute;
+  bottom: 1px;
+  right: 5px;
+  pointer-events: auto; /* allow clicks on links */
+  background: transparent !important;
+  color: #888 !important;
+  user-select: none;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.cesium-widget-credits:hover {
+  opacity: 1;
 }
 
 .cesium-baseLayerPicker-selected {

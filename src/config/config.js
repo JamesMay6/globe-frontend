@@ -25,3 +25,4 @@ export const SUPER_CLICK_TOTAL_CELLS = Number(import.meta.env.VITE_SUPER_CLICK_T
 export const ULTRA_CLICK_UPGRADE_COST = Number(import.meta.env.VITE_ULTRA_CLICK_UPGRADE_COST);
 export const ULTRA_CLICK_TOTAL_CELLS = Number(import.meta.env.VITE_ULTRA_CLICK_TOTAL_CELLS);
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;

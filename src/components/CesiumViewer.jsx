@@ -5,7 +5,8 @@ import {
   MIN_ZOOM_LEVEL,
   ZOOM_FACTOR,
   INERTIA_ZOOM,
-  ZOOM_OUT_LEVEL
+  ZOOM_OUT_LEVEL,
+  MAPBOX_TOKEN
 } from "../config/config";
 import {
   drawDeletedCell,
@@ -252,8 +253,16 @@ export default function CesiumViewer({
 
       //const terrainProvider = await Cesium.createWorldTerrainAsync(); //3d terrain
       const terrainProvider = new Cesium.EllipsoidTerrainProvider(); // flat, no elevation
-      const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
+      //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(2); //Bing Ariel
       //const imageryProvider = await Cesium.IonImageryProvider.fromAssetId(3954); //Sentinal
+
+        // Mapbox Satellite Imagery Provider
+      const mapboxToken = MAPBOX_TOKEN; // Add your Mapbox token here or import from config
+      const imageryProvider = new Cesium.UrlTemplateImageryProvider({
+        url: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=${mapboxToken}`,
+        maximumLevel: 19,
+        credit: '© Mapbox © OpenStreetMap contributors',
+      });
 
       // Initialize the Cesium Viewer
       viewer = new Cesium.Viewer(containerRef.current, {
