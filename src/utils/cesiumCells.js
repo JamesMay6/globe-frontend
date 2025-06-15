@@ -109,9 +109,12 @@ export const getCacheKey = (lat, lon) => {
 };
 
 export async function fetchDeletedCells(viewer, bounds) {
+  if (!viewer._fetchedBounds) viewer._fetchedBounds = new Set();
+
   if (bounds) {
-    if (!viewer._fetchedBounds) viewer._fetchedBounds = [];
-    viewer._fetchedBounds.push(bounds);
+    // Make a cache key string for bounds to track the tile
+    const boundsKey = `${bounds.minLat}:${bounds.maxLat}:${bounds.minLon}:${bounds.maxLon}`;
+    viewer._fetchedBounds.add(boundsKey);
   }
 
   const buffer = 1.0;
@@ -142,7 +145,7 @@ export async function fetchDeletedCells(viewer, bounds) {
       const tileLon = (subMinLon + subMaxLon) / 2;
       const cacheKey = getCacheKey(tileLat, tileLon);
 
-      if (fetchedBounds.has(cacheKey)) continue;
+      if (viewer._fetchedBounds && viewer._fetchedBounds.has(cacheKey)) continue;
 
       const cached = await loadTileFromDisk(cacheKey);
 

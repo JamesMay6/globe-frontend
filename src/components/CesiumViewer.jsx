@@ -15,8 +15,8 @@ import {
   resetDrawnCells 
 } from "../utils/cesiumCells";
 import { getImageryProvider } from "../utils/getImageryProvider";
-import { useHandleClick } from "../hooks/useHandleClick"; // adjust path accordingly
-
+import { useHandleClick } from "../hooks/useHandleClick";
+import { zoomOut } from "../utils/zoomUtils";
 
 export default function CesiumViewer({
   user,
@@ -37,8 +37,8 @@ export default function CesiumViewer({
 }) {
   const viewerRef = useRef(null);
   const containerRef = useRef(null);
-
-   const handleClick = useHandleClick({
+  const lastFetchedRef = useRef({ lat: null, lon: null, zoom: null });
+  const handleClick = useHandleClick({
     user,
     superClickEnabled,
     fetchUserProfile,
@@ -56,8 +56,6 @@ export default function CesiumViewer({
     setUltraClickEnabled,
   });
   
-  const lastFetchedRef = useRef({ lat: null, lon: null, zoom: null });
-
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -228,21 +226,6 @@ export default function CesiumViewer({
       }
     };
   }, []);
-
-  const zoomOut = () => {
-    const viewer = viewerRef.current;
-    if (viewer) {
-      viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(
-          0.0,
-          0.0,
-          ZOOM_OUT_LEVEL
-        ),
-      });
-    } else {
-      console.warn("Viewer not ready yet");
-    }
-  };
 
   return (
     <>
