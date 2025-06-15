@@ -85,7 +85,7 @@ export default function CesiumViewer({
         maximumRenderTimeChange: 0,
       });
 
-      viewer._fetchedBounds = [];
+      viewer._fetchedBounds = new Set();
       
       viewer.trackedEntity = undefined;
 
