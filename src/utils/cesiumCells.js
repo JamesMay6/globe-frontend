@@ -145,6 +145,8 @@ export async function fetchDeletedCells(viewer, bounds) {
       if (fetchedBounds.has(cacheKey)) continue;
 
       const cached = await loadTileFromDisk(cacheKey);
+      console.log(cacheKey, cached);
+
       if (cached) {
         if (cached.length > 0) drawDeletedCells(viewer, cached);
         fetchedBounds.add(cacheKey);

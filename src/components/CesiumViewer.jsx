@@ -434,6 +434,18 @@ export default function CesiumViewer({
             fetchDeletedCells(viewer).catch(err => {
           console.error("Failed to fetch deleted cells:", err);
     });
+
+          setTimeout(async () => {
+        const latYouDeleted = 53.15;  // 👈 Replace with a lat you know is deleted
+        const lonYouDeleted = -2.59;  // 👈 Replace with matching lon
+
+        const cacheKey = getCacheKey(latYouDeleted, lonYouDeleted);
+        await clearTileFromDisk(cacheKey);
+        fetchedBounds.delete(cacheKey);
+        await fetchDeletedCells(viewer);
+
+        console.log("Manually cleared and re-fetched tile:", cacheKey);
+      }, 3000);
     }
 
     initCesium();
