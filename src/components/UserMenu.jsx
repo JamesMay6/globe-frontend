@@ -232,7 +232,7 @@ useEffect(() => {
 
           <div className="walletLinkMenu">
             <div className="walletLinkInfo" >
-              <span>Link DTE Wallet</span>
+              <span>Earn DTE</span>
               <button className="info-button" onClick={() => setWalletInfoModalOpen(true)}>i</button>
             </div>
 
@@ -254,10 +254,10 @@ useEffect(() => {
           {walletInfoModalOpen && (
             <div className="modal-overlay" onClick={() => setWalletInfoModalOpen(false)}>
               <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <h2>What is DTE Wallet?</h2>
+                <h2>What is DTE?</h2>
                 <p>Delete The Earth 'DTE' Token is the crypto token designed to reward you for your gaming.</p>
-                <p>The DTE Wallet can store the rewards you earn from your clicks. </p>
-                <p>You can link your wallet now but rewards are coming soon </p>
+                <p>The DTE token will be issued on the Solana Network to your SOL Wallet. Keep Clicking and Earning! </p>
+                <p>You can create a new SOL Wallet or link your exsiting wallet for now, but rewards are coming soon </p>
                 <button onClick={() => setWalletInfoModalOpen(false)} className="close-button">Close</button>
               </div>
             </div>
@@ -268,7 +268,7 @@ useEffect(() => {
             <div className="modal-overlay" onClick={() => setWalletViewModalOpen(false)}>
               <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <h2>Wallet Linked</h2>
-                <p>This is your DTE wallet address:</p>
+                <p>This is your SOL Address:</p>
                 <p style={{ fontFamily: "monospace", wordBreak: "break-word" }}>
                   {linkedWalletAddress || "Unknown"}
                 </p>
@@ -285,9 +285,9 @@ useEffect(() => {
 
                 {walletLinkingMode === "choose" && (
                   <>
-                    <h2>Link or Create Your DTE Wallet</h2>
-                    <p>The DTE Wallet can store the rewards you earn from your clicks. </p>
-                    <p>You can link your wallet now but rewards are coming soon </p>
+                    <h2>Link or Create Your Wallet Address</h2>
+                    <p>The DTE Token is the rewards you earn from your clicks, running on the SOL network.</p>
+                    <p>You can link your SOL Wallet Address now but rewards are coming soon </p>
                     <p>Please choose an option:</p>
                     <button onClick={() => {resetWalletLinkState(); setWalletLinkingMode("create");}} className="link-button">Create New Wallet</button>
                     <button onClick={() => {resetWalletLinkState(); setWalletLinkingMode("link");}} className="link-button">Link Existing Wallet</button>
@@ -299,8 +299,8 @@ useEffect(() => {
                 {/* Modal for showing Create Wallet*/}
                 {walletLinkingMode === "create" && (
                   <>
-                    <h2>Create Your DTE Wallet</h2>
-                    <p>This will generate your DTE Wallet running on the Solana network and show you the wallet address and secret key. You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
+                    <h2>Create Your Wallet</h2>
+                    <p>This will generate your SOL Wallet Address and show you the secret key. You can use this wallet in any Solana-compatible app like <a href="https://phantom.app" target="_blank">Phantom</a>.</p>
                     <p><strong>Important:</strong> Your secret key will <strong style={{color: "red" }}>only be shown once</strong>. Ensure you store this securely</p>
                     {linkError && <p style={{ fontWeight:"bold", color: "red" }}>{linkError}</p>} 
                     {message && <p style={{ fontSize: "18px", fontWeight:"bold", color: "green" }}>{message}</p>}
@@ -323,8 +323,8 @@ useEffect(() => {
                 {/* Modal for showing Link Wallet*/}
                 {walletLinkingMode === "link" && (
                   <>
-                    <h2>Link Existing Solana Wallet</h2>
-                    <p>Enter your wallet's <strong>public key</strong> (wallet address):</p>
+                    <h2>Link Existing  Wallet</h2>
+                    <p>Enter your SOL wallet's <strong>public key</strong> (wallet address):</p>
                         {/* Only show input and button if wallet NOT linked yet */}
                     {!walletLinked && !message && (
                       <>
