@@ -327,6 +327,10 @@ export default function CesiumViewer({
       viewer.camera.flyTo({ 
         destination: Cesium.Cartesian3.fromDegrees(0.0, 0.0, ZOOM_OUT_LEVEL),
         });
+
+      setTimeout(() => {
+        fetchDeletedCells(viewer).catch(console.error);
+      }, 1000);
         
       setTimeout(() => {
         const input = document.querySelector(".cesium-geocoder-input");
@@ -393,6 +397,7 @@ export default function CesiumViewer({
         const movedEnough =
           last.lat === null ||
           last.lon === null ||
+          viewer.camera.changed || 
           Math.abs(centerLat - last.lat) >= 0.5 ||
           Math.abs(centerLon - last.lon) >= 0.5;
 
@@ -435,17 +440,6 @@ export default function CesiumViewer({
           console.error("Failed to fetch deleted cells:", err);
     });
 
-          setTimeout(async () => {
-        const latYouDeleted = 53.15;  // 👈 Replace with a lat you know is deleted
-        const lonYouDeleted = -2.59;  // 👈 Replace with matching lon
-
-        const cacheKey = getCacheKey(latYouDeleted, lonYouDeleted);
-        await clearTileFromDisk(cacheKey);
-        fetchedBounds.delete(cacheKey);
-        await fetchDeletedCells(viewer);
-
-        console.log("Manually cleared and re-fetched tile:", cacheKey);
-      }, 3000);
     }
 
     initCesium();
