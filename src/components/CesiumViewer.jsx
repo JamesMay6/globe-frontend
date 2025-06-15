@@ -177,14 +177,14 @@ export default function CesiumViewer({
             lon: parseFloat(centerLon),
           };
 
-          fetchDeletedCells(viewer, { west, south, east, north }).catch(console.error);
+          fetchDeletedCells(viewer.scene.primitives, { west, south, east, north }).catch(console.error);
         }
 
         // Debounce pruning
         if (pruneTimeout) clearTimeout(pruneTimeout);
         pruneTimeout = setTimeout(() => {
-          pruneDrawnCellsOutsideView(viewer, 1);
-          pruneFetchedBounds(viewer, 1);
+          pruneDrawnCellsOutsideView(viewer.scene.primitives, viewer, 1);
+          pruneFetchedBounds(viewer.scene.primitives, viewer, 1);
         }, 500);
       });
 
