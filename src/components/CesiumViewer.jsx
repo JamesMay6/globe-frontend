@@ -12,7 +12,8 @@ import {
   fetchDeletedCells,
   pruneDrawnCellsOutsideView,
   pruneFetchedBounds,
-  resetDrawnCells
+  resetDrawnCells,
+  getCameraViewRectangle
 } from "../utils/cesiumCells";
 import { getImageryProvider } from "../utils/getImageryProvider";
 import { useHandleClick } from "../hooks/useHandleClick";
@@ -152,7 +153,7 @@ export default function CesiumViewer({
         const ellipsoid = scene.globe.ellipsoid;
 
         // Compute viewport bounds as before...
-        const rect = camera.computeViewRectangle(ellipsoid);
+        const rect = getCameraViewRectangle(viewer, buffer);
         if (!rect) return;
 
         let west = Cesium.Math.toDegrees(rect.west) - 1;
