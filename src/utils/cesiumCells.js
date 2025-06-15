@@ -29,7 +29,7 @@ export const getCacheKey = (lat, lon) => {
   return `${snap(lat)}:${snap(lon)}`;
 };
 
-function getCameraViewRectangle(viewer, buffer = 0.0) {
+export function getCameraViewRectangle(viewer, buffer = 1.0) {
   const rectangle = viewer.camera.computeViewRectangle(viewer.scene.globe.ellipsoid);
 
   if (!rectangle) return null;
