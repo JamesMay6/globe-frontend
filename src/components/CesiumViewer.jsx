@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback  } from "react";
 import * as Cesium from "cesium";
 import {
   CESIUM_TOKEN,
