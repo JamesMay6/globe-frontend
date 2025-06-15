@@ -178,7 +178,7 @@ export async function fetchDeletedCells(viewer) {
 }
 
 const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => {
-  const batchSize = 1000;
+  const batchSize = 5000;
   let lastLat = null;
   let lastLon = null;
   let allCells = [];
@@ -220,7 +220,7 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
     await markTileAsVisited(cacheKey);
     console.log(`[fetchSubBox] Marked tile ${cacheKey} as visited with no cells`);
   }
-  
+
   if (viewer._fetchedBounds) viewer._fetchedBounds.add(cacheKey);
 };
 
