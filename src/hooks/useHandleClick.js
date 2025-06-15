@@ -9,6 +9,7 @@ import {
 } from "../utils/cesiumCells";
 import { deleteEarth, tweetUpgradedDelete } from "../services/api";
 import { clearTileFromDisk } from "../utils/deletedCellCache";
+import { MIN_ZOOM_LEVEL } from "../config/config";
 
 export function useHandleClick({
   showMessage,
@@ -106,7 +107,7 @@ export function useHandleClick({
 
       if (
         !positionCartographic ||
-        positionCartographic.height > 1500 // MIN_ZOOM_LEVEL can be imported if needed
+        positionCartographic.height > MIN_ZOOM_LEVEL // MIN_ZOOM_LEVEL can be imported if needed
       ) {
         showMessage("Zoom in closer to delete Earth", "error");
         return;
