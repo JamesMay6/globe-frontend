@@ -29,19 +29,15 @@ export const getCacheKey = (lat, lon) => {
   return `${snap(lat)}:${snap(lon)}`;
 };
 
-export function getCameraViewRectangle(viewer, buffer = 1.0) {
-  if (!viewer || !viewer.scene || !viewer.camera) return null;
+function getCameraViewRectangle(viewer, buffer = 0.0) {
+  const rectangle = viewer.camera.computeViewRectangle(viewer.scene.globe.ellipsoid);
 
-  const position = viewer.camera.positionCartographic;
-  if (!position) return null;
+  if (!rectangle) return null;
 
-  const centerLat = Cesium.Math.toDegrees(position.latitude);
-  const centerLon = Cesium.Math.toDegrees(position.longitude);
-
-  const minLat = Math.max(centerLat - buffer, -90);
-  const maxLat = Math.min(centerLat + buffer, 90);
-  const minLon = Math.max(centerLon - buffer, -180);
-  const maxLon = Math.min(centerLon + buffer, 180);
+  const minLat = Cesium.Math.toDegrees(rectangle.south) - buffer;
+  const maxLat = Cesium.Math.toDegrees(rectangle.north) + buffer;
+  const minLon = Cesium.Math.toDegrees(rectangle.west) - buffer;
+  const maxLon = Cesium.Math.toDegrees(rectangle.east) + buffer;
 
   return { minLat, maxLat, minLon, maxLon };
 }
