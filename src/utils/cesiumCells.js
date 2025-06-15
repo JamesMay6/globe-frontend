@@ -124,6 +124,8 @@ export const drawDeletedCell = async (viewer, lat, lon) => {
 };
 
 export async function fetchDeletedCells(viewer) {
+  const scene = viewer.scene;
+  const camera = viewer.camera;
   if (!viewer._fetchedBounds) viewer._fetchedBounds = new Set();
 
   const buffer = 1.0;

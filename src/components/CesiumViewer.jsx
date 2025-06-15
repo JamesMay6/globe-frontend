@@ -185,7 +185,7 @@ export default function CesiumViewer({
             lon: parseFloat(centerLon),
           };
 
-          fetchDeletedCells(viewer.scene.primitives, { west, south, east, north }).catch(console.error);
+          fetchDeletedCells(viewer).catch(console.error);
         }
 
         // Debounce pruning
