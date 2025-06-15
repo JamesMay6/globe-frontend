@@ -10,7 +10,7 @@ const dpPrecision = 3;
 export const normalizeCoord = (val) => Math.floor(val * precision) / precision;
 export const fetchedBounds = new Set();
 
-export const drawDeletedCell = (viewer, lat, lon) => {
+export const drawDeletedCell = async (viewer, lat, lon) => {
   const key = `${lat}:${lon}`;
   if (drawnCells.has(key)) return;
   drawnCells.add(key);
@@ -43,6 +43,21 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
   viewer.scene.primitives.add(primitive);
   viewer.scene.requestRender();
+
+  // ✅ Store cell in tile cache
+  const cacheKey = getCacheKey(lat, lon);
+  const existing = (await loadTileFromDisk(cacheKey)) || [];
+  const alreadyIncluded = existing.some(c => c.lat === lat && c.lon === lon);
+
+  if (!alreadyIncluded) {
+    const updated = [...existing, { lat, lon }];
+    await saveTileToDisk(cacheKey, updated);
+  }
+
+  // ✅ Mark tile as fetched
+  if (viewer._fetchedBounds) {
+    viewer._fetchedBounds.add(cacheKey);
+  }
 };
 
 const drawnCells = new Set();
@@ -54,7 +69,7 @@ export const initPrimitiveBatch = (viewer) => {
   viewer.scene.primitives.add(primitiveBatch);
 };
 
-export const drawDeletedCells = (viewer, cells) => {
+export const drawDeletedCells = async (viewer, cells) => {
   if (!primitiveBatch) initPrimitiveBatch(viewer);
 
   const instances = [];
@@ -99,6 +114,28 @@ export const drawDeletedCells = (viewer, cells) => {
 
     primitiveBatch.add(primitive);
     viewer.scene.requestRender();
+  }
+
+  // 💾 Update disk cache
+  const grouped = new Map();
+  for (const { lat, lon } of cells) {
+    const key = getCacheKey(lat, lon);
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push({ lat, lon });
+  }
+
+  for (const [cacheKey, newCoords] of grouped.entries()) {
+    const cached = (await loadTileFromDisk(cacheKey)) || [];
+
+    const merged = [
+      ...cached,
+      ...newCoords.filter(
+        c => !cached.some(e => e.lat === c.lat && e.lon === c.lon)
+      ),
+    ];
+
+    await saveTileToDisk(cacheKey, merged);
+    fetchedBounds.add(cacheKey);
   }
 };
 
