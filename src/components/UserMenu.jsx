@@ -232,7 +232,7 @@ useEffect(() => {
 
           <div className="walletLinkMenu">
             <div className="walletLinkInfo" >
-              <span>Earn DTE</span>
+              <span>Earn DTE Tokens</span>
               <button className="info-button" onClick={() => setWalletInfoModalOpen(true)}>i</button>
             </div>
 
