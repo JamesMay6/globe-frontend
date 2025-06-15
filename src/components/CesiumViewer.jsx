@@ -16,7 +16,7 @@ import {
 } from "../utils/cesiumCells";
 import { getImageryProvider } from "../utils/getImageryProvider";
 import { useHandleClick } from "../hooks/useHandleClick";
-import { zoomOut } from "../utils/zoomUtils";
+import { zoomOut } from "../utils/zoomOut";
 
 export default function CesiumViewer({
   user,
