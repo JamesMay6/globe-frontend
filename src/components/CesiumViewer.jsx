@@ -11,7 +11,8 @@ import {
 import {
   fetchDeletedCells,
   pruneDrawnCellsOutsideView,
-  pruneFetchedBounds
+  pruneFetchedBounds,
+  resetDrawnCells
 } from "../utils/cesiumCells";
 import { getImageryProvider } from "../utils/getImageryProvider";
 import { useHandleClick } from "../hooks/useHandleClick";
@@ -54,6 +55,12 @@ export default function CesiumViewer({
     setSuperClickEnabled,
     setUltraClickEnabled,
   });
+
+  const onZoomOut = useCallback(() => {
+    if (viewerRef.current) {
+      zoomOut(viewerRef.current);
+    }
+  }, []);
   
   useEffect(() => {
     if (!containerRef.current) return;

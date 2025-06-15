@@ -69,6 +69,22 @@ export const drawDeletedCells = async (viewer, cells) => {
 
   if (instances.length > 0) {
     console.log("[drawDeletedCells] Drawing", instances.length, "new cells");
+
+    // Calculate bounding rectangle for all cells in this batch for pruning
+    const lats = cells.map((c) => c.lat);
+    const lons = cells.map((c) => c.lon);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats) + cellWidth;
+    const minLon = Math.min(...lons);
+    const maxLon = Math.max(...lons) + cellWidth;
+
+    const boundingRectangle = Cesium.Rectangle.fromDegrees(
+      minLon,
+      minLat,
+      maxLon,
+      maxLat
+    );
+
     const primitive = new Cesium.Primitive({
       geometryInstances: instances,
       appearance: new Cesium.PerInstanceColorAppearance({
@@ -76,7 +92,10 @@ export const drawDeletedCells = async (viewer, cells) => {
         closed: true,
       }),
     });
+
     primitive.isDeletedCell = true;
+    primitive.rectangle = boundingRectangle;
+
     primitiveBatch.add(primitive);
     viewer.scene.requestRender();
   }
@@ -92,7 +111,9 @@ export const drawDeletedCells = async (viewer, cells) => {
     await saveTileToDisk(cacheKey, merged);
     fetchedBounds.add(cacheKey);
     if (viewer._fetchedBounds) viewer._fetchedBounds.add(cacheKey);
-    console.log(`[drawDeletedCells] Cache updated for tile ${cacheKey} with ${merged.length} total cells`);
+    console.log(
+      `[drawDeletedCells] Cache updated for tile ${cacheKey} with ${merged.length} total cells`
+    );
   }
 };
 
@@ -204,4 +225,82 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
   }
 
   if (viewer._fetchedBounds) viewer._fetchedBounds.add(cacheKey);
+};
+
+export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
+  if (!viewer || !viewer.scene || !viewer.camera) return;
+  if (!primitiveBatch) return;
+
+  const scene = viewer.scene;
+  const camera = viewer.camera;
+  const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+  if (!rect) return;
+
+  let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
+  let south = Cesium.Math.toDegrees(rect.south) - bufferDegrees;
+  let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
+  let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
+
+  west = Math.max(-180, west);
+  south = Math.max(-90, south);
+  east = Math.min(180, east);
+  north = Math.min(90, north);
+
+  const primitivesToRemove = [];
+
+  primitiveBatch._primitives.forEach((prim) => {
+    if (prim.isDeletedCell && prim.rectangle) {
+      const rect = prim.rectangle;
+      const primWest = Cesium.Math.toDegrees(rect.west);
+      const primSouth = Cesium.Math.toDegrees(rect.south);
+      const primEast = Cesium.Math.toDegrees(rect.east);
+      const primNorth = Cesium.Math.toDegrees(rect.north);
+
+      const intersects =
+        !(primEast < west || primWest > east || primNorth < south || primSouth > north);
+
+      if (!intersects) {
+        primitivesToRemove.push(prim);
+      }
+    }
+  });
+
+  primitivesToRemove.forEach((prim) => {
+    primitiveBatch.remove(prim);
+  });
+}
+
+export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
+  if (!viewer || !viewer._fetchedBounds) return;
+
+  const rect = viewer.camera.computeViewRectangle(viewer.scene.globe.ellipsoid);
+  if (!rect) return;
+
+  let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
+  let south = Cesium.Math.toDegrees(rect.south) - bufferDegrees;
+  let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
+  let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
+
+  // Convert Set to Array, filter, then convert back to Set
+  const filteredBounds = Array.from(viewer._fetchedBounds).filter((b) => {
+    const parts = b.split(":").map(parseFloat);
+    // Keep entries that are not bounding boxes (like cache keys "lat:lon")
+    if (parts.length !== 4 || parts.some(isNaN)) return true;
+
+    const [minLat, maxLat, minLon, maxLon] = parts;
+
+    const noOverlap =
+      maxLon < west ||
+      minLon > east ||
+      maxLat < south ||
+      minLat > north;
+
+    return !noOverlap;
+  });
+
+  viewer._fetchedBounds = new Set(filteredBounds);
+}
+
+export const resetDrawnCells = () => {
+  drawnCells.clear();
 };
