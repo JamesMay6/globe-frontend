@@ -11,8 +11,7 @@ import {
 import {
   fetchDeletedCells,
   pruneDrawnCellsOutsideView,
-  pruneFetchedBounds,
-  resetDrawnCells 
+  pruneFetchedBounds
 } from "../utils/cesiumCells";
 import { getImageryProvider } from "../utils/getImageryProvider";
 import { useHandleClick } from "../hooks/useHandleClick";
