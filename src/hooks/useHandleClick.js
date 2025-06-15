@@ -5,9 +5,10 @@ import {
   drawDeletedCells,
   normalizeCoord,
   getCacheKey,
+  fetchedBounds
 } from "../utils/cesiumCells";
 import { deleteEarth, tweetUpgradedDelete } from "../services/api";
-import { clearTileFromDisk, fetchedBounds } from "../utils/deletedCellCache";
+import { clearTileFromDisk } from "../utils/deletedCellCache";
 
 export function useHandleClick({
   showMessage,
