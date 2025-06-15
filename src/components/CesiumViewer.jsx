@@ -237,7 +237,7 @@ export default function CesiumViewer({
     <>
       <div
         ref={containerRef} className="cesium-container"/>
-      <button className="zoom-out-button" onClick={zoomOut}>
+      <button className="zoom-out-button" onClick={onZoomOut}>
         🌍
       </button>
     </>

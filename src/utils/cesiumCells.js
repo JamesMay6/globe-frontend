@@ -29,6 +29,23 @@ export const getCacheKey = (lat, lon) => {
   return `${snap(lat)}:${snap(lon)}`;
 };
 
+export function getCameraViewRectangle(viewer, buffer = 1.0) {
+  if (!viewer || !viewer.scene || !viewer.camera) return null;
+
+  const position = viewer.camera.positionCartographic;
+  if (!position) return null;
+
+  const centerLat = Cesium.Math.toDegrees(position.latitude);
+  const centerLon = Cesium.Math.toDegrees(position.longitude);
+
+  const minLat = Math.max(centerLat - buffer, -90);
+  const maxLat = Math.min(centerLat + buffer, 90);
+  const minLon = Math.max(centerLon - buffer, -180);
+  const maxLon = Math.min(centerLon + buffer, 180);
+
+  return { minLat, maxLat, minLon, maxLon };
+}
+
 export const drawDeletedCells = async (viewer, cells) => {
   if (!primitiveBatch) initPrimitiveBatch(viewer);
 
@@ -100,47 +117,20 @@ export const drawDeletedCells = async (viewer, cells) => {
     viewer.scene.requestRender();
   }
 
-  for (const [cacheKey, newCoords] of grouped.entries()) {
-    const cached = (await loadTileFromDisk(cacheKey)) || [];
-    const merged = [
-      ...cached,
-      ...newCoords.filter(
-        (c) => !cached.some((e) => e.lat === c.lat && e.lon === c.lon)
-      ),
-    ];
-    await saveTileToDisk(cacheKey, merged);
-    fetchedBounds.add(cacheKey);
-    if (viewer._fetchedBounds) viewer._fetchedBounds.add(cacheKey);
-    console.log(
-      `[drawDeletedCells] Cache updated for tile ${cacheKey} with ${merged.length} total cells`
-    );
-  }
 };
 
 export const drawDeletedCell = async (viewer, lat, lon) => {
   await drawDeletedCells(viewer, [{ lat, lon }]);
 };
 
-export async function fetchDeletedCells(viewer, bounds) {
+export async function fetchDeletedCells(viewer) {
   if (!viewer._fetchedBounds) viewer._fetchedBounds = new Set();
 
-  if (bounds) {
-    const boundsKey = `${bounds.minLat}:${bounds.maxLat}:${bounds.minLon}:${bounds.maxLon}`;
-    viewer._fetchedBounds.add(boundsKey);
-  }
-
   const buffer = 1.0;
-  if (!viewer || !viewer.scene || !viewer.scene.globe || !viewer.camera) return;
-
-  const ellipsoid = viewer.scene.globe.ellipsoid;
-  const rect = viewer.camera.computeViewRectangle(ellipsoid);
+  const rect = getCameraViewRectangle(viewer, buffer);
   if (!rect) return;
 
-  const minLat = Cesium.Math.toDegrees(rect.south) - buffer;
-  const maxLat = Cesium.Math.toDegrees(rect.north) + buffer;
-  const minLon = Cesium.Math.toDegrees(rect.west) - buffer;
-  const maxLon = Cesium.Math.toDegrees(rect.east) + buffer;
-
+  const { minLat, maxLat, minLon, maxLon } = rect;
   const latDivisions = 6;
   const lonDivisions = 6;
   const latStep = (maxLat - minLat) / latDivisions;
@@ -162,7 +152,12 @@ export async function fetchDeletedCells(viewer, bounds) {
 
       if (viewer._fetchedBounds.has(cacheKey)) continue;
 
-      const cached = await loadTileFromDisk(cacheKey);
+      // Here, check disk cache & visited flag BEFORE deciding to fetch:
+      const [cached, visited] = await Promise.all([
+        loadTileFromDisk(cacheKey),
+        isTileVisited(cacheKey),
+      ]);
+
       if (cached && cached.length > 0) {
         console.log(`[fetchDeletedCells] Using cached tile ${cacheKey}`);
         await drawDeletedCells(viewer, cached);
@@ -170,21 +165,20 @@ export async function fetchDeletedCells(viewer, bounds) {
         continue;
       }
 
-      const visited = await isTileVisited(cacheKey);
       if (visited) {
         console.log(`[fetchDeletedCells] Tile ${cacheKey} previously marked empty`);
         viewer._fetchedBounds.add(cacheKey);
         continue;
       }
 
-      fetchTasks.push(
-        fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer, cacheKey)
-      );
+      // If not cached or visited, fetch from server
+      fetchTasks.push(fetchSubBox(subMinLat, subMaxLat, subMinLon, subMaxLon, viewer, cacheKey));
     }
   }
 
   await Promise.all(fetchTasks);
 }
+
 
 const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => {
   const batchSize = 1000;
