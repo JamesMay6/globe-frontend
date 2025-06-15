@@ -6,26 +6,17 @@ import {
   ZOOM_FACTOR,
   INERTIA_ZOOM,
   ZOOM_OUT_LEVEL,
-  MAPBOX_TOKEN,
   IMAGERY_PROVIDER_KEY
 } from "../config/config";
 import {
-  drawDeletedCell,
-  drawDeletedCells,
   fetchDeletedCells,
-  normalizeCoord,
   pruneDrawnCellsOutsideView,
   pruneFetchedBounds,
-  getCacheKey, 
-  fetchedBounds,
   resetDrawnCells 
 } from "../utils/cesiumCells";
-import { 
-  deleteEarth, 
-  tweetUpgradedDelete, 
-  fetchTotals 
-} from "../services/api";
-import { clearTileFromDisk } from "../utils/deletedCellCache";
+import { getImageryProvider } from "../utils/getImageryProvider";
+import { useHandleClick } from "../hooks/useHandleClick"; // adjust path accordingly
+
 
 export default function CesiumViewer({
   user,
@@ -46,226 +37,26 @@ export default function CesiumViewer({
 }) {
   const viewerRef = useRef(null);
   const containerRef = useRef(null);
-  const clickInProgressRef = useRef(false);
 
-  const userRef = useRef(null);
-  const clicksTotalRef = useRef(0);
-  const clicksUsedRef = useRef(0);
-  const superClicksRef = useRef(0);
-  const superClickEnabledRef = useRef(false);
-  const ultraClicksRef = useRef(0);
-  const ultraClickEnabledRef = useRef(false);
-
+   const handleClick = useHandleClick({
+    user,
+    superClickEnabled,
+    fetchUserProfile,
+    showMessage,
+    clicksTotal,
+    clicksUsed,
+    setClicksTotal,
+    setClicksUsed,
+    superClicksTotal,
+    setSuperClicksTotal,
+    ultraClicksTotal,
+    setUltraClicksTotal,
+    ultraClickEnabled,
+    setSuperClickEnabled,
+    setUltraClickEnabled,
+  });
+  
   const lastFetchedRef = useRef({ lat: null, lon: null, zoom: null });
-
-  // ---------- Sync Refs ----------
-  useEffect(() => {
-    userRef.current = user;
-  }, [user]);
-
-  useEffect(() => {
-    clicksTotalRef.current = clicksTotal;
-  }, [clicksTotal]);
-
-  useEffect(() => {
-    clicksUsedRef.current = clicksUsed;
-  }, [clicksUsed]);
-
-  useEffect(() => {
-    superClicksRef.current = superClicksTotal;
-  }, [superClicksTotal]);
-
-  useEffect(() => {
-    superClickEnabledRef.current = superClickEnabled;
-  }, [superClickEnabled]);
-
-   useEffect(() => {
-    ultraClicksRef.current = ultraClicksTotal;
-  }, [ultraClicksTotal]);
-
-  useEffect(() => {
-    ultraClickEnabledRef.current = ultraClickEnabled;
-  }, [ultraClickEnabled]);
-
-  const handleClick = async (viewer, movement) => {
-    if (clickInProgressRef.current) return;
-    clickInProgressRef.current = true;
-
-    try {
-      if (!viewer || !viewer.scene || !viewer.camera) {
-        console.warn("Viewer not ready on click");
-        return;
-      }
-
-      if (!userRef.current) {
-        showMessage("You need to log in to delete Earth", "error");
-        return;
-      }
-
-      if (
-        !superClickEnabledRef.current &&
-        clicksTotalRef.current <= 0
-      ) {
-        showMessage("You're out of clicks!", "error");
-        return;
-      }
-
-      if (
-        superClickEnabledRef.current &&
-        superClicksRef.current <= 0
-      ) {
-        showMessage("You're out of super clicks!", "error");
-        return;
-      }
-
-      if (
-        ultraClickEnabledRef.current &&
-        ultraClicksRef.current <= 0
-      ) {
-        showMessage("You're out of ultra clicks!", "error");
-        return;
-      }
-
-
-      const positionCartographic = Cesium.Cartographic.fromCartesian(
-        viewer.camera.position
-      );
-
-      if (
-        !positionCartographic ||
-        positionCartographic.height > MIN_ZOOM_LEVEL
-      ) {
-        showMessage("Zoom in closer to delete Earth", "error");
-        return;
-      }
-
-      showMessage(
-        ultraClickEnabledRef.current
-          ? "Ultra Click deleting Earth"
-          : superClickEnabledRef.current
-            ? "Super Click deleting Earth"
-            : "Deleting Earth",
-        "warn"
-      );
-
-      const ray = viewer.camera.getPickRay(movement.position);
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-      if (!cartesian) return;
-
-      const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-      const lat = normalizeCoord(Cesium.Math.toDegrees(cartographic.latitude));
-      const lon = normalizeCoord(Cesium.Math.toDegrees(cartographic.longitude));
-
-      const data = await deleteEarth(lat, lon, superClickEnabledRef.current, ultraClickEnabledRef.current);
-
-      if (data.alreadyDeleted) {
-      showMessage("Earth is already deleted here", "error");
-      return;
-      }
-
-      if (
-        (superClickEnabledRef.current || ultraClickEnabledRef.current) &&
-        Array.isArray(data.coordinates)
-      ) {
-        drawDeletedCells(viewer, data.coordinates);
-      } else {
-        drawDeletedCell(viewer, lat, lon);
-      }
-
-      if (
-        (superClickEnabledRef.current || ultraClickEnabledRef.current) &&
-        Array.isArray(data.coordinates)
-      ) {
-        for (const { lat: delLat, lon: delLon } of data.coordinates) {
-          const cacheKey = getCacheKey(delLat, delLon);
-          await clearTileFromDisk(cacheKey);
-          fetchedBounds.delete(cacheKey);
-        }
-      } else {
-        const cacheKey = getCacheKey(lat, lon);
-        await clearTileFromDisk(cacheKey);
-        fetchedBounds.delete(cacheKey);
-      }
-
-
-      if (ultraClickEnabledRef.current) {
-        const count = data.insertedCount ?? data.coordinates?.length ?? 0;
-        showMessage(`Ultra Click deleted ${count} Earth coordinate${count === 1 ? "" : "s"}`);
-      } else if (superClickEnabledRef.current) {
-        const count = data.insertedCount ?? data.coordinates?.length ?? 0;
-        showMessage(`Super Click deleted ${count} Earth coordinate${count === 1 ? "" : "s"}`);
-      } else {
-        showMessage("Earth deleted!");
-      }
-
-       // DONT DO TWITTER YET
-
-       /*
-      if (superClickEnabledRef.current || ultraClickEnabledRef.current) {
-        const type = ultraClickEnabledRef.current ? "Ultra" : "Super";
-        const count = data.insertedCount ?? data.coordinates?.length ?? 0;
-
-        try {
-          const totals = await fetchTotals();
-          const { total, expected_total, percentage } = totals;
-
-          await tweetUpgradedDelete(
-            type,
-            count,
-            userRef.current?.username || null,
-            total,
-            expected_total,
-            percentage
-          );
-        } catch (err) {
-          console.error("Tweeting failed:", err);
-        }
-      }
-        */
-        
-
-      setClicksTotal((prev) =>
-        superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev - 1
-      );
-
-      setClicksUsed((prev) =>
-        superClickEnabledRef.current || ultraClickEnabledRef.current ? prev : prev + 1
-      );
-
-      // After decrementing super clicks:
-      if (superClickEnabledRef.current) {
-        setSuperClicksTotal(prev => prev - 1);
-
-        // Disable super click after successful use
-        setSuperClickEnabled(false);
-        superClickEnabledRef.current = false; 
-        setTimeout(() => {
-          showMessage("Super Click Disabled", "warn");
-        }, 1500); // 500ms delay
-      }
-
-      // After decrementing ultra clicks:
-      if (ultraClickEnabledRef.current) {
-        setUltraClicksTotal(prev => prev - 1);
-
-        // Disable ultra click after successful use
-        setUltraClickEnabled(false);
-        ultraClickEnabledRef.current = false;
-        setTimeout(() => {
-          showMessage("Ultra Click Disabled", "warn");
-        }, 1500); // 500ms delay
-        
-      }
-
-       await fetchUserProfile();
-
-    } catch (err) {
-      console.error(err);
-      showMessage("Error deleting Earth", "error");
-    } finally {
-      clickInProgressRef.current = false;
-    }
-  };
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -279,25 +70,6 @@ export default function CesiumViewer({
       Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
 
       const terrainProvider = new Cesium.EllipsoidTerrainProvider(); 
-      
-      //Imagery Provide Switches
-      async function getImageryProvider(key) {
-        switch (key) {
-          case 1: // Bing Aerial
-            return await Cesium.IonImageryProvider.fromAssetId(2);
-          case 2: // Sentinel-2
-            return await Cesium.IonImageryProvider.fromAssetId(3954);
-          case 3: // Mapbox Satellite
-            return new Cesium.UrlTemplateImageryProvider({
-              url: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=${MAPBOX_TOKEN}`,
-              maximumLevel: 19,
-              credit: '© Mapbox © OpenStreetMap',
-            });
-          default:
-            throw new Error(`Unsupported IMAGERY_PROVIDER_KEY: ${key}`);
-        }
-      }
-
       const imageryProvider = await getImageryProvider(IMAGERY_PROVIDER_KEY);
 
       // Initialize the Cesium Viewer
