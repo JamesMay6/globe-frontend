@@ -153,6 +153,7 @@ export default function CesiumViewer({
         const ellipsoid = scene.globe.ellipsoid;
 
         // Compute viewport bounds as before...
+        const buffer = 1.0;
         const rect = getCameraViewRectangle(viewer, buffer);
         if (!rect) return;
 
