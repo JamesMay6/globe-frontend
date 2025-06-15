@@ -179,7 +179,7 @@ export async function fetchDeletedCells(viewer) {
 
 
 const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => {
-  const batchSize = 1000;
+  const batchSize = 10000;
   let lastLat = null;
   let lastLon = null;
   let allCells = [];
