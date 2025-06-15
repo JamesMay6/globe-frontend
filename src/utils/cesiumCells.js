@@ -230,7 +230,8 @@ export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
 
   const scene = viewer.scene;
   const camera = viewer.camera;
-  const rect = camera.computeViewRectangle(scene.globe.ellipsoid);
+  const buffer = 1.0;
+  const rect = getCameraViewRectangle(viewer, buffer);
   if (!rect) return;
 
   let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
@@ -270,7 +271,8 @@ export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
 export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
   if (!viewer || !viewer._fetchedBounds) return;
 
-  const rect = viewer.camera.computeViewRectangle(viewer.scene.globe.ellipsoid);
+  const buffer = 1.0;
+  const rect = getCameraViewRectangle(viewer, buffer);
   if (!rect) return;
 
   let west = Cesium.Math.toDegrees(rect.west) - bufferDegrees;
