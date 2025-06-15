@@ -211,7 +211,9 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
     await markTileAsVisited(cacheKey);
   }
 
-  fetchedBounds.add(cacheKey);
+  if (viewer._fetchedBounds) {
+  viewer._fetchedBounds.add(cacheKey);
+}
 };
 
 export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
