@@ -16,6 +16,7 @@ import StatsMenu from "./components/StatsMenu";
 import Leaderboard from "./components/LeaderboardMenu";
 import AboutMenu from "./components/AboutMenu";
 import ResetKeyModal from './components/ResetKeyModal';
+import WelcomeModal from "./components/Welcome";
 
 //css
 import "./styles/aboutMenu.css";
@@ -68,7 +69,6 @@ export default function App() {
 
   const { upgrade } = useSuperClickUpgrade(loadProfile);
   const { ultraUpgrade } = useUltraClickUpgrade(loadProfile);
-
   const { handleBuyClicks } = useBuyClicks(loadProfile, setCooldownMessage);
 
   const refreshUserProfile = async () => {
@@ -77,6 +77,8 @@ export default function App() {
   };
 
   const location = useLocation();
+  const [showModal, setShowModal] = useState(false);
+
 
   useEffect(() => {
   const params = new URLSearchParams(location.search);
@@ -90,6 +92,18 @@ export default function App() {
     window.history.replaceState({}, document.title, "/");
   }
 }, [location]);
+
+useEffect(() => {
+    const hasSeen = localStorage.getItem("hasSeenLoadingInfo");
+    if (!hasSeen) {
+      setShowModal(true);
+    }
+  }, []);
+
+  const closeModal = () => {
+    localStorage.setItem("hasSeenLoadingInfo", "true");
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -155,6 +169,8 @@ export default function App() {
         <AboutMenu />
         <Leaderboard />
         <ResetKeyModal resetKey={resetKey} onClose={() => setResetKey(null)} />
+
+        {showModal && <WelcomeModal onClose={closeModal} />}
 
     </>
   );
