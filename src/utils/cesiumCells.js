@@ -207,7 +207,10 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
     lastLat = last.lat;
     lastLon = last.lon;
 
-    if (cells.length < batchSize) break;
+    if (cells.length < batchSize) {
+      await markTileAsVisited(cacheKey);
+      break;
+    }
   }
 
   if (allCells.length > 0) {
@@ -215,9 +218,9 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
     console.log(`[fetchSubBox] Saved ${allCells.length} cells to disk for tile ${cacheKey}`);
   } else {
     await markTileAsVisited(cacheKey);
-    console.log(`[fetchSubBox] Marked tile ${cacheKey} as visited with 0 cells`);
+    console.log(`[fetchSubBox] Marked tile ${cacheKey} as visited with no cells`);
   }
-
+  
   if (viewer._fetchedBounds) viewer._fetchedBounds.add(cacheKey);
 };
 
