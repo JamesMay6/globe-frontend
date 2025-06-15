@@ -1,6 +1,6 @@
 import * as Cesium from "cesium";
 import { API_URL } from "../config/config";
-import { saveTileToDisk, loadTileFromDisk } from "../utils/deletedCellCache.js";
+import { saveTileToDisk, loadTileFromDisk, markTileAsVisited, isTileVisited } from "../utils/deletedCellCache.js";
 
 const precision = 1000;
 const cellWidth = 0.001;
@@ -47,7 +47,6 @@ export const drawDeletedCell = (viewer, lat, lon) => {
 
 const drawnCells = new Set();
 
-/* Primitive batch */
 let primitiveBatch = null;
 
 export const initPrimitiveBatch = (viewer) => {
@@ -103,14 +102,12 @@ export const drawDeletedCells = (viewer, cells) => {
   }
 };
 
-/* Coarse tile cache key */
 const tilePrecision = 0.25;
 export const getCacheKey = (lat, lon) => {
   const snap = (x) => Math.floor(x / tilePrecision) * tilePrecision;
   return `${snap(lat)}:${snap(lon)}`;
 };
 
-/* Main tile fetch */
 export async function fetchDeletedCells(viewer, bounds) {
   if (bounds) {
     if (!viewer._fetchedBounds) viewer._fetchedBounds = [];
@@ -148,10 +145,15 @@ export async function fetchDeletedCells(viewer, bounds) {
       if (fetchedBounds.has(cacheKey)) continue;
 
       const cached = await loadTileFromDisk(cacheKey);
-      if (cached && cached.length > 0) {
-        drawDeletedCells(viewer, cached);
+      if (cached) {
+        if (cached.length > 0) drawDeletedCells(viewer, cached);
         fetchedBounds.add(cacheKey);
-        console.log("Loaded from disk:", cacheKey);
+        continue;
+      }
+
+      const visited = await isTileVisited(cacheKey);
+      if (visited) {
+        fetchedBounds.add(cacheKey);
         continue;
       }
 
@@ -165,14 +167,6 @@ export async function fetchDeletedCells(viewer, bounds) {
 }
 
 const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => {
-  const cached = await loadTileFromDisk(cacheKey);
-  if (cached && cached.length > 0) {
-    drawDeletedCells(viewer, cached);
-    console.log("Loaded from disk:", cacheKey);
-    fetchedBounds.add(cacheKey);
-    return;
-  }
-
   const batchSize = 1000;
   let lastLat = null;
   let lastLon = null;
@@ -208,14 +202,14 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
 
   if (allCells.length > 0) {
     await saveTileToDisk(cacheKey, allCells);
-    console.log(`Fetched and cached: ${cacheKey}`);
-    fetchedBounds.add(cacheKey);
+    drawDeletedCells(viewer, allCells);
   } else {
-    console.log(`Fetched empty tile: ${cacheKey}`);
+    await markTileAsVisited(cacheKey);
   }
+
+  fetchedBounds.add(cacheKey);
 };
 
-/* Prune drawn cells outside view */
 export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
   if (!viewer || !viewer.scene || !viewer.camera) return;
 
@@ -257,7 +251,6 @@ export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
   });
 }
 
-/* Prune old fetched bounds */
 export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
   if (!viewer || !viewer._fetchedBounds) return;
 
