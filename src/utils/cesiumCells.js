@@ -212,8 +212,8 @@ const fetchSubBox = async (minLat, maxLat, minLon, maxLon, viewer, cacheKey) => 
   }
 
   if (viewer._fetchedBounds) {
-  viewer._fetchedBounds.add(cacheKey);
-}
+    viewer._fetchedBounds.add(cacheKey);
+  }
 };
 
 export function pruneDrawnCellsOutsideView(viewer, bufferDegrees = 1) {
@@ -268,14 +268,22 @@ export function pruneFetchedBounds(viewer, bufferDegrees = 1) {
   let east = Cesium.Math.toDegrees(rect.east) + bufferDegrees;
   let north = Cesium.Math.toDegrees(rect.north) + bufferDegrees;
 
-  viewer._fetchedBounds = viewer._fetchedBounds.filter((b) => {
+  // Convert Set to Array, filter, then convert back to Set
+  const filteredBounds = Array.from(viewer._fetchedBounds).filter((b) => {
+    // b format: "minLat:maxLat:minLon:maxLon"
+    const parts = b.split(":").map(parseFloat);
+    const [minLat, maxLat, minLon, maxLon] = parts;
+
     const noOverlap =
-      b.maxLon < west ||
-      b.minLon > east ||
-      b.maxLat < south ||
-      b.minLat > north;
+      maxLon < west ||
+      minLon > east ||
+      maxLat < south ||
+      minLat > north;
+
     return !noOverlap;
   });
+
+  viewer._fetchedBounds = new Set(filteredBounds);
 }
 
 export const resetDrawnCells = () => {
