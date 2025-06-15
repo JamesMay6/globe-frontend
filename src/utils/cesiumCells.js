@@ -130,7 +130,10 @@ export async function fetchDeletedCells(viewer, bounds) {
   }
 
   const buffer = 1.0;
-  const rect = viewer.camera.computeViewRectangle();
+  if (!viewer || !viewer.scene || !viewer.scene.globe || !viewer.camera) return;
+
+  const ellipsoid = viewer.scene.globe.ellipsoid;
+  const rect = viewer.camera.computeViewRectangle(ellipsoid);
   if (!rect) return;
 
   const minLat = Cesium.Math.toDegrees(rect.south) - buffer;
